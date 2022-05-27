@@ -26,12 +26,13 @@ bot = Client(
 async def start_(client: Client, message: Message):
     await message.reply_sticker("CAACAgQAAxkBAAI8bmKIvgnlJyCrq9HIxSvCZCbm5CEjAAIaEAACpvFxHg-Z648-SCRWJAQ")
     await message.reply_text(
-    f"""● **👋 **Selam** {message.from_user.mention}\n\n**ℹ️ Ben müzik indirme botuyum istediğin müziği indirebilirim**\n\n**✅ Yardım için** /help **komutunu kullanın**""",
+    f"""● **Selam** {message.from_user.mention}\n\n**» Ben müzik indirme botuyum istediğin müziği indirebilirim**\n\n**✅ Yardım için** /help **komutunu kullanın**""",
         reply_markup=InlineKeyboardMarkup(
             [[
-                    InlineKeyboardButton('Support Grup ❄️', url=f'https://t.me/{Config.GROUP}'),
+                    InlineKeyboardButton('🇹🇷 𝖡𝖾𝗇𝗂 𝖦𝗋𝗎𝖻𝖺 𝖤𝗄𝗅𝖾 🇹🇷', url=f'http://t.me/StarSongBot?startgroup=new}'),
                   ],[
-                    InlineKeyboardButton('Playlist 🎵', url=f'https://t.me/{Config.PLAYLIST_NAME}')
+                    InlineKeyboardButton('✅ 𝖣𝖾𝗌𝗍𝖾𝗄 ', url=f'https://t.me/{Config.GROUP}'),
+                    InlineKeyboardButton('⏳ 𝖪𝖺𝗇𝖺𝗅 ', url=f'https://t.me/{Config.PLAYLIST_NAME}')
                 ]
             ]
         )
@@ -41,15 +42,16 @@ async def start_(client: Client, message: Message):
 
 @bot.on_message(filters.command(['help']))
 def help(client, message):
-    helptext = f'**Müzik indirmek için /bul komutunu kullabilirsin ⤵️**\n\n**Örnek:**\n**1.** `/bul gece mavisi`\n**2.** `/bul https://youtu.be/qLXUa89Q5WI`\n\n**'
+    helptext = f'• **Müzik indirmek için /bul komutunu kullabilirsin !**\n\n**Örnek** :\n•> /bul `gece mavisi`'
     message.reply_text(
         text=helptext, 
         quote=False,
         reply_markup=InlineKeyboardMarkup(
             [[
-                    InlineKeyboardButton('Support Grup ❄️', url=f'https://t.me/{Config.GROUP}'),
+                    InlineKeyboardButton('🇹🇷 𝖡𝖾𝗇𝗂 𝖦𝗋𝗎𝖻𝖺 𝖤𝗄𝗅𝖾 🇹🇷', url=f'http://t.me/StarSongBot?startgroup=new}'),
                   ],[
-                    InlineKeyboardButton('Playlist 🎵', url=f'https://t.me/{Config.PLAYLIST_NAME}')
+                    InlineKeyboardButton('✅ 𝖣𝖾𝗌𝗍𝖾𝗄', url=f'https://t.me/{Config.GROUP}'),
+                    InlineKeyboardButton('⏳ 𝖪𝖺𝗇𝖺𝗅', url=f'https://t.me/{Config.PLAYLIST_NAME}')
                 ]
             ]
         )
@@ -65,7 +67,7 @@ async def live(client: Client, message: Message):
 @bot.on_message(filters.command("bul") & ~filters.edited)
 def bul(_, message):
     query = " ".join(message.command[1:])
-    m = message.reply("<b>Şarkınız Aranıyor ... 🔍</b>")
+    m = message.reply("<b>• **Şarkın Aranıyor** ...</b>")
     ydl_ops = {"format": "bestaudio[ext=m4a]"}
     try:
         results = YoutubeSearch(query, max_results=1).to_dict()
@@ -78,10 +80,10 @@ def bul(_, message):
         duration = results[0]["duration"]
 
     except Exception as e:
-        m.edit("<b>❌ Üzgünüm şarkı bulunamadı.\n\n Lütfen başka şarkı ismi söyleyin.</b>")
+        m.edit("<b>⛔ **Üzgünüm şarkı bulunamadı.\n\n Lütfen başka şarkı ismi söyleyin.**</b>")
         print(str(e))
         return
-    m.edit("<b>📥 İndirme İşlemi Başladı...</b>")
+    m.edit("<b>•> **İndirme Başladı...**</b>")
     try:
         with yt_dlp.YoutubeDL(ydl_ops) as ydl:
             info_dict = ydl.extract_info(link, download=False)
@@ -92,12 +94,12 @@ def bul(_, message):
         for i in range(len(dur_arr) - 1, -1, -1):
             dur += int(float(dur_arr[i])) * secmul
             secmul *= 60
-        m.edit("📤 Yükleniyor..")
+        m.edit("•> **Yükleniyor**...")
         message.reply_audio(audio_file, caption=rep, parse_mode='md',quote=False, title=title, duration=dur, thumb=thumb_name, performer="@mutsuz_panda")
         m.delete()
         bot.send_audio(chat_id=Config.PLAYLIST_ID, audio=audio_file, caption=rep, performer="@mutsuz_panda", parse_mode='md', title=title, duration=dur, thumb=thumb_name)
     except Exception as e:
-        m.edit("<b>❌ Hatanın, düzelmesini bekleyiniz.</b>")
+        m.edit("<b>⛔ **Hatanın düzelmesini bekleyin** .</b>")
         print(e)
 
     try:
