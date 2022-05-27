@@ -15,7 +15,7 @@
 - GROUP - Grubunuzun kullanıcı adı
 
 # Deploy
-<a href="https://heroku.com/deploy?template=https://github.com/HariboTube/song-">
+<a href="https://heroku.com/deploy?template=https://github.com/HariboTube/song">
   <img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy">
 </a>
 
