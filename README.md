@@ -1,8 +1,5 @@
-<h2 align="centre">Muud mp3 download 🎵</h2>
+<h2 align="centre">Mp3 download 🎵</h2>
 
-<p align="center">
-  <img src="https://telegra.ph//file/4c86190fcbe14428c8c6b.jpg">
-</p> 
 
 ### Gerekli olanlar 🍭
 - API_ID - [my.telegram.org](https://my.telegram.org/auth) sitesinden ala bilirsiniz.
@@ -18,9 +15,3 @@
 <a href="https://heroku.com/deploy?template=https://github.com/HariboTube/song">
   <img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy">
 </a>
-
-
-#### Düzen tasarım
-- [#Ge͂̂͝c̨͒ͤ̕͜e̡͝ k̶̴̛ͮ͌̒̃͟͡uş̟̲͎u̼͓̭̝ͦ̂͋̈̋̔](https://t.me/mutsuz_panda)
-- 
-- İnstagram [@ama_hocaam](https://instagram.com/ama_hocaam?igshid=YmMyMTA2M2Y=)
