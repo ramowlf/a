@@ -42,7 +42,7 @@ async def start_(client: Client, message: Message):
 
 @bot.on_message(filters.command(['help']))
 def help(client, message):
-    helptext = f'• **Müzik indirmek için /bul komutunu kullabilirsin !**\n\n**Örnek** :\n•> /bul `gece mavisi`'
+    helptext = f'• **Müzik indirmek için /bul komutunu kullabilirsin .**\n\n**Örnek** :\n•> /bul `gece mavisi`'
     message.reply_text(
         text=helptext, 
         quote=False,
