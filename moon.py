@@ -33,6 +33,8 @@ async def start_(client: Client, message: Message):
                   ],[
                     InlineKeyboardButton('✅ 𝖣𝖾𝗌𝗍𝖾𝗄 ', url=f'https://t.me/{Config.GROUP}'),
                     InlineKeyboardButton('⏳ 𝖪𝖺𝗇𝖺𝗅 ', url=f'https://t.me/{Config.PLAYLIST_NAME}')
+                  ],[
+                    InlineKeyboardButton('🧑🏻‍💻 ɢɪᴛʜᴜʙ ᴋᴀʏɴᴀᴋ ᴋᴏᴅᴜ 🧑🏻‍💻', url=f'https://github.com/MehmetAtes21/Song')
                 ]
             ]
         )
@@ -52,6 +54,8 @@ def help(client, message):
                   ],[
                     InlineKeyboardButton('✅ 𝖣𝖾𝗌𝗍𝖾𝗄', url=f'https://t.me/{Config.GROUP}'),
                     InlineKeyboardButton('⏳ 𝖪𝖺𝗇𝖺𝗅', url=f'https://t.me/{Config.PLAYLIST_NAME}')
+                  ],[
+                    InlineKeyboardButton('🧑🏻‍💻 ɢɪᴛʜᴜʙ ᴋᴀʏɴᴀᴋ ᴋᴏᴅᴜ 🧑🏻‍💻', url=f'https://github.com/MehmetAtes21/Song')
                 ]
             ]
         )
