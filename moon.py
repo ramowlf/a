@@ -22,7 +22,7 @@ bot = Client(
 
 #start mesajı
 
-@bot.on_message(filters.command(['ndjddk']))
+@bot.on_message(filters.command(['start']))
 async def start_(client: Client, message: Message):
     await message.reply_sticker("CAACAgQAAxkBAAI8bmKIvgnlJyCrq9HIxSvCZCbm5CEjAAIaEAACpvFxHg-Z648-SCRWJAQ")
     await message.reply_text(
@@ -42,7 +42,7 @@ async def start_(client: Client, message: Message):
     
 #yardım mesajı
 
-@bot.on_message(filters.command(['ndjdeje']))
+@bot.on_message(filters.command(['help']))
 def help(client, message):
     helptext = f'• **Müzik indirmek için /bul komutunu kullabilirsin .**\n\n**Örnek** :\n•> /bul `gece mavisi`'
     message.reply_text(
@@ -62,7 +62,7 @@ def help(client, message):
     )
 #alive mesaji#
 
-@bot.on_message(filters.command("bddjejd") & filters.user(Config.BOT_OWNER))
+@bot.on_message(filters.command("alive") & filters.user(Config.BOT_OWNER))
 async def live(client: Client, message: Message):
     livemsg = await message.reply_text('`Merhaba Sahip Bey 🖤`')
     
