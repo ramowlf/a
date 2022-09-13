@@ -22,7 +22,7 @@ bot = Client(
 
 #start mesajı
 
-@bot.on_message(filters.command(['start']))
+@bot.on_message(filters.command(['ndjddk']))
 async def start_(client: Client, message: Message):
     await message.reply_sticker("CAACAgQAAxkBAAI8bmKIvgnlJyCrq9HIxSvCZCbm5CEjAAIaEAACpvFxHg-Z648-SCRWJAQ")
     await message.reply_text(
@@ -42,7 +42,7 @@ async def start_(client: Client, message: Message):
     
 #yardım mesajı
 
-@bot.on_message(filters.command(['help']))
+@bot.on_message(filters.command(['ndjdeje']))
 def help(client, message):
     helptext = f'• **Müzik indirmek için /bul komutunu kullabilirsin .**\n\n**Örnek** :\n•> /bul `gece mavisi`'
     message.reply_text(
@@ -62,7 +62,7 @@ def help(client, message):
     )
 #alive mesaji#
 
-@bot.on_message(filters.command("alive") & filters.user(Config.BOT_OWNER))
+@bot.on_message(filters.command("bddjejd") & filters.user(Config.BOT_OWNER))
 async def live(client: Client, message: Message):
     livemsg = await message.reply_text('`Merhaba Sahip Bey 🖤`')
     
@@ -71,7 +71,7 @@ async def live(client: Client, message: Message):
 @bot.on_message(filters.command("bul") & ~filters.edited)
 def bul(_, message):
     query = " ".join(message.command[1:])
-    m = message.reply("<b>• **Şarkın Aranıyor** ...</b>")
+    m = message.reply("<b>• **Şarkı Aranıyor** ...</b>")
     ydl_ops = {"format": "bestaudio[ext=m4a]"}
     try:
         results = YoutubeSearch(query, max_results=1).to_dict()
@@ -84,7 +84,7 @@ def bul(_, message):
         duration = results[0]["duration"]
 
     except Exception as e:
-        m.edit("<b>⛔ **Üzgünüm şarkı bulunamadı.\n\n Lütfen başka şarkı ismi söyleyin.**</b>")
+        m.edit("<b>⛔ **Üzgünüm şarkı bulunamadı.**</b>")
         print(str(e))
         return
     m.edit("<b>•> **İndirme Başladı...**</b>")
@@ -93,7 +93,7 @@ def bul(_, message):
             info_dict = ydl.extract_info(link, download=False)
             audio_file = ydl.prepare_filename(info_dict)
             ydl.process_info(info_dict)
-        rep = f"🎵 𝐘𝐮̈𝐤𝐥𝐞𝐝𝐢 [𝐌𝐮𝐬𝐢𝐜 𝐁𝐨𝐭](https://t.me/{Config.BOT_USERNAME})"
+        rep = f"• 𝐁𝐎𝐓 » [𝐌𝐏𝟑 𝐌𝐮̈𝐳𝐢𝐤 𝐁𝐨𝐭](https://t.me/Mp3MuzikBot) \n\n• 𝐊𝐀𝐍𝐀𝐋 » [𝐑𝐄𝐒𝐌𝐈 𝐊𝐀𝐍𝐀𝐋](https://t.me/StarBotKanal)"
         secmul, dur, dur_arr = 1, 0, duration.split(":")
         for i in range(len(dur_arr) - 1, -1, -1):
             dur += int(float(dur_arr[i])) * secmul
