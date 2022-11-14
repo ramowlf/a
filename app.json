@@ -1,10 +1,10 @@
 {
-    "name": "MoonMusicBot",
+    "name": "Mp3 Müzik Bot",
     "description": "Telegram müzik indirme botu.",
     "logo": "https://telegra.ph//file/3f772b9651aef1226650e.jpg",
     "keywords": [
-        "Moon",
-        "Music",
+        "Mp3",
+        "Müzik",
         "Bot"
     ],
     "repository": "https://github.com/amahocam/M-zik-indirme-download-",
