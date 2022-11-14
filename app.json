@@ -36,11 +36,6 @@
             "description": "Kendi kullanıcı adınızı @ bu işareti olmadan yazın.",
             "value": "",
             "required": true
-        },
-        "BOT_USERNAME": {
-            "description": "Botun kullanıcı adını @ bu işareti olmadan yazın.",
-            "value": "",
-            "required": true
         }
     },
     "buildpacks": [
