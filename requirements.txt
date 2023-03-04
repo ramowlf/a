@@ -4,4 +4,5 @@ youtube-dl
 youtube_search
 requests
 yt_dlp
+https://github.com/MehmetAtes21/Loading
 ffmpeg
