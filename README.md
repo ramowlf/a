@@ -1,6 +1,6 @@
-# Mp3 Download
+# Müzik Video İndirme Bot
 
-### - [Music Download](https://github.com/MehmetAtes21/Song) Github 
+### - [ Github Repo ](https://github.com/MehmetAtes21/Song) Github 
 
 ------------------------
 
