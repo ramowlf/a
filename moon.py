@@ -1,3 +1,12 @@
+import wget
+import os, youtube_dl, requests, time
+
+from youtube_search import YoutubeSearch
+
+from pyrogram.handlers import MessageHandler
+from pyrogram import Client, filters
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message, CallbackQuery 
+from yt_dlp import YoutubeDL
 import os, youtube_dl, requests, time
 from config import Config
 from youtube_search import YoutubeSearch
@@ -11,8 +20,6 @@ from pyrogram.types import (
 )
 
 
-#config#
-
 bot = Client(
     'moonBot',
     bot_token = Config.BOT_TOKEN,
@@ -20,58 +27,30 @@ bot = Client(
     api_hash = Config.API_HASH
 )
 
-#start mesajı
-
-@bot.on_message(filters.command(['start']))
-async def start_(client: Client, message: Message):
-    await message.reply_sticker("CAACAgQAAxkBAAI8bmKIvgnlJyCrq9HIxSvCZCbm5CEjAAIaEAACpvFxHg-Z648-SCRWJAQ")
-    await message.reply_text(
-    f"""● **Selam** {message.from_user.mention}\n\n**» Ben müzik indirme botuyum istediğin müziği indirebilirim**\n\n**✅ Yardım için** /help **komutunu kullanın**""",
-        reply_markup=InlineKeyboardMarkup(
-            [[
-                    InlineKeyboardButton('🇹🇷 𝖡𝖾𝗇𝗂 𝖦𝗋𝗎𝖻𝖺 𝖤𝗄𝗅𝖾 🇹🇷', url=f'http://t.me/Mp3MuzikBot?startgroup=new'),
-                  ],[
-                    InlineKeyboardButton('✅ 𝖣𝖾𝗌𝗍𝖾𝗄 ', url=f'https://t.me/StarBotDestek'),
-                    InlineKeyboardButton('⏳ 𝖪𝖺𝗇𝖺𝗅 ', url=f'https://t.me/StarBotKanal')
-                  ],[
-                    InlineKeyboardButton('🧑🏻‍💻 ɢɪᴛʜᴜʙ ᴋᴀʏɴᴀᴋ ᴋᴏᴅᴜ 🧑🏻‍💻', url=f'https://github.com/MehmetAtes21/Song')
-                ]
-            ]
-        )
-    )
-    
-#yardım mesajı
-
-@bot.on_message(filters.command(['help']))
+# START - HELP KOMUTU
+@bot.on_message(filters.command(["start", "help"]))
 def help(client, message):
-    helptext = f'• **Müzik indirmek için /bul komutunu kullabilirsin .**\n\n**Örnek** :\n•> /bul `gece mavisi`'
+    helptext = f'**📥 Telegram Müzik & Video İndirme Botudur, Tamamen Ücretsizdir ...\n\n» /bul < müzik adı >\n    - Anında Müzik İndirir ...\n» /vbul < video adı >\n    - Anında Video İndirir ...**'
     message.reply_text(
         text=helptext, 
         quote=False,
         reply_markup=InlineKeyboardMarkup(
             [[
-                    InlineKeyboardButton('🇹🇷 𝖡𝖾𝗇𝗂 𝖦𝗋𝗎𝖻𝖺 𝖤𝗄𝗅𝖾 🇹🇷', url=f'http://t.me/Mp3SongBot?startgroup=new'),
+                    InlineKeyboardButton('💌 ʙᴇɴɪ ɢʀᴜʙᴀ ᴇᴋʟᴇ 💌', url=f'http://t.me/{BOT_USERNAME}?startgroup=new'),
                   ],[
-                    InlineKeyboardButton('✅ 𝖣𝖾𝗌𝗍𝖾𝗄', url=f'https://t.me/StarBotDestek'),
-                    InlineKeyboardButton('⏳ 𝖪𝖺𝗇𝖺𝗅', url=f'https://t.me/StarBotKanal')
+                    InlineKeyboardButton('📚 ᴋᴀɴᴀʟ', url=f'https://t.me/{BOT_CHANNEL}')
                   ],[
-                    InlineKeyboardButton('🧑🏻‍💻 ɢɪᴛʜᴜʙ ᴋᴀʏɴᴀᴋ ᴋᴏᴅᴜ 🧑🏻‍💻', url=f'https://github.com/MehmetAtes21/Song')
-                ]
+                    InlineKeyboardButton('👤 ᴏᴡɴᴇʀ', url=f'https://t.me/{BOT_OWNER}')
+                  ]
             ]
         )
     )
-#alive mesaji#
 
-@bot.on_message(filters.command("alive") & filters.user(Config.BOT_OWNER))
-async def live(client: Client, message: Message):
-    livemsg = await message.reply_text('`Merhaba Sahip 🌟`')
-    
-#musik indirme#
-
-@bot.on_message(filters.command("bul") & ~filters.edited)
-def bul(_, message):
+# MÜZİK İNDİRME KOMUTU
+@bot.on_message(filters.command(["bul", "song"]) & ~filters.edited)
+async def bul(_, message):
     query = " ".join(message.command[1:])
-    m = message.reply("<b>• **Şarkı Aranıyor** ...</b>")
+    m = await message.reply("➻ **sᴀʀᴋɪ ᴀʀᴀɴɪʏᴏʀ ...**")
     ydl_ops = {"format": "bestaudio[ext=m4a]"}
     try:
         results = YoutubeSearch(query, max_results=1).to_dict()
@@ -84,26 +63,27 @@ def bul(_, message):
         duration = results[0]["duration"]
 
     except Exception as e:
-        m.edit("<b>⛔ **Üzgünüm şarkı bulunamadı.**</b>")
+        await m.edit("➻ **şᴀʀᴋɪ ʙᴜʟᴜɴᴀᴍᴀᴅɪ ...**")
         print(str(e))
         return
-    m.edit("<b>•> **İndirme Başladı...**</b>")
+    await m.edit("➻ **şᴀʀᴋɪ ɪɴᴅɪʀɪʟɪʏᴏʀ ...**")
     try:
         with yt_dlp.YoutubeDL(ydl_ops) as ydl:
             info_dict = ydl.extract_info(link, download=False)
             audio_file = ydl.prepare_filename(info_dict)
             ydl.process_info(info_dict)
-        rep = f"•>[ᴍᴘ3 ᴍᴜ̈ᴢɪᴋ ʙᴏᴛ](https://t.me/Mp3MuzikBot) 𝖳𝖺𝗋𝖺𝖿𝗂𝗇𝖽𝖺𝗇 !"
+        rep = f"**➻ ᴘᴀʀᴄ̧ᴀ : {title[:35]}\n➻ sᴜ̈ʀᴇ : {duration}\n\n➻ ɪsᴛᴇʏᴇɴ : {message.from_user.first_name}**"
+        res = f"**➻ ᴘᴀʀᴄ̧ᴀ : {title[:35]}\n➻ sᴜ̈ʀᴇ : {duration}\n\n➻ ɪsᴛᴇʏᴇɴ : {message.from_user.first_name}**"
         secmul, dur, dur_arr = 1, 0, duration.split(":")
         for i in range(len(dur_arr) - 1, -1, -1):
             dur += int(float(dur_arr[i])) * secmul
             secmul *= 60
-        m.edit("•> **Yükleniyor**...")
-        message.reply_audio(audio_file, caption=rep, parse_mode='md',quote=False, title=title, duration=dur, thumb=thumb_name, performer="ᴍᴘ3 ᴍᴜ̈ᴢɪᴋ ʙᴏᴛ")
-        m.delete()
-        bot.send_audio(chat_id=Config.PLAYLIST_ID, audio=audio_file, caption=rep, performer="ᴍᴘ3 ᴍᴜ̈ᴢɪᴋ ʙᴏᴛ", parse_mode='md', title=title, duration=dur, thumb=thumb_name)
+        await m.edit("➻ **şᴀʀᴋɪ ʏᴜ̈ᴋʟᴇɴɪʏᴏʀ ...**")
+        await message.reply_audio(audio_file, caption=rep, parse_mode='md',quote=False, title=title, duration=dur, thumb=thumb_name, performer="♫︎ 𝐌𝐮̈𝐳𝐢𝐤 𝐈𝐧𝐝𝐢𝐫𝐢𝐜𝐢 ♫︎")
+        await m.delete()
+        await _.send_audio(chat_id=PLAYLIST_ID, audio=audio_file, caption=res, performer="♫︎ 𝐌𝐮̈𝐳𝐢𝐤 𝐈𝐧𝐝𝐢𝐫𝐢𝐜𝐢 ♫︎", parse_mode='md', title=title, duration=dur, thumb=thumb_name)
     except Exception as e:
-        m.edit("<b>⛔ **Hatanın düzelmesini bekleyin** .</b>")
+        await m.edit("🔺 **ʙᴇɴɪ ʏᴏɴᴇᴛɪᴄɪ ʏᴀᴘɪɴ ...**")
         print(e)
 
     try:
@@ -111,5 +91,57 @@ def bul(_, message):
         os.remove(thumb_name)
     except Exception as e:
         print(e)
+
+
+# VİDEO İNDİRME KOMUTU
+@bot.on_message(
+    filters.command(["vbul", "vsong"]) & ~filters.edited
+)
+async def vsong(client, message):
+    ydl_opts = {
+        "format": "best",
+        "keepvideo": True,
+        "prefer_ffmpeg": False,
+        "geo_bypass": True,
+        "outtmpl": "%(title)s.%(ext)s",
+        "quite": True,
+    }
+    query = " ".join(message.command[1:])
+    try:
+        results = YoutubeSearch(query, max_results=1).to_dict()
+        link = f"https://youtube.com{results[0]['url_suffix']}"
+        title = results[0]["title"][:40]
+        thumbnail = results[0]["thumbnails"][0]
+        thumb_name = f"{title}.jpg"
+        thumb = requests.get(thumbnail, allow_redirects=True)
+        open(thumb_name, "wb").write(thumb.content)
+        results[0]["duration"]
+        results[0]["url_suffix"]
+        results[0]["views"]
+        message.from_user.mention
+    except Exception as e:
+        print(e)
+    try:
+        msg = await message.reply("➻ **ᴠɪᴅᴇᴏ ᴀʀᴀɴɪʏᴏʀ ...**")
+        with YoutubeDL(ydl_opts) as ytdl:
+            ytdl_data = ytdl.extract_info(link, download=True)
+            file_name = ytdl.prepare_filename(ytdl_data)
+    except Exception as e:
+        return await msg.edit(f"➻ **ᴠɪᴅᴇᴏ ʙᴜʟᴜɴᴀᴍᴀᴅɪ ...**")
+    preview = wget.download(thumbnail)
+    await msg.edit("➻ **ᴠɪᴅᴇᴏ ɪɴᴅɪʀɪʟɪʏᴏʀ ...**")
+    await message.reply_video(
+        file_name,
+        duration=int(ytdl_data["duration"]),
+        thumb=preview,
+        caption=ytdl_data["title"],
+    )
+    try:
+        os.remove(file_name)
+        await msg.delete()
+    except Exception as e:
+        print(e)
+
+
 
 bot.run()
