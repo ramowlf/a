@@ -4,10 +4,6 @@
 
 ------------------------
 
-# Telegram 
-### - [Channel](https://t.me/StarBotKanal) Telegram Channel
-### - [Support](https://t.me/BotDestekTR) Telegram Support
-
 
 
 # Deploy
