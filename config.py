@@ -6,3 +6,5 @@ class Config:
     BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
     BOT_OWNER = os.environ.get("BOT_OWNER", "")
     BOT_USERNAME = os.environ.get("BOT_USERNAME", "")
+    BOT_CHANNEL = oe.environ.get("BOT_CHANNEL", "")
+    
