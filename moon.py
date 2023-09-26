@@ -27,8 +27,8 @@ bot = Client(
     api_hash = Config.API_HASH
 )
 
-# START - HELP KOMUTU
-@bot.on_message(filters.command(["start", "help"]))
+# START KOMUTU
+@bot.on_message(filters.command(["start"]))
 def help(client, message):
     helptext = f'**📥 Telegram Müzik & Video İndirme Botudur, Tamamen Ücretsizdir ...\n\n» /bul < müzik adı >\n    - Anında Müzik İndirir ...\n» /vbul < video adı >\n    - Anında Video İndirir ...**'
     message.reply_text(
@@ -36,11 +36,11 @@ def help(client, message):
         quote=False,
         reply_markup=InlineKeyboardMarkup(
             [[
-                    InlineKeyboardButton('💌 ʙᴇɴɪ ɢʀᴜʙᴀ ᴇᴋʟᴇ 💌', url=f'http://t.me/{BOT_USERNAME}?startgroup=new'),
+                    InlineKeyboardButton('💌 ʙᴇɴɪ ɢʀᴜʙᴀ ᴇᴋʟᴇ 💌', url=f'http://t.me/EpikDownloadsBot?startgroup=new'),
                   ],[
-                    InlineKeyboardButton('📚 ᴋᴀɴᴀʟ', url=f'https://t.me/{BOT_CHANNEL}')
+                    InlineKeyboardButton('📚 ᴋᴀɴᴀʟ', url=f'https://t.me/EpikDuyuru')
                   ],[
-                    InlineKeyboardButton('👤 ᴏᴡɴᴇʀ', url=f'https://t.me/{BOT_OWNER}')
+                    InlineKeyboardButton('👤 ᴏᴡɴᴇʀ', url=f'https://t.me/EpikOwner')
                   ]
             ]
         )
