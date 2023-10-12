@@ -53,16 +53,11 @@ async def bul(_, message):
     m = await message.reply("➻ **sᴀʀᴋɪ ᴀʀᴀɴɪʏᴏʀ ...**")
     ydl_ops = {"format": "bestaudio[ext=m4a]"}
     try:
-        results = YoutubeSearch(query, max_results=1).to_dict()
-        link = f"https://youtube.com{results[0]['url_suffix']}"
-        title = results[0]["title"][:40]
-        thumbnail = results[0]["thumbnails"][0]
         thumb_name = f"{title}.jpg"
         thumb = requests.get(thumbnail, allow_redirects=True)
         open(thumb_name, "wb").write(thumb.content)
         duration = results[0]["duration"]
 
-    except Exception as e:
         await m.edit("➻ **şᴀʀᴋɪ ʙᴜʟᴜɴᴀᴍᴀᴅɪ ...**")
         print(str(e))
         return
@@ -108,13 +103,7 @@ async def vsong(client, message):
     }
     query = " ".join(message.command[1:])
     try:
-        results = YoutubeSearch(query, max_results=1).to_dict()
-        link = f"https://youtube.com{results[0]['url_suffix']}"
-        title = results[0]["title"][:40]
-        thumbnail = results[0]["thumbnails"][0]
-        thumb_name = f"{title}.jpg"
-        thumb = requests.get(thumbnail, allow_redirects=True)
-        open(thumb_name, "wb").write(thumb.content)
+      open(thumb_name, "wb").write(thumb.content)
         results[0]["duration"]
         results[0]["url_suffix"]
         results[0]["views"]
@@ -127,9 +116,7 @@ async def vsong(client, message):
             ytdl_data = ytdl.extract_info(link, download=True)
             file_name = ytdl.prepare_filename(ytdl_data)
     except Exception as e:
-        return await msg.edit(f"➻ **ᴠɪᴅᴇᴏ ʙᴜʟᴜɴᴀᴍᴀᴅɪ ...**")
-    preview = wget.download(thumbnail)
-    await msg.edit("➻ **ᴠɪᴅᴇᴏ ɪɴᴅɪʀɪʟɪʏᴏʀ ...**")
+        return await msg.edit(f"➻ **ᴠɪᴅᴇᴏ ʙᴜʟᴜɴᴀᴍᴀᴅɪ ...**")    await msg.edit("➻ **ᴠɪᴅᴇᴏ ɪɴᴅɪʀɪʟɪʏᴏʀ ...**")
     await message.reply_video(
         file_name,
         duration=int(ytdl_data["duration"]),
