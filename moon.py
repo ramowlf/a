@@ -52,7 +52,7 @@ def key_command(client, message):
         if time_since_last_retrieval < timedelta(hours=6):
             bot.send_message(
                 chat_id=message.chat.id,
-                text="6 saat içinde yalnızca bir kez key alabilirsiniz."
+                text="6 SAAT İÇİNDE 1 KERE KEY ALABİLİRSİNİZ STOK YAPAMAZSINIZ❗"
             )
             return
 
