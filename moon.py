@@ -25,10 +25,10 @@ def get_key_from_php(url):
 def start_command(client, message):
     bot.send_message(
         chat_id=message.chat.id,
-        text="AŞAĞIDAKİ KANAL KATILMADIĞINIZ TESPİT EDİLİRSE BAN YERSİNİZ",
+        text="AŞAĞIDAKİ KANAL KATILMADIĞINIZ TESPİT EDİLİRSE BAN YERSİNİZ VE İSTEMEDİĞİM KİŞİLERİ BANLARİM",
         reply_markup=InlineKeyboardMarkup(
             [[
-                InlineKeyboardButton('📚 ᴋᴀɴᴀʟ', url=f'https://t.me/japonicd')
+                InlineKeyboardButton('📚 ᴋᴀɴᴀʟ', url=f'https://t.me/rawzhack')
               ]] 
         )
     )
