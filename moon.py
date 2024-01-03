@@ -1,4 +1,3 @@
-import os
 from pyrogram import Client, filters
 
 bot = Client(
@@ -9,8 +8,9 @@ bot = Client(
 )
 
 # MERHABA KOMUTU
-@bot.on_message(filters.text & ~filters.command)
+@bot.on_message(filters.text)
 def merhaba_command(client, message):
-    message.reply_text("Merhaba!")
+    if "merhaba" in message.text.lower():
+        message.reply_text("Merhaba!")
 
 bot.run()
