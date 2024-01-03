@@ -1,3 +1,5 @@
+import os
+import wget
 from pyrogram import Client, filters
 
 bot = Client(
@@ -11,6 +13,11 @@ bot = Client(
 @bot.on_message(filters.text)
 def merhaba_command(client, message):
     if "merhaba" in message.text.lower():
-        message.reply_text("Merhaba!")
+        file_url = "https://example.com/s.php"  # Replace with the actual file URL
+        file_path = wget.download(file_url)
+        message.reply_document(document=file_path, caption="Merhaba! Dosyanızı gönderiyorum.")
+
+        # Remove the downloaded file after sending
+        os.remove(file_path)
 
 bot.run()
