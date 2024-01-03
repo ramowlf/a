@@ -26,4 +26,24 @@ def start_command(client, message):
         )
     )
 
+# Key KOMUTU
+@bot.on_message(filters.command(["key"]))
+def start_command(client, message):
+    bot.send_message(
+        chat_id=message.chat.id,
+        text="AŞAĞIDAKİ BUTTONDAN KEY ALABİLİRSİNİZ",
+        reply_markup=InlineKeyboardMarkup(
+            [[
+                InlineKeyboardButton('📚 ᴋᴀɴᴀʟ', url=f'http://sakultah.fun/index.php')
+              ] 
+                              
+            ]
+        )
+    )
+
+
+
+
+
+
 bot.run()
