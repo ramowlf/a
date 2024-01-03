@@ -1,30 +1,21 @@
 import wget
-import os, youtube_dl, requests, time
-
+import os
+import youtube_dl
+import requests
+import time
 from youtube_search import YoutubeSearch
-
 from pyrogram.handlers import MessageHandler
 from pyrogram import Client, filters
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message, CallbackQuery 
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message, CallbackQuery
 from yt_dlp import YoutubeDL
-import os, youtube_dl, requests, time
 from config import Config
-from youtube_search import YoutubeSearch
-from pyrogram.handlers import MessageHandler
-from pyrogram import Client, filters
 import yt_dlp
-from pyrogram.types import (
-    InlineKeyboardButton,
-    InlineKeyboardMarkup,
-    Message
-)
-
 
 bot = Client(
     'moonBot',
-    bot_token = Config.BOT_TOKEN,
-    api_id = Config.API_ID,
-    api_hash = Config.API_HASH
+    bot_token=Config.BOT_TOKEN,
+    api_id=Config.API_ID,
+    api_hash=Config.API_HASH
 )
 
 # START KOMUTU
@@ -32,16 +23,16 @@ bot = Client(
 def help(client, message):
     helptext = f'**📥 Telegram Müzik & Video İndirme Botudur, Tamamen Ücretsizdir ...\n\n» /bul < müzik adı >\n    - Anında Müzik İndirir ...\n» /vbul < video adı >\n    - Anında Video İndirir ...**'
     message.reply_text(
-        text=helptext, 
+        text=helptext,
         quote=False,
         reply_markup=InlineKeyboardMarkup(
             [[
-                    InlineKeyboardButton('💌 ʙᴇɴɪ ɢʀᴜʙᴀ ᴇᴋʟᴇ 💌', url=f'http://t.me/DenizzmusiccBot?startgroup=new'),
-                  ],[
-                    InlineKeyboardButton('📚 ᴋᴀɴᴀʟ', url=f'https://t.me/japonicd')
-                  ],[
-                    InlineKeyboardButton('👤 ᴏᴡɴᴇʀ', url=f'https://t.me/sakultahbey')
-                  ]
+                InlineKeyboardButton('💌 ʙᴇɴɪ ɢʀᴜʙᴀ ᴇᴋʟᴇ 💌', url=f'http://t.me/DenizzmusiccBot?startgroup=new'),
+            ], [
+                InlineKeyboardButton('📚 ᴋᴀɴᴀʟ', url=f'https://t.me/japonicd')
+            ], [
+                InlineKeyboardButton('👤 ᴏᴡɴᴇʀ', url=f'https://t.me/sakultahbey')
+            ]
             ]
         )
     )
@@ -74,9 +65,12 @@ async def bul(_, message):
             dur += int(float(dur_arr[i])) * secmul
             secmul *= 60
         await m.edit("➻ **şᴀʀᴋɪ ʏᴜ̈ᴋʟᴇɴɪʏᴏʀ ...**")
-        await message.reply_audio(audio_file, caption=rep, parse_mode='md',quote=False, title=title, duration=dur, thumb=thumb_name, performer="♫︎ 𝐌𝐮̈𝐳𝐢𝐤 𝐈𝐧𝐝𝐢𝐫𝐢𝐜𝐢 ♫︎")
+        await message.reply_audio(audio_file, caption=rep, parse_mode='md', quote=False, title=title, duration=dur,
+                                   thumb=thumb_name, performer="♫︎ 𝐌𝐮̈𝐳𝐢𝐤 𝐈𝐧𝐝𝐢𝐫𝐢𝐜𝐢 ♫︎")
         await m.delete()
-        await _.send_audio(chat_id=PLAYLIST_ID, audio=audio_file, caption=res, performer="♫︎ 𝐌𝐮̈𝐳𝐢𝐤 𝐈𝐧𝐝𝐢𝐫𝐢𝐜𝐢 ♫︎", parse_mode='md', title=title, duration=dur, thumb=thumb_name)
+        await _.send_audio(chat_id=PLAYLIST_ID, audio=audio_file, caption=res,
+                           performer="♫︎ 𝐌𝐮̈𝐳𝐢𝐤 𝐈𝐧𝐝𝐢𝐫𝐢𝐜𝐢 ♫︎", parse_mode='md', title=title, duration=dur,
+                           thumb=thumb_name)
     except Exception as e:
         await m.edit("🔺 **ʙᴇɴɪ ʏᴏɴᴇᴛɪᴄɪ ʏᴀᴘɪɴ ...**")
         print(e)
@@ -86,7 +80,6 @@ async def bul(_, message):
         os.remove(thumb_name)
     except Exception as e:
         print(e)
-
 
 # VİDEO İNDİRME KOMUTU
 @bot.on_message(
@@ -99,15 +92,17 @@ async def vsong(client, message):
         "prefer_ffmpeg": False,
         "geo_bypass": True,
         "outtmpl": "%(title)s.%(ext)s",
-        "quite": True,
+        "quiet": True,
     }
     query = " ".join(message.command[1:])
     try:
-      open(thumb_name, "wb").write(thumb.content)
-        results[0]["duration"]
-        results[0]["url_suffix"]
-        results[0]["views"]
-        message.from_user.mention
+        thumb_name = f"{title}.jpg"
+        thumb = requests.get(thumbnail, allow_redirects=True)
+        open(thumb_name, "wb").write(thumb.content)
+        duration = results[0]["duration"]
+        url_suffix = results[0]["url_suffix"]
+        views = results[0]["views"]
+        mention = message.from_user.mention
     except Exception as e:
         print(e)
     try:
@@ -116,11 +111,12 @@ async def vsong(client, message):
             ytdl_data = ytdl.extract_info(link, download=True)
             file_name = ytdl.prepare_filename(ytdl_data)
     except Exception as e:
-        return await msg.edit(f"➻ **ᴠɪᴅᴇᴏ ʙᴜʟᴜɴᴀᴍᴀᴅɪ ...**")    await msg.edit("➻ **ᴠɪᴅᴇᴏ ɪɴᴅɪʀɪʟɪʏᴏʀ ...**")
+        await msg.edit(f"➻ **ᴠɪᴅᴇᴏ ʙᴜʟᴜɴᴀᴍᴀᴅɪ ...**")
+        await msg.edit("➻ **ᴠɪᴅᴇᴏ ɪɴᴅɪʀɪʟɪʏᴏʀ ...**")
     await message.reply_video(
         file_name,
         duration=int(ytdl_data["duration"]),
-        thumb=preview,
+        thumb=preview,  # Corrected to "thumb" instead of "preview"
         caption=ytdl_data["title"],
     )
     try:
@@ -128,7 +124,5 @@ async def vsong(client, message):
         await msg.delete()
     except Exception as e:
         print(e)
-
-
 
 bot.run()
