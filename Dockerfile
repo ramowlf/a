@@ -1,5 +1,6 @@
 FROM nikolaik/python-nodejs:python3.10-nodejs17
-RUN apt-get update && apt-get install -y mysql-client
+RUN apt-get update && apt-get install -y python3-pip
+RUN pip3 install mysql-connector-python
 
 RUN apt update && apt upgrade -y
 RUN apt install ffmpeg -y
