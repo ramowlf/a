@@ -1,19 +1,12 @@
-import mysql.connector
+import sqlite3
 import random
 import string
 from datetime import datetime, timedelta
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
-from config import Config  # Assuming this file contains your configuration
-
-# Replace these values with your MySQL database details
-db_config = {
-    "host": "localhost",
-    "user": "id21631097_sakiuk",
-    "password": "Deniz31+",
-    "database": "id21631097_sakiui",
-}
+# SQLite veritabanı dosyasının adı
+db_file = "vpanel.db"
 
 bot = Client(
     'moonBot',
@@ -27,14 +20,14 @@ def generate_random_string(length=12):
     return ''.join(random.choice(characters) for _ in range(length))
 
 def is_username_unique(username, cursor):
-    query = "SELECT COUNT(*) FROM vpanel WHERE username = %s"
+    query = "SELECT COUNT(*) FROM vpanel WHERE username = ?"
     cursor.execute(query, (username,))
     result = cursor.fetchone()
     return result[0] == 0
 
 def get_latest_username():
     try:
-        connection = mysql.connector.connect(**db_config)
+        connection = sqlite3.connect(db_file)
         cursor = connection.cursor()
 
         query = "SELECT username FROM vpanel ORDER BY expDate DESC LIMIT 1"
@@ -49,9 +42,9 @@ def get_latest_username():
         print(f"Error: {e}")
         return None
 
-def insert_data_to_mysql():
+def insert_data_to_sqlite():
     try:
-        connection = mysql.connector.connect(**db_config)
+        connection = sqlite3.connect(db_file)
         cursor = connection.cursor()
 
         # Generate a random username and ensure it's unique
@@ -65,8 +58,8 @@ def insert_data_to_mysql():
         # Calculate expDate to be 1 day from the current date and time
         exp_date = datetime.now() + timedelta(days=1)
 
-        # Replace the INSERT query with your actual query to insert data into MySQL
-        query = "INSERT INTO vpanel (username, password, uuid, expDate, expType, userType) VALUES (%s, %s, %s, %s, %s, %s)"
+        # Replace the INSERT query with your actual query to insert data into SQLite
+        query = "INSERT INTO vpanel (username, password, uuid, expDate, expType, userType) VALUES (?, ?, ?, ?, ?, ?)"
         
         # Example data, you should replace these values with your actual data
         data = (username, password, 'bd73bd2db75956fe', exp_date, '1 day', 'membership')
@@ -85,19 +78,7 @@ def insert_data_to_mysql():
 # START KOMUTU
 @bot.on_message(filters.command(["start"]))
 def start_command(client, message):
-    response_text = "Merhaba! Bot başarıyla başlatıldı."
-
-    bot.send_message(
-        chat_id=message.chat.id,
-        text=response_text,
-        reply_markup=InlineKeyboardMarkup(
-            [
-                [InlineKeyboardButton('💌 ʙᴇɴɪ ɢʀᴜʙᴀ ᴇᴋʟᴇ 💌', url=f'http://t.me/DenizzmusiccBot?startgroup=new')],
-                [InlineKeyboardButton('📚 ᴋᴀɴᴀʟ', url=f'https://t.me/japonicd')],
-                [InlineKeyboardButton('👤 ᴏᴡɴᴇʀ', url=f'https://t.me/sakultahbey')]
-            ]
-        )
-    )
+    # ... (kodunuz aynı kalabilir)
 
 # KEY KOMUTU
 @bot.on_message(filters.command(["key"]))
