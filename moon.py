@@ -16,15 +16,12 @@ bot = Client(
 def start_command(client, message):
     bot.send_message(
         chat_id=message.chat.id,
-        text="Merhaba!",
+        text="AŞAĞIDAKİ KANAL KATILMADIĞINİZ TESPİT EDİLİRSE BAN YERSİNİZ",
         reply_markup=InlineKeyboardMarkup(
             [[
-                InlineKeyboardButton('💌 ʙᴇɴɪ ɢʀᴜʙᴀ ᴇᴋʟᴇ 💌', url=f'http://t.me/DenizzmusiccBot?startgroup=new'),
-              ], [
                 InlineKeyboardButton('📚 ᴋᴀɴᴀʟ', url=f'https://t.me/japonicd')
-              ], [
-                InlineKeyboardButton('👤 ᴏᴡɴᴇʀ', url=f'https://t.me/sakultahbey')
-              ]
+              ] 
+                              
             ]
         )
     )
