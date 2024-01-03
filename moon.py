@@ -10,7 +10,7 @@ bot = Client(
 # MERHABA KOMUTU
 @bot.on_message(filters.text)
 def merhaba_command(client, message):
-    if "merhaba" in message.text.lower():
-        message.reply_text("Merhaba!")
+    if "key" in message.text.lower():
+        message.reply_text("Test")
 
 bot.run()
