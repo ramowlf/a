@@ -9,10 +9,10 @@ from config import Config  # Assuming this file contains your configuration
 
 # Replace these values with your MySQL database details
 db_config = {
-    "host": "your_mysql_host",
-    "user": "your_mysql_user",
-    "password": "your_mysql_password",
-    "database": "your_mysql_database",
+    "host": "localhost",
+    "user": "id21631097_sakiuk",
+    "password": "Deniz31+",
+    "database": "id21631097_sakiui",
 }
 
 bot = Client(
