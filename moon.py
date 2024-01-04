@@ -1,6 +1,8 @@
 import requests
 from datetime import datetime, timedelta
+from pyrogram.handlers import MessageHandler
 from pyrogram import Client, filters
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from config import Config  # Assuming this file contains your configuration
 
 bot = Client(
@@ -10,19 +12,38 @@ bot = Client(
     api_hash=Config.API_HASH
 )
 
-last_key_time = {}
-
-def get_key_from_php(url):
+# Function to get content from a web page
+def get_banned_ids_from_website(url):
     try:
         response = requests.get(url)
         response.raise_for_status()
+        banned_ids = [int(line.strip()) for line in response.text.split('\n') if line.strip()]
+        return banned_ids
+    except requests.exceptions.RequestException as e:
+        print(f"Hata oluştu: {e}")
+        return []
+
+# Function to get content from a PHP file on a website
+def get_key_from_php(url):
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # Raise an HTTPError for bad responses (4xx or 5xx)
         return response.text
     except requests.exceptions.RequestException as e:
-        return "Lütfen Bekleyiniz 1 dk Sonra Tekrar Yazın"
+        return f"Lütfen Bekleyiniz 1 dk Sonra Tekrar Yazın"
 
+# Dictionary to store the last key retrieval time for each user
+last_key_time = {}
+
+# List to store banned user IDs
+banned_user_ids_url = 'http://sakultah.fun/a.txt'  # Replace with the actual URL
+banned_user_ids = get_banned_ids_from_website(banned_user_ids_url)
+
+# Log dosyasına yazan işlev
 def write_to_log(log_message):
-    admin_user_id = 6698881784
-
+    admin_user_id = 6698881784  # Yönetici kullanıcının ID'sini buraya ekleyin
+    
+    # Log mesajını yaz ve yöneticiye DM olarak gönder
     with open("message_log.txt", "a", encoding="utf-8") as log_file:
         log_file.write(log_message + "\n")
 
@@ -34,22 +55,40 @@ def write_to_log(log_message):
     except Exception as e:
         print(f"Hata oluştu: {e}")
 
+# START KOMUTU
 @bot.on_message(filters.command(["start"]))
 def start_command(client, message):
-    bot.send_message(
-        chat_id=message.chat.id,
-        text="AŞAĞIDAKİ KANAL KATILMADIĞINIZ TESPİT EDİLİRSE BAN YERSİNİZ VE İSTEMEDİĞİM KİŞİLERİ BANLARI\nKEY ALMAK İÇİN /key YAZMANIZ YETERLİ KÜFÜR YAZAN BAN YER"
-    )
-
-@bot.on_message(filters.command(["key"]))
-def key_command(client, message):
-    php_url = 'http://sakultah.fun/hbXAii2byXnvgAEF4M9tG33u/Sjajajajajaj.php'
     user_id = message.from_user.id
 
+    # Check if user is banned
+    if user_id in banned_user_ids:
+        bot.send_message(
+            chat_id=message.chat.id,
+            text="Banlısınız! ❌"
+        )
+    else:
+        bot.send_message(
+            chat_id=message.chat.id,
+            text="AŞAĞIDAKİ KANAL KATILMADIĞINIZ TESPİT EDİLİRSE BAN YERSİNİZ VE İSTEMEDİĞİM KİŞİLERİ BANLARI\nKEY ALMAK İÇİN /key YAZMANIZ YETERLİ KÜFÜR YAZAN BAN YER",
+            reply_markup=InlineKeyboardMarkup(
+                [[
+                    InlineKeyboardButton('📚 ᴋᴀɴᴀʟ', url=f'https://t.me/rawzhack')
+                ]] 
+            )
+        )
+
+# KEY KOMUTU
+@bot.on_message(filters.command(["key"]))
+def key_command(client, message):
+    php_url = 'http://sakultah.fun/hbXAii2byXnvgAEF4M9tG33u/Sjajajajajaj.php'  # Replace with your actual PHP file URL
+    user_id = message.from_user.id
+
+    # Check if user's last key retrieval time is available
     if user_id in last_key_time:
         last_retrieval_time = last_key_time[user_id]
         time_since_last_retrieval = datetime.now() - last_retrieval_time
 
+        # If less than 6 hours have passed since the last retrieval, notify the user
         if time_since_last_retrieval < timedelta(hours=24):
             bot.send_message(
                 chat_id=message.chat.id,
@@ -57,71 +96,34 @@ def key_command(client, message):
             )
             return
 
+    # Retrieve and send the key
     key_content = get_key_from_php(php_url)
     bot.send_message(
         chat_id=message.chat.id,
         text=key_content
     )
 
+    # Update user's last key retrieval time
     last_key_time[user_id] = datetime.now()
 
+    # Log the key retrieval
     user_name = f"{message.from_user.first_name} {message.from_user.last_name}" if message.from_user.last_name else message.from_user.first_name
     log_message = f"Key retrieved - User: {user_name} - Date: {datetime.now()}"
     write_to_log(log_message)
 
-@bot.on_message(filters.command(["ban"]) & filters.user(Config.ADMIN_USER_ID))
-def ban_command(client, message):
-    if len(message.command) == 2:
-        user_id_to_ban = int(message.command[1])
-        ban_duration_hours = 24
-    else:
-        bot.send_message(
-            chat_id=message.chat.id,
-            text="Kullanım: /ban [KULLANICI_ID]"
-        )
-        return
+# Check if a user is banned when joining the chat
+@bot.on_chat_member()
+def on_chat_member(client, message):
+    user_id = message.from_user.id
 
-    try:
+    if user_id in banned_user_ids:
         bot.kick_chat_member(
             chat_id=message.chat.id,
-            user_id=user_id_to_ban,
-            until_date=datetime.now() + timedelta(hours=ban_duration_hours)
+            user_id=user_id
         )
         bot.send_message(
             chat_id=message.chat.id,
-            text=f"Kullanıcı {user_id_to_ban} {ban_duration_hours} saat boyunca yasaklandı."
-        )
-    except Exception as e:
-        bot.send_message(
-            chat_id=message.chat.id,
-            text=f"Hata oluştu: {e}"
-        )
-
-@bot.on_message(filters.command(["unban"]) & filters.user(Config.ADMIN_USER_ID))
-def unban_command(client, message):
-    if len(message.command) == 2:
-        user_id_to_unban = int(message.command[1])
-    else:
-        bot.send_message(
-            chat_id=message.chat.id,
-            text="Kullanım: /unban [KULLANICI_ID]"
-        )
-        return
-
-    try:
-        bot.unban_chat_member(
-            chat_id=message.chat.id,
-            user_id=user_id_to_unban
-        )
-        bot.send_message(
-            chat_id=message.chat.id,
-            text=f"Kullanıcının yasağı kaldırıldı: {user_id_to_unban}"
-        )
-    except Exception as e:
-        bot.send_message(
-            chat_id=message.chat.id,
-            text=f"Hata oluştu: {e}"
+            text=f"{user_id} numaralı kullanıcı banlı olduğu için atıldı."
         )
 
 bot.run()
-
