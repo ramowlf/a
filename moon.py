@@ -2,6 +2,7 @@ import requests
 from datetime import datetime, timedelta
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from pyrogram.errors import UsernameNotOccupied
 from config import Config  # Assuming this file contains your configuration
 
 bot = Client(
@@ -92,6 +93,12 @@ def start_command(client, message):
                     text="Kanalımıza katılmadan kullanamazsınız! 🚫"
                 )
                 return
+        except UsernameNotOccupied:
+            bot.send_message(
+                chat_id=message.chat.id,
+                text=f"Belirtilen kanal bulunamadı: {channel_username}. Lütfen botun yönetici olduğu ve kanalın doğru bir şekilde tanımlandığından emin olun."
+            )
+            return
         except Exception as e:
             print(f"Hata oluştu: {e}")
             return
@@ -129,6 +136,12 @@ def key_command(client, message):
                 text="Kanalımıza katılmadan kullanamazsınız! 🚫"
             )
             return
+    except UsernameNotOccupied:
+        bot.send_message(
+            chat_id=message.chat.id,
+            text=f"Belirtilen kanal bulunamadı: {channel_username}. Lütfen botun yönetici olduğu ve kanalın doğru bir şekilde tanımlandığından emin olun."
+        )
+        return
     except Exception as e:
         print(f"Hata oluştu: {e}")
         return
