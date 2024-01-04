@@ -1,7 +1,7 @@
-from pyrogram import Client, filters
-from datetime import datetime, timedelta
-from config import Config  # Assuming this file contains your configuration
 import requests
+from datetime import datetime, timedelta
+from pyrogram import Client, filters
+from config import Config  # Assuming this file contains your configuration
 
 bot = Client(
     'moonBot',
@@ -74,19 +74,6 @@ def key_command(client, message):
     php_url = 'http://sakultah.fun/hbXAii2byXnvgAEF4M9tG33u/Sjajajajajaj.php'  # Replace with your actual PHP file URL
     user_id = message.from_user.id
 
-    # Check if user's last key retrieval time is available
-    if user_id in last_key_time:
-        last_retrieval_time = last_key_time[user_id]
-        time_since_last_retrieval = datetime.now() - last_retrieval_time
-
-        # If less than 6 hours have passed since the last retrieval, notify the user
-        if time_since_last_retrieval < timedelta(hours=24):
-            bot.send_message(
-                chat_id=message.chat.id,
-                text="GÜNDE 1 KERE KEY ALABİLİRSİNİZ STOK YAPAMAZSINIZ❗"
-            )
-            return
-
     # Retrieve and send the key
     key_content = get_key_from_php(php_url)
     bot.send_message(
@@ -94,12 +81,12 @@ def key_command(client, message):
         text=key_content
     )
 
-    # Update user's last key retrieval time
-    last_key_time[user_id] = datetime.now()
-
     # Log the key retrieval
     user_name = f"{message.from_user.first_name} {message.from_user.last_name}" if message.from_user.last_name else message.from_user.first_name
     log_message = f"Key retrieved - User: {user_name} - Date: {datetime.now()}"
     write_to_log(log_message)
+
+    # Update user's last key retrieval time
+    last_key_time[user_id] = datetime.now()
 
 bot.run()
