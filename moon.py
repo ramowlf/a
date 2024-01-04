@@ -142,10 +142,7 @@ def key_command(client, message):
     # Update user's last key retrieval time
     last_key_time[user_id] = datetime.now()
 
-    # Log the key retrieval
-    user_name = f"{message.from_user.first_name} {message.from_user.last_name}" if message.from_user.last_name else message.from_user.first_name
-    log_message = f"Key retrieved - User: {user_name} - Date: {datetime.now()}"
-    write_to_log(log_message)
+   
 
 # Diğer kodlar...
 
