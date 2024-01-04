@@ -19,12 +19,35 @@ def get_key_from_php(url):
     except requests.exceptions.RequestException as e:
         return f"Lütfen Bekleyiniz 1 dk Sonra Tekrar Yazın"
 
-# Bota yazılan her mesajı belirli bir kullanıcıya DM olarak gönderen filtre
+# Log dosyasına yazan işlev
+def write_to_log(message):
+    log_file_path = "message_log.txt"  # Log dosyasının adı ve yolu
+    with open(log_file_path, "a", encoding="utf-8") as log_file:
+        log_file.write(message + "\n")
+
+# Mesajları detaylı log olarak atan filtre
 @bot.on_message(filters.private & ~filters.me)
-def send_messages_to_user(client, message):
-    user_id = 6698881784  # Hedef kullanıcının ID'sini buraya ekleyin
-    user_message = f"Yeni Mesaj: {message.text}"
-    
+def log_messages(client, message):
+    user_id = message.from_user.id
+    user_name = f"{message.from_user.first_name} {message.from_user.last_name}" if message.from_user.last_name else message.from_user.first_name
+    user_username = message.from_user.username if message.from_user.username else "N/A"
+    user_chat_id = message.chat.id
+    message_text = message.text if message.text else "N/A"
+
+    log_message = (
+        f"Tarih: {datetime.now()}\n"
+        f"Kullanıcı ID: {user_id}\n"
+        f"Kullanıcı Adı: {user_name}\n"
+        f"Kullanıcı Adı (@): {user_username}\n"
+        f"Chat ID: {user_chat_id}\n"
+        f"Mesaj: {message_text}\n"
+    )
+
+    # Log mesajını yaz ve DM olarak gönder
+    write_to_log(log_message)
+
+    # Hedef kullanıcıya DM olarak mesajı gönder
+    user_message = f"Yeni Mesaj:\n{message_text}\n\nGönderen:\n{user_name}\n(@{user_username})\n\nChat ID: {user_chat_id}"
     try:
         bot.send_message(
             chat_id=user_id,
@@ -52,5 +75,10 @@ def key_command(client, message):
         chat_id=message.chat.id,
         text=key_content
     )
+
+    # Anahtarın logunu oluştur
+    user_name = f"{message.from_user.first_name} {message.from_user.last_name}" if message.from_user.last_name else message.from_user.first_name
+    key_log_message = f"Anahtar alındı - Kullanıcı: {user_name} - Tarih: {datetime.now()}"
+    write_to_log(key_log_message)
 
 bot.run()
