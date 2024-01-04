@@ -112,9 +112,9 @@ def key_command(client, message):
     write_to_log(log_message)
 
 # Check if a user is banned when joining the chat
-@bot.on_chat_member(filters.status_updates)
-def on_chat_member(client, message):
-    user_id = message.from_user.id
+@bot.on_message(filters.chat(chats='your_chat_id') & filters.new_chat_members)
+def on_new_chat_members(client, message):
+    user_id = message.new_chat_members[0].id
 
     if user_id in banned_user_ids:
         bot.kick_chat_member(
