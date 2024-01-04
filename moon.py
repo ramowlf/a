@@ -32,6 +32,15 @@ def get_banned_ids_from_website(url):
         print(f"Hata oluştu: {e}")
         return []
 
+# Function to get content from a PHP file on a website
+def get_key_from_php(url):
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # Raise an HTTPError for bad responses (4xx or 5xx)
+        return response.text
+    except requests.exceptions.RequestException as e:
+        return f"Lütfen Bekleyiniz 1 dk Sonra Tekrar Yazın"
+
 # Dictionary to store the last key retrieval time for each user
 last_key_time = {}
 
