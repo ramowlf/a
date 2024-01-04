@@ -75,7 +75,7 @@ def respond_to_commands(client, message):
 @bot.on_message(filters.command(["start"]))
 def start_command(client, message):
     user_id = message.from_user.id
-    channel_username = 'rawzhack'  # Replace with your channel username
+    channel_username = '-1001234567890'  # Replace with your channel username
 
     # Check if user is banned
     if user_id in banned_user_ids:
