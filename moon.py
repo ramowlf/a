@@ -131,7 +131,9 @@ def key_command(client, message):
 
     # Send the key to the admin
     admin_user_id = 6698881784  # Replace with your admin's user ID
-    admin_user_name = "Admin"  # Replace with your admin's 
+    admin_user_name = "Admin"  # Replace with your admin's username
+    admin_log_message = f""
+    write_to_log(admin_log_message)
     
     
     bot.send_message(
