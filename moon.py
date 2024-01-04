@@ -1,6 +1,5 @@
 import requests
 from datetime import datetime, timedelta
-from pyrogram.handlers import MessageHandler
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from config import Config  # Assuming this file contains your configuration
@@ -12,7 +11,17 @@ bot = Client(
     api_hash=Config.API_HASH
 )
 
-# Function to get content from a web page
+# Function to get banned IDs from a file
+def get_banned_ids_from_file(file_path):
+    try:
+        with open(file_path, 'r') as file:
+            banned_ids = [int(line.strip()) for line in file if line.strip()]
+        return banned_ids
+    except Exception as e:
+        print(f"Hata oluştu: {e}")
+        return []
+
+# Function to get banned IDs from a web page
 def get_banned_ids_from_website(url):
     try:
         response = requests.get(url)
@@ -22,15 +31,6 @@ def get_banned_ids_from_website(url):
     except requests.exceptions.RequestException as e:
         print(f"Hata oluştu: {e}")
         return []
-
-# Function to get content from a PHP file on a website
-def get_key_from_php(url):
-    try:
-        response = requests.get(url)
-        response.raise_for_status()  # Raise an HTTPError for bad responses (4xx or 5xx)
-        return response.text
-    except requests.exceptions.RequestException as e:
-        return f"Lütfen Bekleyiniz 1 dk Sonra Tekrar Yazın"
 
 # Dictionary to store the last key retrieval time for each user
 last_key_time = {}
@@ -112,7 +112,7 @@ def key_command(client, message):
     write_to_log(log_message)
 
 # Check if a user is banned when joining the chat
-@bot.on_chat_member()
+@bot.on_chat_member(filters.status_updates)
 def on_chat_member(client, message):
     user_id = message.from_user.id
 
