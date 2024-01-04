@@ -34,8 +34,8 @@ def get_key_from_php(url):
 # Dictionary to store the last key retrieval time for each user
 last_key_time = {}
 
-# List to store banned user IDs
-banned_user_ids_url = 'http://sakultah.fun/a.txt'  # Replace with the actual URL
+# URL to fetch banned user IDs from
+banned_user_ids_url = 'http://sakultah.fun/banned_users.php'  # Replace with the actual URL
 banned_user_ids = get_banned_ids_from_website(banned_user_ids_url)
 
 # Log dosyasına yazan işlev
@@ -141,8 +141,6 @@ def key_command(client, message):
 
     # Update user's last key retrieval time
     last_key_time[user_id] = datetime.now()
-
-   
 
 # Diğer kodlar...
 
