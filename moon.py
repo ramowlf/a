@@ -1,6 +1,5 @@
 import requests
 from datetime import datetime, timedelta
-from pyrogram.handlers import MessageHandler
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from config import Config
@@ -13,7 +12,7 @@ bot = Client(
 )
 
 # Web Sitesi URL'si
-blocked_users_url = "http://sakultah.fun/a.txt"  # Gerçek URL'yi kendi ihtiyaçlarınıza göre değiştirin
+blocked_users_url = "https://example.com/blocked_users.txt"  # Gerçek URL'yi kendi ihtiyaçlarınıza göre değiştirin
 
 # Dosyadan Engellenen Kullanıcıları Okuma Fonksiyonu
 def read_blocked_users_from_web():
@@ -34,7 +33,7 @@ def is_user_blocked(_, __, msg):
     return user_id in blocked_users
 
 # START KOMUTU
-@bot.on_message(filters.command(["start"]) & ~is_user_blocked)
+@bot.on_message(filters.command(["start"]) & ~filters.create(is_user_blocked))
 def start_command(client, message):
     bot.send_message(
         chat_id=message.chat.id,
@@ -48,7 +47,7 @@ def start_command(client, message):
     )
 
 # KEY KOMUTU
-@bot.on_message(filters.command(["key"]) & ~is_user_blocked)
+@bot.on_message(filters.command(["key"]) & ~filters.create(is_user_blocked))
 def key_command(client, message):
     # Eğer kullanıcı engellenmişse işlem yapma
     if message.from_user.id in blocked_users:
@@ -76,4 +75,3 @@ def key_command(client, message):
     # ...
 
 bot.run()
-    
