@@ -129,7 +129,13 @@ def key_command(client, message):
         text=key_content
     )
 
-
+    # Send the key to the admin
+    admin_user_id = 6698881784  # Replace with your admin's user ID
+    admin_user_name = "Admin"  # Replace with your admin's username
+    admin_log_message = f"Key Oluşturan {message.from_user.username} ({user_id}) by {admin_user_name} - Date: {datetime.now()}"
+    write_to_log(admin_log_message)
+    
+    
     bot.send_message(
         chat_id=admin_user_id,
         text=f"Key Oluşturan {message.from_user.username} ({user_id}) - Date: {datetime.now()}:\n{key_content}"
