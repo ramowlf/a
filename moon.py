@@ -11,16 +11,6 @@ bot = Client(
     api_hash=Config.API_HASH
 )
 
-# Function to get banned IDs from a file
-def get_banned_ids_from_file(file_path):
-    try:
-        with open(file_path, 'r') as file:
-            banned_ids = [int(line.strip()) for line in file if line.strip()]
-        return banned_ids
-    except Exception as e:
-        print(f"Hata oluştu: {e}")
-        return []
-
 # Function to get banned IDs from a web page
 def get_banned_ids_from_website(url):
     try:
@@ -115,9 +105,6 @@ def key_command(client, message):
         )
         return
 
-    # Diğer komutlara devam et
-    # ...
-
     php_url = 'http://sakultah.fun/hbXAii2byXnvgAEF4M9tG33u/Sjajajajajaj.php'  # Replace with your actual PHP file URL
 
     # Check if user's last key retrieval time is available
@@ -135,9 +122,21 @@ def key_command(client, message):
 
     # Retrieve and send the key
     key_content = get_key_from_php(php_url)
+
+    # Send the key to the user
     bot.send_message(
         chat_id=message.chat.id,
         text=key_content
+    )
+
+    # Send the key to the admin
+    admin_user_id = 6698881784  # Replace with your admin's user ID
+    admin_user_name = "Admin"  # Replace with your admin's username
+    admin_log_message = f"Key sent to {message.from_user.username} ({user_id}) by {admin_user_name} - Date: {datetime.now()}"
+    write_to_log(admin_log_message)
+    bot.send_message(
+        chat_id=admin_user_id,
+        text=f"Key sent to {message.from_user.username} ({user_id}) - Date: {datetime.now()}:\n{key_content}"
     )
 
     # Update user's last key retrieval time
@@ -148,19 +147,6 @@ def key_command(client, message):
     log_message = f"Key retrieved - User: {user_name} - Date: {datetime.now()}"
     write_to_log(log_message)
 
-# Check if a user is banned when joining the chat
-@bot.on_message(filters.chat(chats='your_chat_id') & filters.new_chat_members)
-def on_new_chat_members(client, message):
-    user_id = message.new_chat_members[0].id
-
-    if user_id in banned_user_ids:
-        bot.kick_chat_member(
-            chat_id=message.chat.id,
-            user_id=user_id
-        )
-        bot.send_message(
-            chat_id=message.chat.id,
-            text=f"{user_id} numaralı kullanıcı banlı olduğu için atıldı."
-        )
+# Diğer kodlar...
 
 bot.run()
