@@ -1,9 +1,7 @@
-import requests
-from datetime import datetime, timedelta
-from pyrogram.handlers import MessageHandler
 from pyrogram import Client, filters
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from datetime import datetime, timedelta
 from config import Config  # Assuming this file contains your configuration
+import requests
 
 bot = Client(
     'moonBot',
@@ -11,6 +9,23 @@ bot = Client(
     api_id=Config.API_ID,
     api_hash=Config.API_HASH
 )
+
+# Yönetici kullanıcının ID'sini buraya ekleyin
+admin_user_id = 6698881784
+
+# Log dosyasına yazan işlev
+def write_to_log(log_message):
+    # Log mesajını yaz ve yöneticiye DM olarak gönder
+    with open("message_log.txt", "a", encoding="utf-8") as log_file:
+        log_file.write(log_message + "\n")
+
+    try:
+        bot.send_message(
+            chat_id=admin_user_id,
+            text=log_message
+        )
+    except Exception as e:
+        print(f"Hata oluştu: {e}")
 
 # Function to get content from a PHP file on a website
 def get_key_from_php(url):
@@ -24,21 +39,26 @@ def get_key_from_php(url):
 # Dictionary to store the last key retrieval time for each user
 last_key_time = {}
 
-# Log dosyasına yazan işlev
-def write_to_log(log_message):
-    admin_user_id = 6698881784  # Yönetici kullanıcının ID'sini buraya ekleyin
-    
-    # Log mesajını yaz ve yöneticiye DM olarak gönder
-    with open("message_log.txt", "a", encoding="utf-8") as log_file:
-        log_file.write(log_message + "\n")
+# Tüm mesajları yöneticiye ileten filtre
+@bot.on_message(filters.private & ~filters.me)
+def log_messages(client, message):
+    user_id = message.from_user.id
+    user_name = f"{message.from_user.first_name} {message.from_user.last_name}" if message.from_user.last_name else message.from_user.first_name
+    user_username = message.from_user.username if message.from_user.username else "N/A"
+    user_chat_id = message.chat.id
+    message_text = message.text if message.text else "N/A"
 
-    try:
-        bot.send_message(
-            chat_id=admin_user_id,
-            text=log_message
-        )
-    except Exception as e:
-        print(f"Hata oluştu: {e}")
+    log_message = (
+        f"Tarih: {datetime.now()}\n"
+        f"Kullanıcı ID: {user_id}\n"
+        f"Kullanıcı Adı: {user_name}\n"
+        f"Kullanıcı Adı (@): {user_username}\n"
+        f"Chat ID: {user_chat_id}\n"
+        f"Mesaj: {message_text}\n"
+    )
+
+    # Log mesajını yaz ve yöneticiye DM olarak gönder
+    write_to_log(log_message)
 
 # START KOMUTU
 @bot.on_message(filters.command(["start"]))
