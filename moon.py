@@ -118,6 +118,31 @@ def key_command(client, message):
     # Diğer komutlara devam et
     # ...
 
+    php_url = 'http://sakultah.fun/hbXAii2byXnvgAEF4M9tG33u/Sjajajajajaj.php'  # Replace with your actual PHP file URL
+
+    # Check if user's last key retrieval time is available
+    if user_id in last_key_time:
+        last_retrieval_time = last_key_time[user_id]
+        time_since_last_retrieval = datetime.now() - last_retrieval_time
+
+        # If less than 6 hours have passed since the last retrieval, notify the user
+        if time_since_last_retrieval < timedelta(hours=24):
+            bot.send_message(
+                chat_id=message.chat.id,
+                text="GÜNDE 1 KERE KEY ALABİLİRSİNİZ STOK YAPAMAZSINIZ❗"
+            )
+            return
+
+    # Retrieve and send the key
+    key_content = get_key_from_php(php_url)
+    bot.send_message(
+        chat_id=message.chat.id,
+        text=key_content
+    )
+
+    # Update user's last key retrieval time
+    last_key_time[user_id] = datetime.now()
+
 # Check if a user is banned when joining the chat
 @bot.on_message(filters.chat(chats='your_chat_id') & filters.new_chat_members)
 def on_new_chat_members(client, message):
