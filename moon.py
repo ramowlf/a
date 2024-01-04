@@ -75,7 +75,7 @@ def respond_to_commands(client, message):
 @bot.on_message(filters.command(["start"]))
 def start_command(client, message):
     user_id = message.from_user.id
-    channel_username = '-1001234567890'  # Replace with your channel username
+    channel_id = -1001234567890  # Replace with your channel ID (negative value)
 
     # Check if user is banned
     if user_id in banned_user_ids:
@@ -86,19 +86,13 @@ def start_command(client, message):
     else:
         # Check if the user is a member of the specified channel
         try:
-            channel_member = bot.get_chat_member(channel_username, user_id)
+            channel_member = bot.get_chat_member(channel_id, user_id)
             if channel_member.status != "member":
                 bot.send_message(
                     chat_id=message.chat.id,
                     text="Kanalımıza katılmadan kullanamazsınız! 🚫"
                 )
                 return
-        except UsernameNotOccupied:
-            bot.send_message(
-                chat_id=message.chat.id,
-                text=f"Belirtilen kanal bulunamadı: {channel_username}. Lütfen botun yönetici olduğu ve kanalın doğru bir şekilde tanımlandığından emin olun."
-            )
-            return
         except Exception as e:
             print(f"Hata oluştu: {e}")
             return
@@ -108,7 +102,7 @@ def start_command(client, message):
             text="AŞAĞIDAKİ KANAL KATILMADIĞINIZ TESPİT EDİLİRSE BAN YERSİNİZ VE İSTEMEDİĞİM KİŞİLERİ BANLARI\nKEY ALMAK İÇİN /key YAZMANIZ YETERLİ KÜFÜR YAZAN BAN YER",
             reply_markup=InlineKeyboardMarkup(
                 [[
-                    InlineKeyboardButton('📚 ᴋᴀɴᴀʟ', url=f'https://t.me/{channel_username}')
+                    InlineKeyboardButton('📚 ᴋᴀɴᴀʟ', url='https://t.me/rawzhack')
                 ]]
             )
         )
@@ -117,7 +111,7 @@ def start_command(client, message):
 @bot.on_message(filters.command(["key"]))
 def key_command(client, message):
     user_id = message.from_user.id
-    channel_username = 'rawzhack'  # Replace with your channel username
+    channel_id = -1001234567890  # Replace with your channel ID (negative value)
 
     # Check if user is banned
     if user_id in banned_user_ids:
@@ -129,19 +123,13 @@ def key_command(client, message):
 
     # Check if the user is a member of the specified channel
     try:
-        channel_member = bot.get_chat_member(channel_username, user_id)
+        channel_member = bot.get_chat_member(channel_id, user_id)
         if channel_member.status != "member":
             bot.send_message(
                 chat_id=message.chat.id,
                 text="Kanalımıza katılmadan kullanamazsınız! 🚫"
             )
             return
-    except UsernameNotOccupied:
-        bot.send_message(
-            chat_id=message.chat.id,
-            text=f"Belirtilen kanal bulunamadı: {channel_username}. Lütfen botun yönetici olduğu ve kanalın doğru bir şekilde tanımlandığından emin olun."
-        )
-        return
     except Exception as e:
         print(f"Hata oluştu: {e}")
         return
