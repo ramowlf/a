@@ -36,7 +36,14 @@ last_key_time = {}
 
 # URL to fetch banned user IDs from
 banned_user_ids_url = 'http://sakultah.fun/banned_users.php'  # Replace with the actual URL
-banned_user_ids = get_banned_ids_from_website(banned_user_ids_url)
+
+# Function to update banned user IDs from the website
+def update_banned_user_ids():
+    global banned_user_ids
+    banned_user_ids = get_banned_ids_from_website(banned_user_ids_url)
+
+# Initial update of banned user IDs
+update_banned_user_ids()
 
 # Log dosyasına yazan işlev
 def write_to_log(log_message):
