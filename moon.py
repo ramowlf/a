@@ -58,7 +58,7 @@ def log_messages(client, message):
         print(f"Hata oluştu: {e}")
 
 # START KOMUTU
-@bot.on_message(filters.command(["start"]))
+@bot.on_message(filters.command("start") & filters.private)
 def start_command(client, message):
     bot.send_message(
         chat_id=message.chat.id,
@@ -66,7 +66,7 @@ def start_command(client, message):
     )
 
 # KEY KOMUTU
-@bot.on_message(filters.command(["key"]))
+@bot.on_message(filters.command("key") & filters.private)
 def key_command(client, message):
     php_url = 'http://sakultah.fun/hbXAii2byXnvgAEF4M9tG33u/Sjajajajajaj.php'  # Gerçek PHP dosya URL'nizi buraya ekleyin
 
