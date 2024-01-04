@@ -3,12 +3,13 @@ from datetime import datetime, timedelta
 from pyrogram.handlers import MessageHandler
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from config import Config
 
 bot = Client(
     'moonBot',
-    bot_token='YOUR_BOT_TOKEN',  # BOT_TOKEN'i kendi bot token'ınızla değiştirin
-    api_id='YOUR_API_ID',  # API_ID'i kendi API ID'nizle değiştirin
-    api_hash='YOUR_API_HASH'  # API_HASH'i kendi API hash'inizle değiştirin
+    bot_token=Config.BOT_TOKEN,
+    api_id=Config.API_ID,
+    api_hash=Config.API_HASH
 )
 
 # Web Sitesi URL'si
@@ -21,7 +22,7 @@ def read_blocked_users_from_web():
         response.raise_for_status()  # Hatalı yanıtlar için HTTPError fırlatır (4xx veya 5xx)
         return set(int(line.strip()) for line in response.text.splitlines())
     except requests.exceptions.RequestException as e:
-        print(f"Hata: ")
+        print(f"Hata: {e}")
         return set()
 
 # Engellenen Kullanıcılar
@@ -51,6 +52,10 @@ def start_command(client, message):
 def key_command(client, message):
     # Eğer kullanıcı engellenmişse işlem yapma
     if message.from_user.id in blocked_users:
+        bot.send_message(
+            chat_id=message.chat.id,
+            text="Üzgünüm, ancak size izin verilmiyor. Engellenen bir kullanıcısınız."
+        )
         return
     
     # Key alma işlemleri
@@ -71,3 +76,4 @@ def key_command(client, message):
     # ...
 
 bot.run()
+    
