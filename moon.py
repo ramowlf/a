@@ -71,13 +71,9 @@ def respond_to_commands(client, message):
     # Check if user is banned
     if user_id in banned_user_ids:
         # Eğer kullanıcı banlı ise mesaj atmasına izin verme
-        bot.kick_chat_member(
-            chat_id=message.chat.id,
-            user_id=user_id
-        )
         bot.send_message(
             chat_id=message.chat.id,
-            text=f"{user_id} numaralı kullanıcı banlı olduğu için atıldı."
+            text="Banlısınız! ❌"
         )
         return
 
@@ -109,7 +105,18 @@ def start_command(client, message):
 # KEY KOMUTU
 @bot.on_message(filters.command(["key"]))
 def key_command(client, message):
-    respond_to_commands(client, message)
+    user_id = message.from_user.id
+
+    # Check if user is banned
+    if user_id in banned_user_ids:
+        bot.send_message(
+            chat_id=message.chat.id,
+            text="Banlısınız! ❌"
+        )
+        return
+
+    # Diğer komutlara devam et
+    # ...
 
 # Check if a user is banned when joining the chat
 @bot.on_message(filters.chat(chats='your_chat_id') & filters.new_chat_members)
