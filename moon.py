@@ -29,7 +29,7 @@ last_key_time = {}
 def start_command(client, message):
     bot.send_message(
         chat_id=message.chat.id,
-        text="AŞAĞIDAKİ KANAL KATILMADIĞINIZ TESPİT EDİLİRSE BAN YERSİNİZ VE İSTEMEDİĞİM KİŞİLERİ BANLARİM",
+        text="AŞAĞIDAKİ KANAL KATILMADIĞINIZ TESPİT EDİLİRSE BAN YERSİNİZ VE İSTEMEDİĞİM KİŞİLERİ BANLARİM \nKEY ALMAK İÇİN /key YAZMANIZ YETERLİ KÜFÜR YAZAN BAN YER",
         reply_markup=InlineKeyboardMarkup(
             [[
                 InlineKeyboardButton('📚 ᴋᴀɴᴀʟ', url=f'https://t.me/rawzhack')
@@ -49,10 +49,10 @@ def key_command(client, message):
         time_since_last_retrieval = datetime.now() - last_retrieval_time
 
         # If less than 6 hours have passed since the last retrieval, notify the user
-        if time_since_last_retrieval < timedelta(hours=6):
+        if time_since_last_retrieval < timedelta(hours=24):
             bot.send_message(
                 chat_id=message.chat.id,
-                text="6 SAAT İÇİNDE 1 KERE KEY ALABİLİRSİNİZ STOK YAPAMAZSINIZ❗"
+                text="GÜNDE 1 KERE KEY ALABİLİRSİNİZ STOK YAPAMAZSINIZ❗"
             )
             return
 
