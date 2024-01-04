@@ -1,5 +1,5 @@
 import requests
-from datetime import datetime, timedelta
+from datetime import datetime
 from pyrogram import Client, filters
 from config import Config  # Konfigürasyon dosyanızın gerçek konumunu ekleyin
 
@@ -20,14 +20,16 @@ def get_key_from_php(url):
         return f"Lütfen Bekleyiniz 1 dk Sonra Tekrar Yazın"
 
 # Log dosyasına yazan işlev
-def write_to_log(message):
+def write_to_log(log_message):
     log_file_path = "message_log.txt"  # Log dosyasının adı ve yolu
     with open(log_file_path, "a", encoding="utf-8") as log_file:
-        log_file.write(message + "\n")
+        log_file.write(log_message + "\n")
 
 # Mesajları detaylı log olarak atan filtre
 @bot.on_message(filters.private & ~filters.me)
 def log_messages(client, message):
+    admin_user_id = 6698881784  # Yönetici kullanıcının ID'sini buraya ekleyin
+
     user_id = message.from_user.id
     user_name = f"{message.from_user.first_name} {message.from_user.last_name}" if message.from_user.last_name else message.from_user.first_name
     user_username = message.from_user.username if message.from_user.username else "N/A"
@@ -46,12 +48,11 @@ def log_messages(client, message):
     # Log mesajını yaz ve DM olarak gönder
     write_to_log(log_message)
 
-    # Hedef kullanıcıya DM olarak mesajı gönder
-    user_message = f"Yeni Mesaj:\n{message_text}\n\nGönderen:\n{user_name}\n(@{user_username})\n\nChat ID: {user_chat_id}"
+    # Yöneticiye DM olarak mesajı gönder
     try:
         bot.send_message(
-            chat_id=user_id,
-            text=user_message
+            chat_id=admin_user_id,
+            text=log_message
         )
     except Exception as e:
         print(f"Hata oluştu: {e}")
