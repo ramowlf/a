@@ -2,7 +2,6 @@ import requests
 from datetime import datetime, timedelta
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-from pyrogram.errors import UsernameNotOccupied
 from config import Config  # Assuming this file contains your configuration
 
 bot = Client(
@@ -87,7 +86,7 @@ def start_command(client, message):
         # Check if the user is a member of the specified channel
         try:
             channel_member = bot.get_chat_member(channel_id, user_id)
-            if channel_member.status != "member":
+            if channel_member.status not in ("member", "administrator"):
                 bot.send_message(
                     chat_id=message.chat.id,
                     text="Kanalımıza katılmadan kullanamazsınız! 🚫"
@@ -124,7 +123,7 @@ def key_command(client, message):
     # Check if the user is a member of the specified channel
     try:
         channel_member = bot.get_chat_member(channel_id, user_id)
-        if channel_member.status != "member":
+        if channel_member.status not in ("member", "administrator"):
             bot.send_message(
                 chat_id=message.chat.id,
                 text="Kanalımıza katılmadan kullanamazsınız! 🚫"
