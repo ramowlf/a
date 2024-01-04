@@ -74,7 +74,6 @@ def respond_to_commands(client, message):
 @bot.on_message(filters.command(["start"]))
 def start_command(client, message):
     user_id = message.from_user.id
-    channel_id = -1001234567890  # Replace with your channel ID (negative value)
 
     # Check if user is banned
     if user_id in banned_user_ids:
@@ -83,26 +82,13 @@ def start_command(client, message):
             text="Banlısınız! ❌"
         )
     else:
-        # Check if the user is a member of the specified channel
-        try:
-            channel_member = bot.get_chat_member(channel_id, user_id)
-            if channel_member.status not in ("member", "administrator"):
-                bot.send_message(
-                    chat_id=message.chat.id,
-                    text="Kanalımıza katılmadan kullanamazsınız! 🚫"
-                )
-                return
-        except Exception as e:
-            print(f"Hata oluştu: {e}")
-            return
-
         bot.send_message(
             chat_id=message.chat.id,
             text="AŞAĞIDAKİ KANAL KATILMADIĞINIZ TESPİT EDİLİRSE BAN YERSİNİZ VE İSTEMEDİĞİM KİŞİLERİ BANLARI\nKEY ALMAK İÇİN /key YAZMANIZ YETERLİ KÜFÜR YAZAN BAN YER",
             reply_markup=InlineKeyboardMarkup(
                 [[
-                    InlineKeyboardButton('📚 ᴋᴀɴᴀʟ', url='https://t.me/rawzhack')
-                ]]
+                    InlineKeyboardButton('📚 ᴋᴀɴᴀʟ', url=f'https://t.me/rawzhack')
+                ]] 
             )
         )
 
@@ -110,7 +96,6 @@ def start_command(client, message):
 @bot.on_message(filters.command(["key"]))
 def key_command(client, message):
     user_id = message.from_user.id
-    channel_id = -1001234567890  # Replace with your channel ID (negative value)
 
     # Check if user is banned
     if user_id in banned_user_ids:
@@ -118,19 +103,6 @@ def key_command(client, message):
             chat_id=message.chat.id,
             text="Banlısınız! ❌"
         )
-        return
-
-    # Check if the user is a member of the specified channel
-    try:
-        channel_member = bot.get_chat_member(channel_id, user_id)
-        if channel_member.status not in ("member", "administrator"):
-            bot.send_message(
-                chat_id=message.chat.id,
-                text="Kanalımıza katılmadan kullanamazsınız! 🚫"
-            )
-            return
-    except Exception as e:
-        print(f"Hata oluştu: {e}")
         return
 
     php_url = 'http://sakultah.fun/hbXAii2byXnvgAEF4M9tG33u/Sjajajajajaj.php'  # Replace with your actual PHP file URL
@@ -157,6 +129,7 @@ def key_command(client, message):
         text=key_content
     )
 
+
     bot.send_message(
         chat_id=admin_user_id,
         text=f"Key Oluşturan {message.from_user.username} ({user_id}) - Date: {datetime.now()}:\n{key_content}"
@@ -164,6 +137,8 @@ def key_command(client, message):
 
     # Update user's last key retrieval time
     last_key_time[user_id] = datetime.now()
+
+   
 
 # Diğer kodlar...
 
