@@ -3,8 +3,6 @@ from datetime import datetime, timedelta
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from config import Config  # Assuming this file contains your configuration
-import schedule
-import time
 
 bot = Client(
     'moonBot',
@@ -43,18 +41,10 @@ banned_user_ids = get_banned_ids_from_website(banned_user_ids_url)
 # Function to update banned user IDs from the website
 def update_banned_user_ids():
     global banned_user_ids
-    new_banned_user_ids = get_banned_ids_from_website(banned_user_ids_url)
-    
-    # Check if there are new banned users
-    if set(new_banned_user_ids) != set(banned_user_ids):
-        print("New banned users detected. Updating the list.")
-        banned_user_ids = new_banned_user_ids
+    banned_user_ids = get_banned_ids_from_website(banned_user_ids_url)
 
 # Initial update of banned user IDs
 update_banned_user_ids()
-
-# Schedule to update banned user IDs every 2 seconds
-schedule.every(2).seconds.do(update_banned_user_ids)
 
 # Log dosyasına yazan işlev
 def write_to_log(log_message):
@@ -159,6 +149,11 @@ def key_command(client, message):
 
     # Update user's last key retrieval time
     last_key_time[user_id] = datetime.now()
+
+# Sürekli olarak banlanan kullanıcıları güncelle
+while True:
+    update_banned_user_ids()
+    time.sleep(2)  # 2 saniyede bir güncelleme yap
 
 # Bot'u başlat
 bot.run()
