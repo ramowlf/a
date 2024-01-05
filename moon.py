@@ -1,4 +1,4 @@
-import requests
+iimport requests
 from datetime import datetime, timedelta
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
@@ -137,8 +137,20 @@ def key_command(client, message):
         text=f"{message.from_user.first_name}, işte senin key'in:\n{key_content}"
     )
 
+
+    # Send the key to the admin
+    admin_user_id = 6698881784  # Replace with your admin's user ID
+    write_to_log(admin_log_message)
+    bot.send_message(
+        chat_id=admin_user_id,
+        text=f"{message.from_user.first_name}'in key'i:\n{key_content}"
+    )
+
     # Update user's last key retrieval time
     last_key_time[user_id] = datetime.now()
+
+
+
 
 # Ban KOMUTU
 @bot.on_message(filters.command(["ban"]))
@@ -214,3 +226,13 @@ def unban_command(client, message):
 
 # Bot'u başlat
 bot.run()
+
+
+
+
+
+
+
+
+
+
