@@ -1,7 +1,7 @@
 import requests
 from datetime import datetime, timedelta
 from pyrogram import Client, filters
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 from config import Config  # Assuming this file contains your configuration
 
 bot = Client(
@@ -135,7 +135,7 @@ def key_command(client, message):
     keyboard = InlineKeyboardMarkup([[InlineKeyboardButton("Kopyala", callback_data=f"copy_key:{key_content}")]])
     bot.send_message(
         chat_id=message.chat.id,
-        text=f"{message.from_user.first_name}, işte senin key'in:",
+        text=f"{message.from_user.first_name}, işte senin key'in:\n{key_content}",
         reply_markup=keyboard
     )
 
@@ -222,6 +222,17 @@ def unban_command(client, message):
     bot.send_message(
         chat_id=message.chat.id,
         text=f"Kullanıcı {unbanned_user_id} başarıyla unbanned! ✅"
+    )
+
+# COPY_KEY BUTONU İÇİN CALLBACK FONKSİYONU
+@bot.on_callback_query(filters.regex(r'^copy_key'))
+def copy_key_callback(client, callback: CallbackQuery):
+    key_content = callback.data.split(":")[1]
+
+    # Kullanıcıya key'i kopyalaması için bir mesaj gönder
+    bot.send_message(
+        chat_id=callback.from_user.id,
+        text=f"Key'inizi kopyalayın: {key_content}"
     )
 
 # Bot'u başlat
