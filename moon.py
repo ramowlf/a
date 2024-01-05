@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup
 from config import Config  # Assuming this file contains your configuration
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 bot = Client(
     'moonBot',
