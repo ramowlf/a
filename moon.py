@@ -1,7 +1,7 @@
 import requests
 from datetime import datetime, timedelta
 from pyrogram import Client, filters
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from config import Config  # Assuming this file contains your configuration
 
 bot = Client(
@@ -131,28 +131,16 @@ def key_command(client, message):
     # Retrieve and send the key
     key_content = get_key_from_php(php_url)
 
-    # Send the key to the user with a "Kopyala" button
-    keyboard = InlineKeyboardMarkup([[InlineKeyboardButton("Kopyala", callback_data=f"copy_key:{key_content}")]])
+    # Send the key to the user
     bot.send_message(
         chat_id=message.chat.id,
-        text=f"{message.from_user.first_name}, işte senin key'in:\n{key_content}",
-        reply_markup=keyboard
-    )
-
-    # Send the key to the admin
-    admin_user_id = 6698881784  # Replace with your admin's user ID
-    admin_user_name = "Admin"  # Replace with your admin's username
-    admin_log_message = f"Key sent to {message.from_user.username} ({user_id}) by {admin_user_name} - Date: {datetime.now()}"
-    write_to_log(admin_log_message)
-    bot.send_message(
-        chat_id=admin_user_id,
-        text=f"{message.from_user.first_name}'in key'i:\n{key_content}"
+        text=f"{message.from_user.first_name}, işte senin key'in:\n{key_content}"
     )
 
     # Update user's last key retrieval time
     last_key_time[user_id] = datetime.now()
 
-# BAN KOMUTU
+# Ban KOMUTU
 @bot.on_message(filters.command(["ban"]))
 def ban_command(client, message):
     admin_user_id = 6698881784  # Yönetici kullanıcının ID'sini buraya ekleyin
@@ -222,17 +210,6 @@ def unban_command(client, message):
     bot.send_message(
         chat_id=message.chat.id,
         text=f"Kullanıcı {unbanned_user_id} başarıyla unbanned! ✅"
-    )
-
-# COPY_KEY BUTONU İÇİN CALLBACK FONKSİYONU
-@bot.on_callback_query(filters.regex(r'^copy_key'))
-def copy_key_callback(client, callback: CallbackQuery):
-    key_content = callback.data.split(":")[1]
-
-    # Kullanıcıya key'i kopyalaması için bir mesaj gönder
-    bot.send_message(
-        chat_id=callback.from_user.id,
-        text=f"Key'inizi kopyalayın: {key_content}"
     )
 
 # Bot'u başlat
