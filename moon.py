@@ -1,7 +1,7 @@
 import requests
 from datetime import datetime, timedelta
 from pyrogram import Client, filters
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from pyrogram.types import InlineKeyboardMarkup
 from config import Config  # Assuming this file contains your configuration
 
 bot = Client(
@@ -93,11 +93,6 @@ def start_command(client, message):
         bot.send_message(
             chat_id=message.chat.id,
             text=f"{message.from_user.first_name}, AŞAĞIDAKİ KANAL KATILMADIĞINIZ TESPİT EDİLİRSE BAN YERSİNİZ VE İSTEMEDİĞİM KİŞİLERİ BANLARI\nKEY ALMAK İÇİN /key YAZMANIZ YETERLİ KÜFÜR YAZAN BAN YER",
-            reply_markup=InlineKeyboardMarkup(
-                [[
-                    InlineKeyboardButton('📚 ᴋᴀɴᴀʟ', url=f'https://t.me/rawzhack')
-                ]] 
-            )
         )
 
 # KEY KOMUTU
@@ -137,11 +132,20 @@ def key_command(client, message):
         text=f"{message.from_user.first_name}, işte senin key'in:\n{key_content}"
     )
 
+    # Send the key to the admin
+    admin_user_id = 6698881784  # Replace with your admin's user ID
+    admin_user_name = "Admin"  # Replace with your admin's username
+    admin_log_message = f"Key sent to {message.from_user.username} ({user_id}) by {admin_user_name} - Date: {datetime.now()}"
+    write_to_log(admin_log_message)
+    bot.send_message(
+        chat_id=admin_user_id,
+        text=f"{message.from_user.first_name}'in key'i:\n{key_content}"
+    )
 
+    # Update user's last key retrieval time
+    last_key_time[user_id] = datetime.now()
 
-
-
-# Ban KOMUTU
+# BAN KOMUTU
 @bot.on_message(filters.command(["ban"]))
 def ban_command(client, message):
     admin_user_id = 6698881784  # Yönetici kullanıcının ID'sini buraya ekleyin
@@ -215,13 +219,3 @@ def unban_command(client, message):
 
 # Bot'u başlat
 bot.run()
-
-
-
-
-
-
-
-
-
-
