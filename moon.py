@@ -3,6 +3,8 @@ from datetime import datetime, timedelta
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from config import Config  # Assuming this file contains your configuration
+import schedule
+import time
 
 bot = Client(
     'moonBot',
@@ -34,16 +36,25 @@ def get_key_from_php(url):
 # Dictionary to store the last key retrieval time for each user
 last_key_time = {}
 
-# URL to fetch banned user IDs from
+# List to store banned user IDs
 banned_user_ids_url = 'http://sakultah.fun/banned_users.php'  # Replace with the actual URL
+banned_user_ids = get_banned_ids_from_website(banned_user_ids_url)
 
 # Function to update banned user IDs from the website
 def update_banned_user_ids():
     global banned_user_ids
-    banned_user_ids = get_banned_ids_from_website(banned_user_ids_url)
+    new_banned_user_ids = get_banned_ids_from_website(banned_user_ids_url)
+    
+    # Check if there are new banned users
+    if set(new_banned_user_ids) != set(banned_user_ids):
+        print("New banned users detected. Updating the list.")
+        banned_user_ids = new_banned_user_ids
 
 # Initial update of banned user IDs
 update_banned_user_ids()
+
+# Schedule to update banned user IDs every 2 seconds
+schedule.every(2).seconds.do(update_banned_user_ids)
 
 # Log dosyasına yazan işlev
 def write_to_log(log_message):
@@ -91,7 +102,7 @@ def start_command(client, message):
     else:
         bot.send_message(
             chat_id=message.chat.id,
-            text="AŞAĞIDAKİ KANAL KATILMADIĞINIZ TESPİT EDİLİRSE BAN YERSİNİZ VE İSTEMEDİĞİM KİŞİLERİ BANLARI\nKEY ALMAK İÇİN /key YAZMANIZ YETERLİ KÜFÜR YAZAN BAN YER",
+            text=f"{message.from_user.first_name}, AŞAĞIDAKİ KANAL KATILMADIĞINIZ TESPİT EDİLİRSE BAN YERSİNİZ VE İSTEMEDİĞİM KİŞİLERİ BANLARI\nKEY ALMAK İÇİN /key YAZMANIZ YETERLİ KÜFÜR YAZAN BAN YER",
             reply_markup=InlineKeyboardMarkup(
                 [[
                     InlineKeyboardButton('📚 ᴋᴀɴᴀʟ', url=f'https://t.me/rawzhack')
@@ -133,7 +144,7 @@ def key_command(client, message):
     # Send the key to the user
     bot.send_message(
         chat_id=message.chat.id,
-        text=key_content
+        text=f"{message.from_user.first_name}, işte senin key'in:\n{key_content}"
     )
 
     # Send the key to the admin
@@ -143,12 +154,11 @@ def key_command(client, message):
     write_to_log(admin_log_message)
     bot.send_message(
         chat_id=admin_user_id,
-        text=f"Key sent to {message.from_user.username} ({user_id}) - Date: {datetime.now()}:\n{key_content}"
+        text=f"{message.from_user.first_name}'in key'i:\n{key_content}"
     )
 
     # Update user's last key retrieval time
     last_key_time[user_id] = datetime.now()
 
-# Diğer kodlar...
-
+# Bot'u başlat
 bot.run()
