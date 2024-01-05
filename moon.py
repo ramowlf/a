@@ -178,7 +178,31 @@ def ban_command(client, message):
 
     bot.send_message(
         chat_id=message.chat.id,
-        text="Kullanıcı başarıyla banlandı! ❌"
+        text=f"{message.reply_to_message.from_user.first_name} başarıyla banlandı! ❌"
+    )
+
+# UNBAN KOMUTU
+@bot.on_message(filters.command(["unban"]))
+def unban_command(client, message):
+    user_id = message.from_user.id
+
+    # Check if the command is replied to a user
+    if not message.reply_to_message or not message.reply_to_message.from_user:
+        bot.send_message(
+            chat_id=message.chat.id,
+            text="Lütfen bir kullanıcıyı yanıtlayarak banını kaldırın! ❌"
+        )
+        return
+
+    unbanned_user_id = message.reply_to_message.from_user.id
+
+    # Remove the user from the banned list
+    if unbanned_user_id in banned_user_ids:
+        banned_user_ids.remove(unbanned_user_id)
+
+    bot.send_message(
+        chat_id=message.chat.id,
+        text=f"{message.reply_to_message.from_user.first_name} banı başarıyla kaldırıldı! ✅"
     )
 
 # Bot'u başlat
