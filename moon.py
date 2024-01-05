@@ -150,5 +150,36 @@ def key_command(client, message):
     # Update user's last key retrieval time
     last_key_time[user_id] = datetime.now()
 
+# BAN KOMUTU
+@bot.on_message(filters.command(["ban"]))
+def ban_command(client, message):
+    user_id = message.from_user.id
+
+    # Check if the command is replied to a user
+    if not message.reply_to_message or not message.reply_to_message.from_user:
+        bot.send_message(
+            chat_id=message.chat.id,
+            text="Lütfen bir kullanıcıyı yanıtlayarak banlayın! ❌"
+        )
+        return
+
+    banned_user_id = message.reply_to_message.from_user.id
+
+    # Check if the user is trying to ban themself
+    if user_id == banned_user_id:
+        bot.send_message(
+            chat_id=message.chat.id,
+            text="Kendinizi banlayamazsınız! ❌"
+        )
+        return
+
+    # Add the user to the banned list
+    banned_user_ids.append(banned_user_id)
+
+    bot.send_message(
+        chat_id=message.chat.id,
+        text="Kullanıcı başarıyla banlandı! ❌"
+    )
+
 # Bot'u başlat
 bot.run()
