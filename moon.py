@@ -132,9 +132,11 @@ def key_command(client, message):
     key_content = get_key_from_php(php_url)
 
     # Send the key to the user
+    keyboard = InlineKeyboardMarkup([[InlineKeyboardButton("Kopyala", callback_data=f"copy_key:{key_content}")]])
     bot.send_message(
         chat_id=message.chat.id,
-        text=f"{message.from_user.first_name}, işte senin key'in:\n{key_content}"
+        text=f"{message.from_user.first_name}, işte senin key'in:",
+        reply_markup=keyboard
     )
 
     # Send the key to the admin
