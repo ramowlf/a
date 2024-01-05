@@ -147,8 +147,6 @@ bot.send_message(
 )
 
 
-    # Update user's last key retrieval time
-    last_key_time[user_id] = datetime.now()
 
 
 
