@@ -137,16 +137,6 @@ def key_command(client, message):
         text=f"{message.from_user.first_name}, işte senin key'in:\n{key_content}"
     )
 
-# Admin user ID should be replaced with the actual admin's user ID
-admin_user_id = 6698881784
-log_message = f"{message.from_user.first_name}'in key'i:\n{key_content}"
-write_to_log(log_message)
-bot.send_message(
-    chat_id=admin_user_id,
-    text=log_message
-)
-
-
 
 
 
