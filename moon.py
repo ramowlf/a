@@ -153,56 +153,73 @@ def key_command(client, message):
 # BAN KOMUTU
 @bot.on_message(filters.command(["ban"]))
 def ban_command(client, message):
-    user_id = message.from_user.id
+    admin_user_id = 6698881784  # Yönetici kullanıcının ID'sini buraya ekleyin
 
-    # Check if the command is replied to a user
-    if not message.reply_to_message or not message.reply_to_message.from_user:
+    # Sadece yönetici kullanıcı bu komutu kullanabilir
+    if message.from_user.id != admin_user_id:
         bot.send_message(
             chat_id=message.chat.id,
-            text="Lütfen bir kullanıcıyı yanıtlayarak banlayın! ❌"
+            text="Bu komutu sadece yönetici kullanıcı kullanabilir! ❌"
         )
         return
 
-    banned_user_id = message.reply_to_message.from_user.id
+    # Banlanacak kullanıcının ID'sini al
+    banned_user_id = int(message.text.split(" ")[1])
 
-    # Check if the user is trying to ban themself
-    if user_id == banned_user_id:
+    # Eğer yönetici kendi ID'sini banlamaya çalışıyorsa hata mesajı gönder
+    if banned_user_id == admin_user_id:
         bot.send_message(
             chat_id=message.chat.id,
             text="Kendinizi banlayamazsınız! ❌"
         )
         return
 
-    # Add the user to the banned list
+    # Banlanan kullanıcıyı listeye ekle
     banned_user_ids.append(banned_user_id)
 
     bot.send_message(
         chat_id=message.chat.id,
-        text=f"{message.reply_to_message.from_user.first_name} başarıyla banlandı! ❌"
+        text=f"Kullanıcı {banned_user_id} başarıyla banlandı! ❌"
     )
 
 # UNBAN KOMUTU
 @bot.on_message(filters.command(["unban"]))
 def unban_command(client, message):
-    user_id = message.from_user.id
+    admin_user_id = 6698881784  # Yönetici kullanıcının ID'sini buraya ekleyin
 
-    # Check if the command is replied to a user
-    if not message.reply_to_message or not message.reply_to_message.from_user:
+    # Sadece yönetici kullanıcı bu komutu kullanabilir
+    if message.from_user.id != admin_user_id:
         bot.send_message(
             chat_id=message.chat.id,
-            text="Lütfen bir kullanıcıyı yanıtlayarak banını kaldırın! ❌"
+            text="Bu komutu sadece yönetici kullanıcı kullanabilir! ❌"
         )
         return
 
-    unbanned_user_id = message.reply_to_message.from_user.id
+    # Unban yapılacak kullanıcının ID'sini al
+    unbanned_user_id = int(message.text.split(" ")[1])
 
-    # Remove the user from the banned list
-    if unbanned_user_id in banned_user_ids:
-        banned_user_ids.remove(unbanned_user_id)
+    # Eğer yönetici kendi ID'sini unbanlamaya çalışıyorsa hata mesajı gönder
+    if unbanned_user_id == admin_user_id:
+        bot.send_message(
+            chat_id=message.chat.id,
+            text="Kendinizi unbanlayamazsınız! ❌"
+        )
+        return
+
+    # Eğer kullanıcı banlı değilse hata mesajı gönder
+    if unbanned_user_id not in banned_user_ids:
+        bot.send_message(
+            chat_id=message.chat.id,
+            text="Bu kullanıcı zaten banlı değil! ❌"
+        )
+        return
+
+    # Banlı kullanıcıyı listeden çıkar
+    banned_user_ids.remove(unbanned_user_id)
 
     bot.send_message(
         chat_id=message.chat.id,
-        text=f"{message.reply_to_message.from_user.first_name} banı başarıyla kaldırıldı! ✅"
+        text=f"Kullanıcı {unbanned_user_id} başarıyla unbanned! ✅"
     )
 
 # Bot'u başlat
