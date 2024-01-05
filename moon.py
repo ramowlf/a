@@ -93,6 +93,11 @@ def start_command(client, message):
         bot.send_message(
             chat_id=message.chat.id,
             text=f"{message.from_user.first_name}, AŞAĞIDAKİ KANAL KATILMADIĞINIZ TESPİT EDİLİRSE BAN YERSİNİZ VE İSTEMEDİĞİM KİŞİLERİ BANLARI\nKEY ALMAK İÇİN /key YAZMANIZ YETERLİ KÜFÜR YAZAN BAN YER",
+            reply_markup=InlineKeyboardMarkup(
+                [[
+                    InlineKeyboardButton('📚 ᴋᴀɴᴀʟ', url=f'https://t.me/rawzhack')
+                ]] 
+            )
         )
 
 # KEY KOMUTU
