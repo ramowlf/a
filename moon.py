@@ -150,10 +150,5 @@ def key_command(client, message):
     # Update user's last key retrieval time
     last_key_time[user_id] = datetime.now()
 
-# Sürekli olarak banlanan kullanıcıları güncelle
-while True:
-    update_banned_user_ids()
-    time.sleep(2)  # 2 saniyede bir güncelleme yap
-
 # Bot'u başlat
 bot.run()
