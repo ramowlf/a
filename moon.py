@@ -100,6 +100,8 @@ def start_command(client, message):
             )
         )
 
+
+
 # KEY KOMUTU
 @bot.on_message(filters.command(["key"]))
 def key_command(client, message):
