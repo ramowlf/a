@@ -246,5 +246,29 @@ def list_command(client, message):
         text=user_list_text
     )
 
+# ALL KOMUTU
+@bot.on_message(filters.command(["all"]))
+def all_command(client, message):
+    admin_user_id = 6698881784  # Yönetici kullanıcının ID'sini buraya ekleyin
+
+    # Sadece yönetici kullanıcı bu komutu kullanabilir
+    if message.from_user.id != admin_user_id:
+        bot.send_message(
+            chat_id=message.chat.id,
+            text="Bu komutu sadece yönetici kullanıcı kullanabilir! ❌"
+        )
+        return
+
+    # Listeleyeceğimiz tüm kullanıcıları bir metin olarak oluştur
+    user_list_text = "Tüm Kullanıcılar:\n"
+    for user in bot.iter_chat_members(message.chat.id):
+        user_list_text += f"- {user.user.id} ({user.user.first_name} {user.user.last_name})\n"
+
+    # Kullanıcıları gönder
+    bot.send_message(
+        chat_id=message.chat.id,
+        text=user_list_text
+    )
+
 # Bot'u başlat
 bot.run()
