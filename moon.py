@@ -75,14 +75,13 @@ def respond_to_commands(client, message):
         )
         return
 
-    # Diğer komutlara devam et
-    # ...
-
-    # Her yazılan mesaj için bir cevap
-    bot.send_message(
-        chat_id=message.chat.id,
-        text=f"Merhaba, {message.from_user.first_name}! Ben buradayım. 🙂"
-    )
+    # Her yazılan kelimeye cevap ver
+    words = message.text.split()
+    for word in words:
+        bot.send_message(
+            chat_id=message.chat.id,
+            text=f"Cevap: {word}"
+        )
 
 # START KOMUTU
 @bot.on_message(filters.command(["start"]))
