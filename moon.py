@@ -1,9 +1,8 @@
 import requests
 from datetime import datetime, timedelta
 from pyrogram import Client, filters
-from pyrogram.types import InlineKeyboardMarkup
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from config import Config  # Assuming this file contains your configuration
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 bot = Client(
     'moonBot',
@@ -27,7 +26,7 @@ def get_banned_ids_from_website(url):
 def get_key_from_php(url):
     try:
         response = requests.get(url)
-        response.raise_for_status()  # Raise an HTTPError for bad responses (4xx or 5xx)
+        response.raise_for_status()
         return response.text
     except requests.exceptions.RequestException as e:
         return f"Lütfen Bekleyiniz 1 dk Sonra Tekrar Yazın"
@@ -79,9 +78,16 @@ def respond_to_commands(client, message):
     # Diğer komutlara devam et
     # ...
 
+    # Her yazılan mesaj için bir cevap
+    bot.send_message(
+        chat_id=message.chat.id,
+        text=f"Merhaba, {message.from_user.first_name}! Ben buradayım. 🙂"
+    )
+
 # START KOMUTU
 @bot.on_message(filters.command(["start"]))
 def start_command(client, message):
+    respond_to_commands(client, message)
     user_id = message.from_user.id
 
     # Check if user is banned
@@ -101,22 +107,11 @@ def start_command(client, message):
             )
         )
 
-
-
 # KEY KOMUTU
 @bot.on_message(filters.command(["key"]))
 def key_command(client, message):
+    respond_to_commands(client, message)
     user_id = message.from_user.id
-
-    # Check if user is banned
-    if user_id in banned_user_ids:
-        bot.send_message(
-            chat_id=message.chat.id,
-            text="Banlısınız! ❌"
-        )
-        return
-
-    php_url = 'http://sakultah.fun/hbXAii2byXnvgAEF4M9tG33u/Sjajajajajaj.php'  # Replace with your actual PHP file URL
 
     # Check if user's last key retrieval time is available
     if user_id in last_key_time:
@@ -130,6 +125,8 @@ def key_command(client, message):
                 text="GÜNDE 1 KERE KEY ALABİLİRSİNİZ STOK YAPAMAZSINIZ❗"
             )
             return
+
+    php_url = 'http://sakultah.fun/hbXAii2byXnvgAEF4M9tG33u/Sjajajajajaj.php'  # Replace with your actual PHP file URL
 
     # Retrieve and send the key
     key_content = get_key_from_php(php_url)
@@ -156,6 +153,7 @@ def key_command(client, message):
 # BAN KOMUTU
 @bot.on_message(filters.command(["ban"]))
 def ban_command(client, message):
+    respond_to_commands(client, message)
     admin_user_id = 6698881784  # Yönetici kullanıcının ID'sini buraya ekleyin
 
     # Sadece yönetici kullanıcı bu komutu kullanabilir
@@ -188,6 +186,7 @@ def ban_command(client, message):
 # UNBAN KOMUTU
 @bot.on_message(filters.command(["unban"]))
 def unban_command(client, message):
+    respond_to_commands(client, message)
     admin_user_id = 6698881784  # Yönetici kullanıcının ID'sini buraya ekleyin
 
     # Sadece yönetici kullanıcı bu komutu kullanabilir
