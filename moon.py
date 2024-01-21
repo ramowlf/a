@@ -1,9 +1,8 @@
 import requests
 from datetime import datetime, timedelta
 from pyrogram import Client, filters
-from pyrogram.types import InlineKeyboardMarkup
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from config import Config  # Assuming this file contains your configuration
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 bot = Client(
     'moonBot',
@@ -96,12 +95,10 @@ def start_command(client, message):
             text=f"{message.from_user.first_name}, AŞAĞIDAKİ KANAL KATILMADIĞINIZ TESPİT EDİLİRSE BAN YERSİNİZ VE İSTEMEDİĞİM KİŞİLERİ BANLARI\nKEY ALMAK İÇİN /key YAZMANIZ YETERLİ KÜFÜR YAZAN BAN YER",
             reply_markup=InlineKeyboardMarkup(
                 [[
-                    InlineKeyboardButton('📚 ᴋᴀɴᴀʟ', url=f'https://t.me/rawzhack')
+                    InlineKeyboardButton('📚 ᴋᴀɴᴀʟ', url='https://t.me/rawzhack')
                 ]] 
             )
         )
-
-
 
 # KEY KOMUTU
 @bot.on_message(filters.command(["key"]))
