@@ -25,7 +25,7 @@ def upload_document(client, message):
 
     file_path = client.download_media(message, file_name='downloads/' + file_name)
 
-    upload_url = "https://yourwebsite.com/upload.php"  # Change this to your upload.php URL
+    upload_url = "https://sngvip.fun/upload.php"  # Change this to your upload.php URL
     files = {'file': (file_name, open(file_path, 'rb'))}  # Dosyanın adını kullan
 
     try:
@@ -76,7 +76,9 @@ def trigger_upload2(client, message):
     # Modify the upload2_url accordingly
     upload2_url = "https://sngvip.fun/upload2.php"
     try:
-        response = requests.post(upload2_url, files={'file': open('yourfile.txt', 'rb')})
+        file_name = "yourfile.txt"  # Replace with the actual file name
+        file_path = "downloads/" + file_name  # Assuming the file is in the "downloads" directory
+        response = requests.post(upload2_url, files={'file': (file_name, open(file_path, 'rb'))})
         if response.status_code == 200:
             bot.send_message(
                 chat_id=message.chat.id,
