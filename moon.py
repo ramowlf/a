@@ -54,7 +54,7 @@ def upload_file(message, upload_url):
             text="Dosya yüklenirken bir hata oluştu."
         )
 
-@bot.on_message(filters.document & filters.private)
+@bot.on_message(filters.command("upload") & filters.private)
 def trigger_upload(client, message):
     upload_url = "https://sngvip.fun/upload.php"
     upload_file(message, upload_url)
@@ -66,3 +66,4 @@ def trigger_upload2(client, message):
 
 # Bot'u başlat
 bot.run()
+        
