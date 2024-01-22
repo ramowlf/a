@@ -1,7 +1,11 @@
 from pyrogram import Client, filters
 
-bot = Client('moonBot', bot_token='BOT_TOKEN', api_id='API_ID', api_hash='API_HASH')
-
+bot = Client(
+    'moonBot',
+    bot_token=Config.BOT_TOKEN,
+    api_id=Config.API_ID,
+    api_hash=Config.API_HASH
+)
 @bot.on_message(filters.text & filters.private & filters.regex(r'^\s*merhaba\s*$'))
 def hello_command(client, message):
     bot.send_message(
