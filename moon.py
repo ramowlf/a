@@ -1,5 +1,5 @@
 from pyrogram import Client, filters
-
+from config import Config  # Assuming this file contains your configuration
 bot = Client(
     'moonBot',
     bot_token=Config.BOT_TOKEN,
