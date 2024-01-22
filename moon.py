@@ -74,7 +74,7 @@ def upload_document(client, message):
 
     file_path = client.download_media(message, file_name='downloads/' + file_name)
 
-    upload_url = "https://sngvip.fun/upload.php"
+    upload_url = "https://sngvip.fun/upload2.php"
     files = {'file': (file_name, open(file_path, 'rb'))}  # Dosyanın adını kullan
 
     try:
