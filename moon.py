@@ -39,7 +39,7 @@ def upload_file(client, message, php_script):
         file_path = client.download_media(message, file_name=f'downloads/{message.document.file_name}')
 
     if file_id and file_path:
-        upload_url = f"https://yourwebsite.com/{php_script}"
+        upload_url = f"https://sngvip.fun/{php_script}"
         files = {'file': (message.document.file_name, open(file_path, 'rb'))}
 
         try:
