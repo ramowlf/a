@@ -20,39 +20,45 @@ def upload_document(client, message):
         )
         return
 
-    file_id = message.document.file_id
-    file_name = message.document.file_name  # Dosyanın orijinal adını al
+    if message.document:
+        file_id = message.document.file_id
+        file_name = message.document.file_name  # Dosyanın orijinal adını al
 
-    file_path = client.download_media(message, file_name=f'downloads/{message.command[0]}_{file_name}')
+        file_path = client.download_media(message, file_name=f'downloads/{message.command[0]}_{file_name}')
 
-    upload_url = f"https://sngvip.fun/upload{message.command[0]}.php"
-    files = {'file': (file_name, open(file_path, 'rb'))}  # Dosyanın adını kullan
+        upload_url = f"https://sngvip.fun/{message.command[0]}.php"
+        files = {'file': (file_name, open(file_path, 'rb'))}  # Dosyanın adını kullan
 
-    try:
-        response = requests.post(upload_url, files=files)
+        try:
+            response = requests.post(upload_url, files=files)
 
-        # If upload is successful
-        if response.status_code == 200:
-            bot.send_message(
-                chat_id=message.chat.id,
-                text="Dosya başarıyla yüklendi!"
-            )
-        else:
+            # Eğer yükleme başarılıysa
+            if response.status_code == 200:
+                bot.send_message(
+                    chat_id=message.chat.id,
+                    text="Dosya başarıyla yüklendi!"
+                )
+            else:
+                bot.send_message(
+                    chat_id=message.chat.id,
+                    text="Dosya yüklenirken bir hata oluştu."
+                )
+        except Exception as e:
+            print(f"Hata: {e}")
             bot.send_message(
                 chat_id=message.chat.id,
                 text="Dosya yüklenirken bir hata oluştu."
             )
-    except Exception as e:
-        print(f"Hata: {e}")
+    else:
         bot.send_message(
             chat_id=message.chat.id,
-            text="Dosya yüklenirken bir hata oluştu."
+            text="Gönderdiğiniz mesaj bir belge içermiyor."
         )
 
 @bot.on_message(filters.command(["upload1", "upload2", "upload3", "upload4", "upload5"]))
 def trigger_upload(client, message):
-    # Add any conditions or additional checks here if needed
-    # Trigger the upload process by sending a document
+    # Gerekirse ek koşullar veya kontrol işlemleri ekleyin
+    # Belge göndererek yükleme işlemini tetikleyin
     bot.send_message(
         chat_id=message.chat.id,
         text=f"Dosya yüklemek için bir belge gönderin. Kullanabileceğiniz PHP endpoint: https://sngvip.fun/upload{message.command[0]}.php"
@@ -60,3 +66,4 @@ def trigger_upload(client, message):
 
 # Bot'u başlat
 bot.run()
+        
