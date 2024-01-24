@@ -9,7 +9,7 @@ bot = Client(
     api_hash=Config.API_HASH
 )
 
-allowed_user_id = 6698881784  # Bu, sadece belirli bir kullanıcının dosya yüklemesine izin verecek ID'dir
+allowed_user_id = 6698881784
 
 def upload_file(client, message, upload_url):
     if message.from_user.id != allowed_user_id:
@@ -47,22 +47,14 @@ def upload_file(client, message, upload_url):
         )
 
 @bot.on_message(filters.document & filters.private)
-def upload_document1(client, message):
-    upload_file(client, message, "https://sngvip.fun/upload.php")
+def upload_document(client, message):
+    if message.text == "/upload2":
+        upload_file(client, message, "https://sngvip.fun/upload2.php")
+    else:
+        upload_file(client, message, "https://sngvip.fun/upload.php")
 
-@bot.on_message(filters.command("upload"))
-def trigger_upload1(client, message):
-    bot.send_message(
-        chat_id=message.chat.id,
-        text="Dosya yüklemek için bir belge gönderin."
-    )
-
-@bot.on_message(filters.document & filters.private)
-def upload_document2(client, message):
-    upload_file(client, message, "https://sngvip.fun/upload2.php")
-
-@bot.on_message(filters.command("upload2"))
-def trigger_upload2(client, message):
+@bot.on_message(filters.command("upload") | filters.command("upload2"))
+def trigger_upload(client, message):
     bot.send_message(
         chat_id=message.chat.id,
         text="Dosya yüklemek için bir belge gönderin."
