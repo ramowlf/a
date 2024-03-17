@@ -2,6 +2,7 @@ from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from config import Config  # Assuming this file contains your configuration
 import requests
+from datetime import datetime, timedelta
 
 bot = Client(
     'moonBot',
@@ -21,6 +22,15 @@ def is_user_in_channel(user_id, channel_username):
     except Exception as e:
         print(f"Hata oluştu: {e}")
         return False
+
+# Function to get key content from PHP file
+def get_key_from_php(url):
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # Raise an HTTPError for bad responses (4xx or 5xx)
+        return response.text
+    except requests.exceptions.RequestException as e:
+        return f"Lütfen Bekleyiniz 1 dk Sonra Tekrar Yazın"
 
 # Dictionary to store the last key retrieval time for each user
 last_key_time = {}
@@ -177,4 +187,4 @@ def unban_command(client, message):
 
 # Bot'u başlat
 bot.run()
-    
+        
