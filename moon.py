@@ -46,7 +46,7 @@ def respond_to_commands(client, message):
     user_id = message.from_user.id
 
     # Check if user is in required channel
-    required_channel = "@rawzhack"
+    required_channel = "rawzhack"
     if not is_user_in_channel(user_id, required_channel):
         bot.send_message(user_id, text="*Üzgünüm, @rawzhack grubuna katılmak zorunludur!*", parse_mode="Markdown")
         return
