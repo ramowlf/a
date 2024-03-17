@@ -58,6 +58,13 @@ def respond_to_commands(client, message):
 @bot.on_message(filters.command(["start"]))
 def start_command(client, message):
     user_id = message.from_user.id
+    
+    # Check if user is in required channel
+    required_channel = "rawzhack"
+    if not is_user_in_channel(user_id, required_channel):
+        bot.send_message(user_id, text="*Üzgünüm, @rawzhack grubuna katılmak zorunludur!*", parse_mode="Markdown")
+        return
+    
     bot.send_message(
         chat_id=message.chat.id,
         text=f"{message.from_user.first_name}, AŞAĞIDAKİ KANAL KATILMADIĞINIZ TESPİT EDİLİRSE BAN YERSİNİZ LÜTFEN KATILIN \nKEY ALMAK İÇİN /key YAZMANIZ YETERLİ KÜFÜR YAZAN BAN YER",
@@ -170,4 +177,4 @@ def unban_command(client, message):
 
 # Bot'u başlat
 bot.run()
-            
+    
