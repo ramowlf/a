@@ -92,10 +92,10 @@ def start_command(client, message):
     else:
         bot.send_message(
             chat_id=message.chat.id,
-            text=f"{message.from_user.first_name}, • AŞAĞIDAKİ KANALARA KATILMASANİZ BAN YERSİNİZ \n •Key Almak İçin /Key Yazmaniz Yeterlidir. \n • By Saku",
+            text=f"Hoşgeldin {message.from_user.first_name}, \n• AŞAĞIDAKİ KANALARA KATILMASANİZ BAN YERSİNİZ \n • Key Almak İçin /Key Yazmaniz Yeterlidir. \n • By Swox",
             reply_markup=InlineKeyboardMarkup(
                 [[
-                    InlineKeyboardButton('📚 ᴋᴀɴᴀʟ 1', url='https://t.me/+Li2jngoA3oc2MWI5'),
+                    InlineKeyboardButton('📚 ᴋᴀɴᴀʟ 1', url='https://t.me/+Li2jngoA3oc2MWI5')
                     InlineKeyboardButton('📚 ᴋᴀɴᴀʟ 2', url='https://t.me/+Y9T-59cIrGw0Mjhk')
                 ]] 
             )
@@ -141,7 +141,7 @@ def key_command(client, message):
     # Send the key to the admin
     admin_user_id = 6603768103  # Replace with your admin's user ID
     admin_user_name = "Admin"  # Replace with your admin's username
-    admin_log_message = f"📌KULLANICIYA KEY VERİLDİ \n Kullanıcı Adi :{message.from_user.username} ({user_id}) by {admin_user_name} - Date: {datetime.now()}"
+    admin_log_message = f"📌KULLANICIYA KEY VERİLDİ \n Kullanıcı Adi :{message.from_user.username} \n Tg id :({user_id}) by {admin_user_name} - Date: {datetime.now()}"
     write_to_log(admin_log_message)
     bot.send_message(
         chat_id=admin_user_id,
