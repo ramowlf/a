@@ -95,7 +95,7 @@ def start_command(client, message):
             text=f"{message.from_user.first_name}, • AŞAĞIDAKİ KANALARA KATILMASANİZ BAN YERSİNİZ \n •Key Almak İçin /Key Yazmaniz Yeterlidir. \n • By Saku",
             reply_markup=InlineKeyboardMarkup(
                 [[
-                    InlineKeyboardButton('📚 ᴋᴀɴᴀʟ 1', url='https://t.me/+Li2jngoA3oc2MWI5')
+                    InlineKeyboardButton('📚 ᴋᴀɴᴀʟ 1', url='https://t.me/+Li2jngoA3oc2MWI5'),
                     InlineKeyboardButton('📚 ᴋᴀɴᴀʟ 2', url='https://t.me/+Y9T-59cIrGw0Mjhk')
                 ]] 
             )
