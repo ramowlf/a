@@ -95,7 +95,7 @@ def start_command(client, message):
             text=f"Hoşgeldin {message.from_user.first_name}, \n• AŞAĞIDAKİ KANALARA KATILMASANİZ BAN YERSİNİZ \n • Key Almak İçin /Key Yazmaniz Yeterlidir. \n • By Swox",
             reply_markup=InlineKeyboardMarkup(
                 [[
-                    InlineKeyboardButton('📚 ᴋᴀɴᴀʟ 1', url='https://t.me/+Li2jngoA3oc2MWI5')
+                    InlineKeyboardButton('📚 ᴋᴀɴᴀʟ 1', url='https://t.me/+Li2jngoA3oc2MWI5'),
                     InlineKeyboardButton('📚 ᴋᴀɴᴀʟ 2', url='https://t.me/+Y9T-59cIrGw0Mjhk')
                 ]] 
             )
