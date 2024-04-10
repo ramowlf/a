@@ -114,7 +114,7 @@ def key_command(client, message):
         )
         return
 
-    php_url = 'http://sakultah.fun/hbXAii2byXnvgAEF4M9tG33u/Sjajajajajaj.php'  # Replace with your actual PHP file URL
+    php_url = 'http://sakultah.fun/yunis/free.php'  # Replace with your actual PHP file URL
 
     # Check if user's last key retrieval time is available
     if user_id in last_key_time:
