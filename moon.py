@@ -43,9 +43,6 @@ def update_banned_user_ids():
     global banned_user_ids
     banned_user_ids = get_banned_ids_from_website(banned_user_ids_url)
 
-# Initial update of banned user IDs
-update_banned_user_ids()
-
 # Log dosyasına yazan işlev
 def write_to_log(log_message):
     admin_user_id = 6603768103  # Yönetici kullanıcının ID'sini buraya ekleyin
@@ -95,10 +92,13 @@ def start_command(client, message):
             text=f"Hoşgeldin {message.from_user.first_name}, \n• AŞAĞIDAKİ KANALARA KATILMASANİZ BAN YERSİNİZ \n • Key Almak İçin /Key Yazmaniz Yeterlidir. \n • By Sakultah",
             reply_markup=InlineKeyboardMarkup(
                 [[
-                    InlineKeyboardButton('📚 ᴋᴀɴᴀʟ 1', url='https://t.me/+Li2jngoA3oc2MWI5')
-                                    ]] 
+                    InlineKeyboardButton('📚 ᴋᴀɴᴀʟ 1', url='https://t.me/+Li2jngoA3oc2MWI5'),
+                    InlineKeyboardButton('📚 ᴋᴀɴᴀʟ 2', url='https://t.me/+Y9T-59cIrGw0Mjhk')
+                ]]
             )
         )
+        # Update banned user IDs on start
+        update_banned_user_ids()
 
 # KEY KOMUTU
 @bot.on_message(filters.command(["key"]))
@@ -113,55 +113,54 @@ def key_command(client, message):
         )
         return
 
-php_url = 'http://sakultah.fun/yunis/free.php'  # Değiştirilecek PHP dosyasının URL'si
+    php_url = 'http://sakultah.fun/yunis/free.php'  # Değiştirilecek PHP dosyasının URL'si
 
-# Kullanıcının son anahtar alım zamanının mevcut olup olmadığını kontrol edin
-if user_id in last_key_time:
-    last_retrieval_time = last_key_time[user_id]
-    time_since_last_retrieval = datetime.now() - last_retrieval_time
+    # Retrieve and send the key
+    send_key_to_user(php_url, message)
 
-    # Son alımdan bu yana 6 saatten az süre geçmişse, kullanıcıyı bilgilendirin
-    if time_since_last_retrieval < timedelta(hours=6):
-        bot.send_message(
-            chat_id=message.chat.id,
-            text="3 GÜNDE 1 KERE KEY ALABİLİRSİNİZ STOK YAPAMAZSINIZ❗"
-        )
-        return
+# Function to retrieve key from PHP URL and send it to the user
+def send_key_to_user(php_url, message):
+    user_id = message.from_user.id
 
-# Anahtarı alın ve kullanıcıya gönderin
-key_response = get_key_from_php(php_url)
+    # Check if user can retrieve key
+    if user_id in last_key_time:
+        last_retrieval_time = last_key_time[user_id]
+        time_since_last_retrieval = datetime.now() - last_retrieval_time
 
-# Hata kontrolü ve key_content'i ayıkla
-if "TSGx" in key_response:
-    key_content = key_response[key_response.index("TSGx"):]
-else:
-    key_content = "Anahtar alınamadı."
+        # If less than 6 hours have passed since the last retrieval, notify the user
+        if time_since_last_retrieval < timedelta(hours=6):
+            bot.send_message(
+                chat_id=message.chat.id,
+                text="3 GÜNDE 1 KERE KEY ALABİLİRSİNİZ STOK YAPAMAZSINIZ❗"
+            )
+            return
 
-# TSG yazısını ekleyin
-bot.send_message(
-    chat_id=message.chat.id,
-    text="Teşekkürler, işte senin key'in:\n" + key_content
-)
+    # Retrieve and send the key
+    key_response = get_key_from_php(php_url)
 
+    # Extract key content from response
+    if "TSGx" in key_response:
+        key_content = key_response[key_response.index("TSGx"):]
+    else:
+        key_content = "Anahtar alınamadı."
 
+    # Send the key to the user
+    bot.send_message(
+        chat_id=message.chat.id,
+        text="Teşekkürler, işte senin key'in:\n" + key_content
+    )
 
+    # Update user's last key retrieval time
+    last_key_time[user_id] = datetime.now()
 
-
-
-
-
-    # Send the key to the admin
+    # Log the key distribution
     admin_user_id = 6603768103  # Replace with your admin's user ID
-    admin_user_name = "Admin"  # Replace with your admin's username
-    admin_log_message = f"📌KULLANICIYA KEY VERİLDİ \n Kullanıcı Adi :{message.from_user.username} \n Tg id :({user_id}) by {admin_user_name} - Date: {datetime.now()}"
+    admin_log_message = f"📌KULLANICIYA KEY VERİLDİ \n Kullanıcı Adi :{message.from_user.username} \n Tg id :({user_id}) by Admin - Date: {datetime.now()}"
     write_to_log(admin_log_message)
     bot.send_message(
         chat_id=admin_user_id,
         text=f"{message.from_user.first_name}'in key'i:\n{key_content}"
     )
-
-    # Update user's last key retrieval time
-    last_key_time[user_id] = datetime.now()
 
 # BAN KOMUTU
 @bot.on_message(filters.command(["ban"]))
