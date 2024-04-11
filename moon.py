@@ -19,7 +19,7 @@ def get_banned_ids_from_website(url):
         banned_ids = [int(line.strip()) for line in response.text.split('\n') if line.strip()]
         return banned_ids
     except requests.exceptions.RequestException as e:
-        print(f"")
+        print(f"Hata oluştu: {e}")
         return []
 
 # Function to get content from a PHP file on a website
@@ -30,6 +30,13 @@ def get_key_from_php(url):
         return response.text
     except requests.exceptions.RequestException as e:
         return f"Lütfen Bekleyiniz 1 dk Sonra Tekrar Yazın"
+
+# Dictionary to store the last key retrieval time for each user
+last_key_time = {}
+
+# List to store banned user IDs
+banned_user_ids_url = 'http://sakultah.fun/key.php'  # Replace with the actual URL
+banned_user_ids = get_banned_ids_from_website(banned_user_ids_url)
 
 # Function to update banned user IDs from the website
 def update_banned_user_ids():
@@ -50,7 +57,7 @@ def write_to_log(log_message):
             text=log_message
         )
     except Exception as e:
-        print(f"Hata oluştu")
+        print(f"Hata oluştu: {e}")
 
 # Komutlara cevap verme fonksiyonu
 def respond_to_commands(client, message):
@@ -230,4 +237,3 @@ def unban_command(client, message):
 
 # Bot'u başlat
 bot.run()
-        
