@@ -19,7 +19,7 @@ def get_banned_ids_from_website(url):
         banned_ids = [int(line.strip()) for line in response.text.split('\n') if line.strip()]
         return banned_ids
     except requests.exceptions.RequestException as e:
-        print(f"Hata oluştu: {e}")
+        print(f"")
         return []
 
 # Function to get content from a PHP file on a website
@@ -57,7 +57,7 @@ def write_to_log(log_message):
             text=log_message
         )
     except Exception as e:
-        print(f"Hata oluştu: {e}")
+        print(f"Hata oluştu")
 
 # Komutlara cevap verme fonksiyonu
 def respond_to_commands(client, message):
@@ -92,8 +92,8 @@ def start_command(client, message):
             text=f"Hoşgeldin {message.from_user.first_name}, \n• AŞAĞIDAKİ KANALARA KATILMASANİZ BAN YERSİNİZ \n • Key Almak İçin /Key Yazmaniz Yeterlidir. \n • By Sakultah",
             reply_markup=InlineKeyboardMarkup(
                 [[
-                    InlineKeyboardButton('📚 ᴋᴀɴᴀʟ 1', url='https://t.me/+Li2jngoA3oc2MWI5'),
-                    InlineKeyboardButton('📚 ᴋᴀɴᴀʟ 2', url='https://t.me/+Y9T-59cIrGw0Mjhk')
+                    InlineKeyboardButton('📚 ᴋᴀɴᴀʟ 1', url='https://t.me/+yvVEzM90dXQ0YTY0')
+                    
                 ]]
             )
         )
@@ -118,6 +118,7 @@ def key_command(client, message):
     # Retrieve and send the key
     send_key_to_user(php_url, message)
 
+# Function to retrieve key from PHP URL and send it to the user
 # Function to retrieve key from PHP URL and send it to the user
 def send_key_to_user(php_url, message):
     user_id = message.from_user.id
@@ -147,7 +148,8 @@ def send_key_to_user(php_url, message):
     # Send the key to the user
     bot.send_message(
         chat_id=message.chat.id,
-        text="Teşekkürler, işte senin key'in:\n" + key_content
+        text=f"{message.from_user.first_name}'in key'i:\n```{key_content}```",
+        parse_mode="markdown"
     )
 
     # Update user's last key retrieval time
@@ -159,8 +161,15 @@ def send_key_to_user(php_url, message):
     write_to_log(admin_log_message)
     bot.send_message(
         chat_id=admin_user_id,
-        text=f"{message.from_user.first_name}'in key'i:\n{key_content}"
+        text=f"{message.from_user.first_name}'in key'i:\n```{key_content}```",
+        parse_mode="markdown"
     )
+    
+    
+    
+    
+    
+    
 
 # BAN KOMUTU
 @bot.on_message(filters.command(["ban"]))
@@ -236,4 +245,4 @@ def unban_command(client, message):
 
 # Bot'u başlat
 bot.run()
-    
+        
