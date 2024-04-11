@@ -96,8 +96,7 @@ def start_command(client, message):
             reply_markup=InlineKeyboardMarkup(
                 [[
                     InlineKeyboardButton('📚 ᴋᴀɴᴀʟ 1', url='https://t.me/+Li2jngoA3oc2MWI5')
-                    InlineKeyboardButton('📚 ᴋᴀɴᴀʟ 2', url='https://t.me/+Y9T-59cIrGw0Mjhk')
-                ]] 
+                                    ]] 
             )
         )
 
