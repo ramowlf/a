@@ -31,13 +31,6 @@ def get_key_from_php(url):
     except requests.exceptions.RequestException as e:
         return f"Lütfen Bekleyiniz 1 dk Sonra Tekrar Yazın"
 
-# Dictionary to store the last key retrieval time for each user
-last_key_time = {}
-
-# List to store banned user IDs
-banned_user_ids_url = 'http://sakultah.fun/key.php'  # Replace with the actual URL
-banned_user_ids = get_banned_ids_from_website(banned_user_ids_url)
-
 # Function to update banned user IDs from the website
 def update_banned_user_ids():
     global banned_user_ids
@@ -92,13 +85,12 @@ def start_command(client, message):
             text=f"Hoşgeldin {message.from_user.first_name}, \n• AŞAĞIDAKİ KANALARA KATILMASANİZ BAN YERSİNİZ \n • Key Almak İçin /Key Yazmaniz Yeterlidir. \n • By Sakultah",
             reply_markup=InlineKeyboardMarkup(
                 [[
-                    InlineKeyboardButton('📚 ᴋᴀɴᴀʟ 1', url='https://t.me/+yvVEzM90dXQ0YTY0')
-                    
+                    InlineKeyboardButton('📚 ᴋᴀɴᴀʟ 1', url='https://t.me/+yvVEzM90dXQ0YTY0')                   
                 ]]
             )
         )
-        # Update banned user IDs on start
-        update_banned_user_ids()
+    # Update banned user IDs on start
+    update_banned_user_ids()
 
 # KEY KOMUTU
 @bot.on_message(filters.command(["key"]))
@@ -118,7 +110,6 @@ def key_command(client, message):
     # Retrieve and send the key
     send_key_to_user(php_url, message)
 
-# Function to retrieve key from PHP URL and send it to the user
 # Function to retrieve key from PHP URL and send it to the user
 def send_key_to_user(php_url, message):
     user_id = message.from_user.id
@@ -164,12 +155,6 @@ def send_key_to_user(php_url, message):
         text=f"{message.from_user.first_name}'in key'i:\n```{key_content}```",
         parse_mode="markdown"
     )
-    
-    
-    
-    
-    
-    
 
 # BAN KOMUTU
 @bot.on_message(filters.command(["ban"]))
