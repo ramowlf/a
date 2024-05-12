@@ -45,7 +45,7 @@ def update_banned_user_ids():
 
 # Log dosyasına yazan işlev
 def write_to_log(log_message):
-    admin_user_id = 6603768103  # Yönetici kullanıcının ID'sini buraya ekleyin
+    admin_user_id = 7194297063 # Yönetici kullanıcının ID'sini buraya ekleyin
     
     # Log mesajını yaz ve yöneticiye DM olarak gönder
     with open("message_log.txt", "a", encoding="utf-8") as log_file:
@@ -166,7 +166,7 @@ def send_key_to_user(php_url, message):
 # BAN KOMUTU
 @bot.on_message(filters.command(["ban"]))
 def ban_command(client, message):
-    admin_user_id = 6603768103  # Yönetici kullanıcının ID'sini buraya ekleyin
+    admin_user_id = 7194297063  # Yönetici kullanıcının ID'sini buraya ekleyin
 
     # Sadece yönetici kullanıcı bu komutu kullanabilir
     if message.from_user.id != admin_user_id:
@@ -198,7 +198,7 @@ def ban_command(client, message):
 # UNBAN KOMUTU
 @bot.on_message(filters.command(["unban"]))
 def unban_command(client, message):
-    admin_user_id = 6603768103  # Yönetici kullanıcının ID'sini buraya ekleyin
+    admin_user_id = 7194297063  # Yönetici kullanıcının ID'sini buraya ekleyin
 
     # Sadece yönetici kullanıcı bu komutu kullanabilir
     if message.from_user.id != admin_user_id:
