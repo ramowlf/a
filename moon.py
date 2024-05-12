@@ -153,7 +153,7 @@ def send_key_to_user(php_url, message):
     last_key_time[user_id] = datetime.now()
 
     # Log the key distribution
-    admin_user_id = 6603768103  # Replace with your admin's user ID
+    admin_user_id = 7194297063  # Replace with your admin's user ID
     admin_log_message = f"📌KULLANICIYA KEY VERİLDİ \n Kullanıcı Adi :{message.from_user.username} \n Tg id :({user_id}) by Admin - Date: {datetime.now()}"
     write_to_log(admin_log_message)
     bot.send_message(
