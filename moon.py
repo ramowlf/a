@@ -146,8 +146,7 @@ def send_key_to_user(php_url, message):
     # Send the key to the user
     bot.send_message(
         chat_id=message.chat.id,
-        text=f"{message.from_user.first_name}'in key'i:\n```{key_content}```",
-        parse_mode="markdown"
+        text=f"{message.from_user.first_name}'in key'i:\n```{key_content}```"
     )
 
     # Update user's last key retrieval time
@@ -159,8 +158,7 @@ def send_key_to_user(php_url, message):
     write_to_log(admin_log_message)
     bot.send_message(
         chat_id=admin_user_id,
-        text=f"{message.from_user.first_name}'in key'i:\n```{key_content}```",
-        parse_mode="markdown"
+        text=f"{message.from_user.first_name}'in key'i:\n```{key_content}```"
     )
 
 # BAN KOMUTU
