@@ -6,6 +6,26 @@ mysql.connector
 yt-dlp
 aiogram
 
+aiohttp
+aiosignal
+async-timeout
+attrs
+Babel
+Brotli
+
+charset-normalizer
+frozenlist
+idna
+magic-filter
+multidict
+mutagen
+pycryptodomex
+pytz
+requests
+urllib3
+websockets
+yarl
+
 
 
 
