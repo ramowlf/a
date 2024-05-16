@@ -21,6 +21,6 @@ mutagen
 pycryptodomex
 pytz
 requests
-urllib3==2.0.4
-websockets==11.0.3
-yarl==1.9.2
+urllib3
+websockets
+yarl
