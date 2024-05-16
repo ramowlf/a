@@ -1,237 +1,123 @@
-import requests
+import telebot
+import mysql.connector
+import random
+import string
 from datetime import datetime, timedelta
-from pyrogram import Client, filters
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from config import Config  # Assuming this file contains your configuration
+import time
 
-bot = Client(
-    'moonBot',
-    bot_token=Config.BOT_TOKEN,
-    api_id=Config.API_ID,
-    api_hash=Config.API_HASH
-)
+# MySQL veritabanı bağlantısı için gerekli bilgiler
+DB_HOST = 'mysql6008.site4now.net'
+DB_USER = 'aa7d17_apseta'
+DB_PASSWORD = 'sSp6JdLyK6sE5Tee'
+DB_DATABASE = 'db_aa7d17_apseta'
 
-# Function to get banned IDs from a web page
-def get_banned_ids_from_website(url):
+# Telegram botunuzun token'ını buraya ekleyin
+TOKEN = '7078092516:AAEpH_4I6b6GF620GmgmwvHTDhDbP_mRqN8'
+
+# Bot oluştur
+bot = telebot.TeleBot(TOKEN)
+
+# '/start' komutunu işle
+@bot.message_handler(commands=['start'])
+def start(message):
+    user_id = message.from_user.id
+    first_name = message.from_user.first_name
+    
+    # Hoşgeldin mesajı
+    welcome_message = f"*TSG Key Botuna Hoşgeldin {first_name} \n/key yazarak keyini alabilirsin.\n\n! Spam yaparsan bottan banlanırsın.*"
+    
+    bot.reply_to(message, welcome_message, parse_mode="Markdown")
+
+
+
+
+
+# Kullanıcının bir kanala katılıp katılmadığını kontrol etme fonksiyonu
+def is_user_in_channel(chat_id, channel_username):
     try:
-        response = requests.get(url)
-        response.raise_for_status()
-        banned_ids = [int(line.strip()) for line in response.text.split('\n') if line.strip()]
-        return banned_ids
-    except requests.exceptions.RequestException as e:
-        print(f"Hata oluştu: {e}")
-        return []
+        chat_member = bot.get_chat_member(channel_username, chat_id)
+        return chat_member.status != "left"
+    except telebot.apihelper.ApiException as e:
+        print(f"API Hatası: {e}")
+        return False
 
-# Function to get content from a PHP file on a website
-def get_key_from_php(url):
-    try:
-        response = requests.get(url)
-        response.raise_for_status()  # Raise an HTTPError for bad responses (4xx or 5xx)
-        return response.text
-    except requests.exceptions.RequestException as e:
-        return f"Lütfen Bekleyiniz 1 dk Sonra Tekrar Yazın"
+# Anahtar oluşturma fonksiyonu
+def generate_user_key(length=12):
+    chars = string.ascii_letters + string.digits
+    user_key = "TSGxMODS" + ''.join(random.choice(chars) for _ in range(length - 8))
+    return user_key
 
-# Dictionary to store the last key retrieval time for each user
+# Kullanıcıların son anahtar alma zamanlarını takip etmek için bir sözlük
 last_key_time = {}
 
-# List to store banned user IDs
-banned_user_ids_url = 'http://sakultah.fun/key.php'  # Replace with the actual URL
-banned_user_ids = get_banned_ids_from_website(banned_user_ids_url)
-
-# Function to update banned user IDs from the website
-def update_banned_user_ids():
-    global banned_user_ids
-    banned_user_ids = get_banned_ids_from_website(banned_user_ids_url)
-
-# Log dosyasına yazan işlev
-def write_to_log(log_message):
-    admin_user_id = 7194297063 # Yönetici kullanıcının ID'sini buraya ekleyin
-    
-    # Log mesajını yaz ve yöneticiye DM olarak gönder
-    with open("message_log.txt", "a", encoding="utf-8") as log_file:
-        log_file.write(log_message + "\n")
-
-    try:
-        bot.send_message(
-            chat_id=admin_user_id,
-            text=log_message
-        )
-    except Exception as e:
-        print(f"Hata oluştu: {e}")
-
-# Komutlara cevap verme fonksiyonu
-def respond_to_commands(client, message):
-    user_id = message.from_user.id
-
-    # Check if user is banned
-    if user_id in banned_user_ids:
-        # Eğer kullanıcı banlı ise mesaj atmasına izin verme
-        bot.send_message(
-            chat_id=message.chat.id,
-            text="Banlısınız! ❌"
-        )
-        return
-
-    # Diğer komutlara devam et
-    # ...
-
-# START KOMUTU
-@bot.on_message(filters.command(["start"]))
-def start_command(client, message):
-    user_id = message.from_user.id
-
-    # Check if user is banned
-    if user_id in banned_user_ids:
-        bot.send_message(
-            chat_id=message.chat.id,
-            text="Banlısınız! ❌"
-        )
-    else:
-        bot.send_message(
-            chat_id=message.chat.id,
-            text=f"Hoşgeldin {message.from_user.first_name}, \n• AŞAĞIDAKİ KANALARA KATILMASANİZ BAN YERSİNİZ \n • Key Almak İçin /Key Yazmaniz Yeterlidir. \n • By Sakultah",
-            reply_markup=InlineKeyboardMarkup(
-                [[
-                    InlineKeyboardButton('📚 ᴋᴀɴᴀʟ 1', url='https://t.me/+yvVEzM90dXQ0YTY0')                   
-                ]]
-            )
-        )
-    # Update banned user IDs on start
-    update_banned_user_ids()
-
-# KEY KOMUTU
-@bot.on_message(filters.command(["key"]))
-def key_command(client, message):
-    user_id = message.from_user.id
-
-    # Check if user is banned
-    if user_id in banned_user_ids:
-        bot.send_message(
-            chat_id=message.chat.id,
-            text="Banlısınız! ❌"
-        )
-        return
-
-    php_url = 'http://sakultah.fun/yunis/free.php'  # Değiştirilecek PHP dosyasının URL'si
-
-    # Retrieve and send the key
-    send_key_to_user(php_url, message)
-
-# Function to retrieve key from PHP URL and send it to the user
-def send_key_to_user(php_url, message):
-    user_id = message.from_user.id
-
-    # Check if user can retrieve key
+# Kullanıcının son anahtar alma zamanını kontrol etme fonksiyonu
+def is_user_allowed_to_get_key(user_id):
     if user_id in last_key_time:
         last_retrieval_time = last_key_time[user_id]
         time_since_last_retrieval = datetime.now() - last_retrieval_time
+        # Eğer son alma zamanından 24 saat geçmediyse False döndür
+        if time_since_last_retrieval < timedelta(hours=24):
+            return False
+    return True
 
-        # If less than 6 hours have passed since the last retrieval, notify the user
-        if time_since_last_retrieval < timedelta(hours=6):
-            bot.send_message(
-                chat_id=message.chat.id,
-                text="3 GÜNDE 1 KERE KEY ALABİLİRSİNİZ STOK YAPAMAZSINIZ❗"
-            )
+# 'key' komutunu işle
+@bot.message_handler(commands=['key'])
+def send_key(message):
+    try:
+        user_id = message.from_user.id
+        
+        # Kullanıcının kanala katılıp katılmadığını kontrol et
+        channel_username = '@snmskwkwmsmem'
+        if not is_user_in_channel(user_id, channel_username):
+            bot.reply_to(message, "Anahtar alabilmek için önce @rawzhack kanalımıza katılmanız gerekmektedir.")
             return
 
-    # Retrieve and send the key
-    key_response = get_key_from_php(php_url)
+        # Kullanıcının son anahtar alma zamanını kontrol et
+        if not is_user_allowed_to_get_key(user_id):
+            bot.reply_to(message, "24 saat içinde bir kez anahtar alabilirsiniz.")
+            return
 
-    # Extract key content from response
-    if "TSGx" in key_response:
-        key_content = key_response[key_response.index("TSGx"):]
-    else:
-        key_content = "Anahtar alınamadı."
-
-    # Send the key to the user
-    bot.send_message(
-        chat_id=message.chat.id,
-        text=f"{message.from_user.first_name}'in key'i:\n```{key_content}```"
-    )
-
-    # Update user's last key retrieval time
-    last_key_time[user_id] = datetime.now()
-
-    # Log the key distribution
-    admin_user_id = 7194297063  # Replace with your admin's user ID
-    admin_log_message = f"📌KULLANICIYA KEY VERİLDİ \n Kullanıcı Adi :{message.from_user.username} \n Tg id :({user_id}) by Admin - Date: {datetime.now()}"
-    write_to_log(admin_log_message)
-    bot.send_message(
-        chat_id=admin_user_id,
-        text=f"{message.from_user.first_name}'in key'i:\n```{key_content}```"
-    )
-
-# BAN KOMUTU
-@bot.on_message(filters.command(["ban"]))
-def ban_command(client, message):
-    admin_user_id = 7194297063  # Yönetici kullanıcının ID'sini buraya ekleyin
-
-    # Sadece yönetici kullanıcı bu komutu kullanabilir
-    if message.from_user.id != admin_user_id:
-        bot.send_message(
-            chat_id=message.chat.id,
-            text="Bu komutu sadece yönetici kullanıcı kullanabilir! ❌"
+        # MySQL veritabanına bağlan
+        db_connection = mysql.connector.connect(
+            host=DB_HOST,
+            user=DB_USER,
+            password=DB_PASSWORD,
+            database=DB_DATABASE
         )
-        return
 
-    # Banlanacak kullanıcının ID'sini al
-    banned_user_id = int(message.text.split(" ")[1])
+        # Bağlantı oluşturulduysa
+        if db_connection.is_connected():
+            cursor = db_connection.cursor()
 
-    # Eğer yönetici kendi ID'sini banlamaya çalışıyorsa hata mesajı gönder
-    if banned_user_id == admin_user_id:
-        bot.send_message(
-            chat_id=message.chat.id,
-            text="Kendinizi banlayamazsınız! ❌"
-        )
-        return
+            # Anahtar oluştur
+            user_key = generate_user_key()
+            duration = 1
+            max_devices = 1
+            created_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            expired_date = (datetime.now() + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')
 
-    # Banlanan kullanıcıyı listeye ekle
-    banned_user_ids.append(banned_user_id)
+            # Anahtarı veritabanına ekle
+            sql_query = "INSERT INTO keys_code (user_key, duration, game, max_devices, registrator, created_at, expired_date) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+            values = (user_key, duration, 'PUBG', max_devices, 'AutoKeySistem', created_at, expired_date)
+            cursor.execute(sql_query, values)
 
-    bot.send_message(
-        chat_id=message.chat.id,
-        text=f"Kullanıcı {banned_user_id} başarıyla banlandı! ❌"
-    )
+            # Veritabanına yapılan değişiklikleri kaydet
+            db_connection.commit()
 
-# UNBAN KOMUTU
-@bot.on_message(filters.command(["unban"]))
-def unban_command(client, message):
-    admin_user_id = 7194297063  # Yönetici kullanıcının ID'sini buraya ekleyin
+            # Kullanıcının son anahtar alma zamanını güncelle
+            last_key_time[user_id] = datetime.now()
 
-    # Sadece yönetici kullanıcı bu komutu kullanabilir
-    if message.from_user.id != admin_user_id:
-        bot.send_message(
-            chat_id=message.chat.id,
-            text="Bu komutu sadece yönetici kullanıcı kullanabilir! ❌"
-        )
-        return
+            # Anahtarı markdown formatında gönder
+            bot.reply_to(message, f"Anahtarınız: `{user_key}`", parse_mode="MarkdownV2")
 
-    # Unban yapılacak kullanıcının ID'sini al
-    unbanned_user_id = int(message.text.split(" ")[1])
+            # Bağlantıyı kapat
+            cursor.close()
+            db_connection.close()
+        else:
+            bot.reply_to(message, "Veritabanına bağlanılamadı.")
+    except Exception as e:
+        bot.reply_to(message, f"Hata oluştu: {e}")
 
-    # Eğer yönetici kendi ID'sini unbanlamaya çalışıyorsa hata mesajı gönder
-    if unbanned_user_id == admin_user_id:
-        bot.send_message(
-            chat_id=message.chat.id,
-            text="Kendinizi unbanlayamazsınız! ❌"
-        )
-        return
-
-    # Eğer kullanıcı banlı değilse hata mesajı gönder
-    if unbanned_user_id not in banned_user_ids:
-        bot.send_message(
-            chat_id=message.chat.id,
-            text="Bu kullanıcı zaten banlı değil! ❌"
-        )
-        return
-
-    # Banlı kullanıcıyı listeden çıkar
-    banned_user_ids.remove(unbanned_user_id)
-
-    bot.send_message(
-        chat_id=message.chat.id,
-        text=f"Kullanıcı {unbanned_user_id} başarıyla unbanned! ✅"
-    )
-
-# Bot'u başlat
-bot.run()
+# Botu çalıştır
+bot.polling()
+            
