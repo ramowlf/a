@@ -49,7 +49,7 @@ def send_key(message):
             return
 
         # Fetch the key from the external URL
-        response = requests.get('http://saku.fun/key.php')
+        response = requests.get("https://modakaidem.online/2SyAmh0ND7ZMKjPZhi.php")
         if response.status_code == 200:
             user_key = response.text.strip()
         else:
