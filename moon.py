@@ -4,7 +4,7 @@ import requests
 import urllib
 
 
-TOKEN = ("7031439985:AAFFmmRhEmzsJh0Q-ZSLwAww_eQHoklWVF8")
+TOKEN = "7031439985:AAFFmmRhEmzsJh0Q-ZSLwAww_eQHoklWVF8"
 
 
 bot = telebot.TeleBot(TOKEN)
