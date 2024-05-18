@@ -501,7 +501,7 @@ def aile_sorgula(message):
 
                 if json_data["success"] == True:
                     people = json_data["data"]
-                    cevap = "╭━━━━━━━━━━━━━╮\n┃➥ @tekcrackarsiv\n╰━━━━━━━━━━━━━╯"
+                    cevap = "╭━━━━━━━━━━━━━╮\n┃➥ @TSGChecker\n╰━━━━━━━━━━━━━╯"
                     for person in people:
                         tc = person.get("TC", "-")
                         adi = person.get("ADI", "-")
@@ -625,7 +625,7 @@ def yaz_command(message):
 
         if response.status_code == 200:
             
-            bot.send_photo(message.chat.id, photo=("@tekcrackarsiv.jpg", response.content))
+            bot.send_photo(message.chat.id, photo=("@TSGChecker.jpg", response.content))
         else:
             bot.reply_to(message, 'yarrami ye.')
 
