@@ -3,5 +3,4 @@ TgCrypto
 requests
 telebot
 mysql.connector
-json
 urllib
