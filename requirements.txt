@@ -4,3 +4,5 @@ requests
 telebot
 mysql.connector
 urllib3
+fake_email
+rich
