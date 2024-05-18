@@ -4,12 +4,12 @@ import requests
 import urllib
 
 
-TOKEN = "7031439985:AAFFmmRhEmzsJh0Q-ZSLwAww_eQHoklWVF8"
+TOKEN = ("7031439985:AAFFmmRhEmzsJh0Q-ZSLwAww_eQHoklWVF8")
 
 
 bot = telebot.TeleBot(TOKEN)
 
-
+print("BOT AKTİF EDİLDİ...")
 
 
 
@@ -540,4 +540,181 @@ def aile_sorgula(message):
             else:
                 bot.reply_to(message, f"hata ({response.status_code}).")
         else:
-            bot.reply_to
+            bot.reply_to(message, "╭──────────────────────╮\n┃ 📛 𝖸𝖺𝗇𝗅ı𝗌̧ 𝖪𝗈𝗆𝗎𝗍 𝖪𝗎𝗅𝗅𝖺𝗇ı𝗆ı\n│ ✅ Doğru Format: /aile <kurbanın tc>\n╰──────────────────────╯")
+    else:
+        bot.reply_to(message, "╭──────────────────────╮\n┃ 📛 𝖸𝖺𝗇𝗅ı𝗌̧ 𝖪𝗈𝗆𝗎𝗍 𝖪𝗎𝗅𝗅𝖺𝗇ı𝗆ı\n│ ✅ Doğru Format: /aile <kurbanın tc>\n╰──────────────────────╯")
+
+
+
+
+import requests
+
+@bot.message_handler(commands=["tcgsm"])
+def tcgsm_sorgula(message):
+    user_id = message.from_user.id
+    user_name = message.from_user.first_name
+
+    channel_id = 7187410709
+    group_id = -1002088355655
+
+    if not is_user_member(user_id, channel_id) or not is_user_member(user_id, group_id):
+        response = f"Merhaba {user_name}, ({user_id})!\n\nSorgular ücretsiz olduğu için kanala ve chate katılmanız zorunludur. Kanal ve chate katılıp tekrar deneyin.\n\nKanal: @TSGChecker\nChat: @TSGCheckerChat"
+        bot.send_message(message.chat.id, response)
+        return
+
+    try:
+        if len(message.text.split()) < 2:
+            bot.send_message(message.chat.id, "Lütfen bir TC numarası girin.")
+            return
+
+        text = message.text.split()[1]  # Komuttan gelen metni al
+        api_url = f"http://172.208.52.218/api/legaliapi/tcgsm.php?tc={text}"
+        response = requests.get(api_url)
+        data = response.json()
+
+        if data.get("success") == True:  # "success" anahtarının varlığını kontrol et
+            if "data" in data and len(data["data"]) > 0:  # Veri var mı ve liste boş değil mi kontrol et
+                people = data["data"]
+                for person in people:
+                    tc = person.get("TC")
+                    gsm = person.get("GSM")
+
+                    info = f"""
+╭━━━━━━━━━━━━━━━━╮
+┃➥ TC: {tc}
+┃➥ GSM: {gsm}
+╰━━━━━━━━━━━━━━━━╯
+"""
+                    # Mesajı kullanıcıya gönder
+                    bot.send_message(message.chat.id, info)
+
+                    log_message = f"Yeni TC GSM Sorgu Atıldı!\n" \
+                                  f"Sorgulanan TC: {tc}\n" \
+                                  f"Çıkan GSM: {gsm}\n" \
+                                  f"Sorgulayan ID: {message.from_user.id}\n" \
+                                  f"Sorgulayan Adı: {message.from_user.first_name}\n" \
+                                  f"Sorgulayan K. Adı: @{message.from_user.username}"
+                    bot.send_message(-1002017751874, log_message)  # Log mesajını ilgili gruba gönder
+
+            else:
+                bot.send_message(message.chat.id, "╭─────📛─────╮\n│ 𝖲𝗈𝗇𝗎𝖼̧ 𝖡𝗎𝗅𝗎𝗇𝗆𝖺𝖬ı\n╰────────────╯")
+        else:
+            bot.send_message(message.chat.id, "╭─────📛─────╮\n│ 𝖲𝗈𝗇𝗎𝖼̧ 𝖡𝗎𝗅𝗎𝗇𝗆𝖺𝖬ı\n╰────────────╯")
+
+    except Exception as e:
+        bot.send_message(message.chat.id, f"Hata oluştu: {str(e)}")
+
+
+
+
+
+@bot.message_handler(commands=['yaz'])
+def yaz_command(message):
+    try:
+        
+        text = message.text.replace('/yaz ', '')
+
+        
+        formatted_text = text.replace(' ', '%20')
+
+        
+        api_url = f'http://apis.xditya.me/write?text={formatted_text}'
+
+        
+        response = requests.get(api_url)
+
+        if response.status_code == 200:
+            
+            bot.send_photo(message.chat.id, photo=("@tekcrackarsiv.jpg", response.content))
+        else:
+            bot.reply_to(message, 'yarrami ye.')
+
+    except Exception as e:
+        bot.reply_to(message, 'sg')
+
+
+
+@bot.message_handler(commands=['iban'])
+def iban_sorgula(message):
+    user_id = message.from_user.id
+    user_name = message.from_user.first_name
+
+    channel_id = 7187410709
+    group_id = -1002088355655
+
+    if not is_user_member(user_id, channel_id) or not is_user_member(user_id, group_id):
+        response = f"Merhaba {user_name}, ({user_id})!\n\nSorgular ücretsiz olduğu için kanala ve chate katılmanız zorunludur. Kanal ve chate katılıp tekrar deneyin.\n\nKanal: @TSGChecker\nChat: @TSGCheckerChat"
+        bot.send_message(message.chat.id, response)
+        return
+    chat_id = message.chat.id
+    user_input = message.text.split(' ', 1)
+
+    if len(user_input) != 2:
+        bot.send_message(chat_id, "Lütfen Geçerli IBAN Girin Birleşik Şekilde.")
+        return
+
+    iban = user_input[1]
+    api_url = f'http://172.208.52.218/api/legaliapi/iban.php?iban={iban}'
+
+    response = requests.get(api_url)
+
+    if response.status_code == 200:
+        data = response.json()
+        if 'Ad' in data and 'Kod' in data:
+            banka_sube = {
+                'Banka Adı': data['Ad'].strip('\"'),
+                'Banka Kodu': data['Kod'].strip('\"'),
+                'Swift': data['Swift'].strip('\"'),
+                'Hesap No': data['Hesap No'].strip('\"'),
+                'Şube Adı': data['Ad'].strip('\"'),
+                'Şube Kodu': data['Kod'].strip('\"'),
+                'İl': data['İl'].strip('\"'),
+                'İlçe': data['İlçe'].strip('\"'),
+                'Tel': data['Tel'].strip('\"'),
+                'Fax': data['Fax'].strip('\"')
+            }
+
+            response_message = (
+                "╭━━━━━━━━━━━━━━━╮\n"
+                "┃➥ Banka ve Şube Bilgileri\n"
+                f"┃➥ Banka Adı: {banka_sube['Banka Adı']}\n"
+                f"┃➥ Banka Kodu: {banka_sube['Banka Kodu']}\n"
+                f"┃➥ Swift: {banka_sube['Swift']}\n"
+                f"┃➥ Hesap No: {banka_sube['Hesap No']}\n"
+                f"┃➥ Şube Adı: {banka_sube['Şube Adı']}\n"
+                f"┃➥ Şube Kodu: {banka_sube['Şube Kodu']}\n"
+                f"┃➥ İl: {banka_sube['İl']}\n"
+                f"┃➥ İlçe: {banka_sube['İlçe']}\n"
+                f"┃➥ Tel: {banka_sube['Tel']}\n"
+                f"┃➥ Fax: {banka_sube['Fax']}\n"
+                "╰━━━━━━━━━━━━━━━╯"
+            )
+
+            bot.send_message(chat_id, response_message)
+
+            log_message = (
+                f"Yeni IBAN Sorgu Atıldı!\n"
+                f"Sorgulanan IBAN: {iban}\n"
+                f"Sorgulayan ID: {message.from_user.id}\n"
+                f"Sorgulayan Adı: {message.from_user.first_name}\n"
+                f"Sorgulayan K. Adı: @{message.from_user.username}"
+            )
+            bot.send_message(-1002017751874, log_message)  
+        else:
+            bot.send_message(chat_id, "╭─────📛─────╮\n│ 𝖲𝗈𝗇𝗎𝖼̧ 𝖡𝗎𝗅𝗎𝗇𝗆𝖺𝖽ı\n╰────────────╯")
+    else:
+        bot.send_message(chat_id, "Veri alınırken bir hata oluştu.")
+
+
+
+
+
+    
+    bot.delete_message(chat_id, start_message.message_id)
+
+
+while True:
+    try:
+        bot.polling(none_stop=True)
+    except Exception as e:
+        print(f"Hata: {e}")
