@@ -703,14 +703,10 @@ def add_text_to_image(message):
         return
     
     text = message.text.replace('/meme ', '')  
-    url = "https://tsgmods.com.tr/oba.jpg"  
 
     try:
-        response = requests.get(url)
-        response.raise_for_status()  # Eğer istekte bir hata varsa burada hata yükseltilecek
-
-        # BytesIO nesnesini kullanmadan doğrudan resmi PIL kütüphanesi ile açıyoruz
-        image = Image.open(BytesIO(response.content))
+        # Local a.png dosyasından resmi yükle
+        image = Image.open("a.png")
 
         draw = ImageDraw.Draw(image)
 
@@ -734,10 +730,14 @@ def add_text_to_image(message):
         buffered.seek(0)
         bot.send_photo(message.chat.id, photo=buffered)
 
+    except requests.exceptions.HTTPError as err:
+        bot.send_message(message.chat.id, f"Resim işleme sırasında bir HTTP hatası oluştu. Hata: {err}")
+
     except Exception as e:
         bot.send_message(message.chat.id, f"Resim işleme sırasında bir hata oluştu. Hata: {e}")
 
-# Botu çalıştır
+
+
 
 
 while True:
