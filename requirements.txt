@@ -6,4 +6,6 @@ mysql.connector
 urllib3
 fake_email
 rich
+telebot
 pillow
+requests
