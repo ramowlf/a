@@ -6,6 +6,7 @@ import telebot
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 from io import BytesIO
 import requests
+import random
 
 
 TOKEN = ("7031439985:AAFFmmRhEmzsJh0Q-ZSLwAww_eQHoklWVF8")
