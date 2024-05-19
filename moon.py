@@ -687,6 +687,7 @@ import requests
 
 
 
+
 @bot.message_handler(commands=['meme'])
 def add_text_to_image(message):
     user_id = message.from_user.id
@@ -706,6 +707,9 @@ def add_text_to_image(message):
 
     try:
         response = requests.get(url)
+        response.raise_for_status()  # Eğer istekte bir hata varsa burada hata yükseltilecek
+
+        # BytesIO nesnesini kullanmadan doğrudan resmi PIL kütüphanesi ile açıyoruz
         image = Image.open(BytesIO(response.content))
 
         draw = ImageDraw.Draw(image)
@@ -714,6 +718,7 @@ def add_text_to_image(message):
 
         font_url = "https://fonts.gstatic.com/s/indieflower/v21/m8JVjfNVeKWVnh3QMuKkFcZlbg.ttf"
         font_response = requests.get(font_url)
+        font_response.raise_for_status()  # Font indirme hatası için kontrol ekliyoruz
         font = ImageFont.truetype(BytesIO(font_response.content), size=50)  
 
         draw.text(position, text, (160, 100, 50), font=font, spacing=10, align="center")  
@@ -731,6 +736,8 @@ def add_text_to_image(message):
 
     except Exception as e:
         bot.send_message(message.chat.id, f"Resim işleme sırasında bir hata oluştu. Hata: {e}")
+
+# Botu çalıştır
 
 
 while True:
