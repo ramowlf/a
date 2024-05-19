@@ -2,6 +2,10 @@ import telebot
 import json
 import requests
 import urllib
+import telebot
+from PIL import Image, ImageDraw, ImageFont, ImageFilter
+from io import BytesIO
+import requests
 
 
 TOKEN = ("7031439985:AAFFmmRhEmzsJh0Q-ZSLwAww_eQHoklWVF8")
@@ -682,6 +686,7 @@ import requests
 
 
 
+
 @bot.message_handler(commands=['meme'])
 def add_text_to_image(message):
     user_id = message.from_user.id
@@ -725,10 +730,8 @@ def add_text_to_image(message):
         bot.send_photo(message.chat.id, photo=buffered)
 
     except Exception as e:
-        bot.send_message(message.chat.id, "Resim işleme sırasında bir hata oluştu. Lütfen tekrar deneyin.{e}")
+        bot.send_message(message.chat.id, f"Resim işleme sırasında bir hata oluştu. Hata: {e}")
 
-
-    
 
 while True:
     try:
