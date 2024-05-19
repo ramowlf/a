@@ -808,7 +808,56 @@ def add_text_to_image(message):
 
     except Exception as e:
         bot.send_message(message.chat.id, f"Resim işleme sırasında bir hata oluştu. Hata: ")
+
+@bot.message_handler(commands=['got'])
+def add_text_to_image(message):
+    user_id = message.from_user.id
+    user_name = message.from_user.first_name
+
+    channel_id = -1002048770700
+    group_id = -1002088355655
+
+    # is_user_member fonksiyonunu tanımlayın ve kullanıcının üyelik durumunu kontrol edin
+    if not is_user_member(user_id, channel_id) or not is_user_member(user_id, group_id):
+        response = f"Merhaba {user_name}, ({user_id})!\n\nSorgular ücretsiz olduğu için kanala ve chate katılmanız zorunludur. Kanal ve chate katılıp tekrar deneyin.\n\nKanal: @TSGChecker\nChat: @TSGCheckerChat"
+        bot.send_message(message.chat.id, response)
+        return
+    
+    text = message.text.replace('/got ', '')  
+
+    try:
+        # Local /storage/emulated/0/b.png dosyasından resmi yükle
+        image = Image.open("b.png")
+
+        draw = ImageDraw.Draw(image)
+
+        position = (490, 480)  
+
+        font_url = "https://fonts.gstatic.com/s/indieflower/v21/m8JVjfNVeKWVnh3QMuKkFcZlbg.ttf"
+        font_response = requests.get(font_url)
+        font_response.raise_for_status()  # Font indirme hatası için kontrol ekliyoruz
+        font = ImageFont.truetype(BytesIO(font_response.content), size=50)  
+
+        draw.text(position, text, (160, 100, 50), font=font, spacing=10, align="center")  
+
+        shadow_position = (position[0] + 1, position[1] + 1)  
+        draw.text(shadow_position, text, (0, 0, 0), font=font, spacing=10, align="center")  
         
+        blurred_image = image.filter(ImageFilter.GaussianBlur(radius=1.6))
+
+        # Buffer kullanmadan doğrudan resmi göndermek mümkün değil, dolayısıyla resmi kaydedip gönderiyoruz
+        buffered = BytesIO()
+        blurred_image.save(buffered, format="JPEG")  # JPEG formatında kaydediyoruz, çünkü Telegram JPEG formatını daha iyi destekliyor
+        buffered.seek(0)
+        bot.send_photo(message.chat.id, photo=buffered)
+
+    except requests.exceptions.HTTPError as err:
+        bot.send_message(message.chat.id, f"Resim işleme sırasında bir HTTP hatası oluştu. Hata: {err}")
+
+    except Exception as e:
+        bot.send_message(message.chat.id, f"Resim işleme sırasında bir hata oluştu. Hata: {e}")
+
+
 @bot.message_handler(commands=['turk'])
 def send_random_percent(message):
     # Rastgele bir oran üret
