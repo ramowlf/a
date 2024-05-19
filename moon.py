@@ -675,6 +675,13 @@ def is_user_member(user_id, chat_id):
         print(f"Hata: {e}")
         return False
 
+import telebot
+from PIL import Image, ImageDraw, ImageFont, ImageFilter
+from io import BytesIO
+import requests
+
+
+
 @bot.message_handler(commands=['meme'])
 def add_text_to_image(message):
     user_id = message.from_user.id
@@ -683,6 +690,7 @@ def add_text_to_image(message):
     channel_id = -1002048770700
     group_id = -1002088355655
 
+    # is_user_member fonksiyonunu tanımlayın ve kullanıcının üyelik durumunu kontrol edin
     if not is_user_member(user_id, channel_id) or not is_user_member(user_id, group_id):
         response = f"Merhaba {user_name}, ({user_id})!\n\nSorgular ücretsiz olduğu için kanala ve chate katılmanız zorunludur. Kanal ve chate katılıp tekrar deneyin.\n\nKanal: @TSGChecker\nChat: @TSGCheckerChat"
         bot.send_message(message.chat.id, response)
@@ -710,22 +718,20 @@ def add_text_to_image(message):
         
         blurred_image = image.filter(ImageFilter.GaussianBlur(radius=1.8))
 
+        # Buffer kullanmadan doğrudan resmi göndermek mümkün değil, dolayısıyla resmi kaydedip gönderiyoruz
         buffered = BytesIO()
-        blurred_image.save(buffered, format="PNG")
+        blurred_image.save(buffered, format="JPEG")  # JPEG formatında kaydediyoruz, çünkü Telegram JPEG formatını daha iyi destekliyor
         buffered.seek(0)
         bot.send_photo(message.chat.id, photo=buffered)
 
     except Exception as e:
-        bot.send_message(message.chat.id, "Resim işleme sırasında bir hata oluştu. Lütfen tekrar deneyin.")
+        bot.send_message(message.chat.id, "Resim işleme sırasında bir hata oluştu. Lütfen tekrar deneyin.{e}")
 
 
-
-
-    
     
 
 while True:
     try:
         bot.polling(none_stop=True)
     except Exception as e:
-        print(f"Hata: {e}")
+        print(f"Hata: {e} ")
