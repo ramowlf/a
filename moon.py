@@ -10,7 +10,95 @@ TOKEN = ("7031439985:AAFFmmRhEmzsJh0Q-ZSLwAww_eQHoklWVF8")
 bot = telebot.TeleBot(TOKEN)
 
 print("BOT AKTİF EDİLDİ...")
+banned_user_ids = []
 
+# BAN KOMUTU
+@bot.message_handler(commands=['ban'])
+def ban_command(message):
+    admin_user_id = 6647465911  # Yönetici kullanıcının ID'sini buraya ekleyin
+
+    # Sadece yönetici kullanıcı bu komutu kullanabilir
+    if message.from_user.id != admin_user_id:
+        bot.send_message(
+            chat_id=message.chat.id,
+            text="Bu komutu sadece yönetici kullanıcı kullanabilir! ❌"
+        )
+        return
+
+    # Banlanacak kullanıcının ID'sini al
+    try:
+        banned_user_id = int(message.text.split(" ")[1])
+    except (IndexError, ValueError):
+        bot.send_message(
+            chat_id=message.chat.id,
+            text="Geçersiz kullanım! Kullanım: /ban <kullanıcı_id> ❌"
+        )
+        return
+
+    # Eğer yönetici kendi ID'sini banlamaya çalışıyorsa hata mesajı gönder
+    if banned_user_id == admin_user_id:
+        bot.send_message(
+            chat_id=message.chat.id,
+            text="Kendinizi banlayamazsınız! ❌"
+        )
+        return
+
+    # Banlanan kullanıcıyı listeye ekle
+    banned_user_ids.append(banned_user_id)
+
+    bot.send_message(
+        chat_id=message.chat.id,
+        text=f"Kullanıcı {banned_user_id} başarıyla banlandı! ❌"
+    )
+
+# UNBAN KOMUTU
+@bot.message_handler(commands=['unban'])
+def unban_command(message):
+    admin_user_id = 6647465911  # Yönetici kullanıcının ID'sini buraya ekleyin
+
+    # Sadece yönetici kullanıcı bu komutu kullanabilir
+    if message.from_user.id != admin_user_id:
+        bot.send_message(
+            chat_id=message.chat.id,
+            text="Bu komutu sadece yönetici kullanıcı kullanabilir! ❌"
+        )
+        return
+
+    # Unban yapılacak kullanıcının ID'sini al
+    try:
+        unbanned_user_id = int(message.text.split(" ")[1])
+    except (IndexError, ValueError):
+        bot.send_message(
+            chat_id=message.chat.id,
+            text="Geçersiz kullanım! Kullanım: /unban <kullanıcı_id> ❌"
+        )
+        return
+
+    # Eğer yönetici kendi ID'sini unbanlamaya çalışıyorsa hata mesajı gönder
+    if unbanned_user_id == admin_user_id:
+        bot.send_message(
+            chat_id=message.chat.id,
+            text="Kendinizi unbanlayamazsınız! ❌"
+        )
+        return
+
+    # Eğer kullanıcı banlı değilse hata mesajı gönder
+    if unbanned_user_id not in banned_user_ids:
+        bot.send_message(
+            chat_id=message.chat.id,
+            text="Bu kullanıcı zaten banlı değil! ❌"
+        )
+        return
+
+    # Banlı kullanıcıyı listeden çıkar
+    banned_user_ids.remove(unbanned_user_id)
+
+    bot.send_message(
+        chat_id=message.chat.id,
+        text=f"Kullanıcı {unbanned_user_id} başarıyla unbanned! ✅"
+    )
+
+# Botu başlatın
 
 
 
@@ -20,7 +108,7 @@ def start(message):
     user_name = message.from_user.first_name
 
     channel_id = -1002048770700
-    group_id =-1002088355655
+    group_id = -1002088355655
 
     if not is_user_member(user_id, channel_id) or not is_user_member(user_id, group_id):
         response = f"Merhaba {user_name}, ({user_id})!\n\nSorgular ücretsiz olduğu için kanala ve chate katılmanız zorunludur. Kanal ve chate katılıp tekrar deneyin.\n\nKanal: @TSGChecker\nChat: @TSGCheckerChat"
@@ -29,13 +117,15 @@ def start(message):
 
     response = f"🍀 Merhaba {user_name}, ({user_id})!\n\n📚 Tsg Oyun Botuna Hoş Geldin. Bu bot, Oyun İndirme Botudur Tamamen ücretsizdir\n\n📮 Sorgular Ücretsiz Olduğu İçin @TSGChecker Katılmak Zorunludur."
 
+    if user_id in banned_user_ids:
+        bot.send_message(message.chat.id, "Tebrikler Banlisiniz!")
+        return
+
     markup = telebot.types.InlineKeyboardMarkup()
     markup.add(
         telebot.types.InlineKeyboardButton("📢 Tsg Kanal", url="https://t.me/TSGChecker"),
         telebot.types.InlineKeyboardButton("💭 Tsg Sohbet", url="https://t.me/TSGCheckerChat"),
-        telebot.types.InlineKeyboardButton("👨🏼‍💻 İletişim", url="tg://user?id=6782067807")
-    )
-    markup.add(
+        telebot.types.InlineKeyboardButton("👨🏼‍💻 İletişim", url="tg://user?id=6782067807"),
         telebot.types.InlineKeyboardButton("🔍 Komutlar", callback_data="commands")
     )
 
@@ -48,26 +138,13 @@ def commands(call):
     markup = telebot.types.InlineKeyboardMarkup()
     markup.add(
         telebot.types.InlineKeyboardButton("Ad Soyad", callback_data="sorgu"),
-       telebot.types.InlineKeyboardButton("Ad Soyad İl", callback_data="sorgu1") 
-    )
-    markup.add(
+        telebot.types.InlineKeyboardButton("Ad Soyad İl", callback_data="sorgu1"),
         telebot.types.InlineKeyboardButton("TC Sorgu", callback_data="tc"),
-        telebot.types.InlineKeyboardButton("TC Plus", callback_data="tc_plus")
-        
-    )
-    markup.add(
-    telebot.types.InlineKeyboardButton("TC Gsm", callback_data="tc_gsm"),
-        telebot.types.InlineKeyboardButton("Aile", callback_data="aile")
-        
-    )
-    markup.add(
+        telebot.types.InlineKeyboardButton("TC Plus", callback_data="tc_plus"),
+        telebot.types.InlineKeyboardButton("TC Gsm", callback_data="tc_gsm"),
+        telebot.types.InlineKeyboardButton("Aile", callback_data="aile"),
         telebot.types.InlineKeyboardButton("Iban Sorgu", callback_data="iban_sorgu"),
-        
-        telebot.types.InlineKeyboardButton("Yazi", callback_data="yazi")
-    )
-    
-    markup.add(
-        
+        telebot.types.InlineKeyboardButton("Yazi", callback_data="yazi"),
         telebot.types.InlineKeyboardButton("⬅️ Geri", callback_data="back")
     )
 
@@ -103,7 +180,6 @@ def other_commands(call):
 
     bot.edit_message_text(response, call.message.chat.id, call.message.message_id, reply_markup=markup)
 
-
 def is_user_member(user_id, chat_id):
     try:
         member = bot.get_chat_member(chat_id, user_id)
@@ -111,6 +187,13 @@ def is_user_member(user_id, chat_id):
     except Exception as e:
         print(str(e))
         return False
+
+
+
+
+
+    # Diğer kontroller ve işlemler devam eder...
+    # ...
 
 
 @bot.message_handler(commands=["tc"])
@@ -125,8 +208,11 @@ def tc_sorgula(message):
         response = (f"Merhaba {user_name}, ({user_id})!\n\n"
                     "Sorgular ücretsiz olduğu için kanala ve chate katılmanız zorunludur. Kanal ve chate katılıp tekrar deneyin.\n\n"
                     "Kanal: @TSGChecker\nChat: @TSGCheckerChat")
-        
         bot.send_message(message.chat.id, response)
+        return
+
+    if user_id in banned_user_ids:
+        bot.send_message(message.chat.id, "Tebrikler Banlisiniz!")
         return
 
     mesaj = message.text
@@ -168,26 +254,22 @@ def tc_sorgula(message):
                                          f"┃➥ Uyruk: {uyrugu}\n"
                                          f"╰━━━━━━━━━━━━━━\n")
                         
-                        file_name = f"{user_id}_Bilgiler.txt"
-                        with open(file_name, 'w', encoding='utf-8') as file:
-                            file.write(response_text)
-                        
-                        with open(file_name, 'rb') as file:
-                            bot.send_document(message.chat.id, file, caption=f"*Bilgiler dosyanın içinde, {user_name}*", parse_mode="Markdown")
-                        import os
-                        os.remove(file_name)
+                        bot.send_message(message.chat.id, response_text)
                     else:
                         cevap = "╭─────📛─────╮\n│ 𝖲𝗈𝗇𝗎𝖼̧ 𝖡𝗎𝗅𝗎𝗇𝗆𝖺𝖽ı\n╰────────────╯"
+                        bot.send_message(message.chat.id, cevap)
                 else:
                     cevap = f"Api Hata Kodu: {response.status_code}"
+                    bot.send_message(message.chat.id, cevap)
             except Exception as e:
                 cevap = f"Hata oluştu: {str(e)}"
+                bot.send_message(message.chat.id, cevap)
         else:
             cevap = "╭──────────────────────╮\n┃ 📛 𝖸𝖺𝗇𝗅ı𝗌̧ 𝖪𝗈𝗆𝗎𝗍 𝖪𝗎𝗅𝗅𝖺𝗇ı𝗆ı\n│ ✅ 𝖣𝗈𝗀̆𝗋𝗎 𝖥𝗈𝗋𝗆𝖺𝗍: /tc <kurbanın tc>\n╰──────────────────────╯"
+            bot.send_message(message.chat.id, cevap)
     else:
         cevap = "╭──────────────────────╮\n┃ 📛 𝖸𝖺𝗇𝗅ı𝗌̧ 𝖪𝗈𝗆𝗎𝗍 𝖪𝗎𝗅𝗅𝖺𝗇ı𝗆ı\n│ ✅ 𝖣𝗈𝗀̆𝗋𝗎 𝖥𝗈𝗋𝗆𝖺𝗍: /tc <kurbanın tc>\n╰──────────────────────╯"
-    
-    bot.send_message(message.chat.id, cevap)
+        bot.send_message(message.chat.id, cevap)
 
 
 
@@ -213,6 +295,10 @@ def tcplus_sorgula(message):
                     f"Kanal ve chate katılıp tekrar deneyin.\n\n"
                     f"Kanal: @TSGChecker\nChat: @TSGChecker")
         bot.send_message(message.chat.id, response)
+        return
+
+    if user_id in banned_user_ids:
+        bot.send_message(message.chat.id, "Tebrikler Banlisiniz!")
         return
 
     mesaj = message.text
@@ -274,234 +360,16 @@ def tcplus_sorgula(message):
                     os.remove(file_name)
                 else:
                     cevap = "╭─────📛─────╮\n│ 𝖲𝗈𝗇𝗎𝖼̧ 𝖡𝗎𝗅𝗎𝗇𝗆𝖺𝖽ı\n╰────────────╯"
+                    bot.send_message(message.chat.id, cevap)
             else:
                 cevap = f"api hata kod: ({response.status_code}): {response.text}"
+                bot.send_message(message.chat.id, cevap)
         else:
             cevap = "╭──────────────────────╮\n┃ 📛 𝖸𝖺𝗇𝗅ı𝗌̧ 𝖪𝗈𝗆𝗎𝗍 𝖪𝗎𝗅𝗅𝖺𝗇ı𝗆ı\n┃ ✅ 𝖣𝗈𝗀̆𝗋𝗎 𝖥𝗈𝗋𝗆𝖺𝗍: /tcplus <kurbanın tc>\n╰──────────────────────╯"
+            bot.send_message(message.chat.id, cevap)
     else:
         cevap = "╭──────────────────────╮\n┃ 📛 𝖸𝖺𝗇𝗅ı𝗌̧ 𝖪𝗈𝗆𝗎𝗍 𝖪𝗎𝗅𝗅𝖺𝗇ı𝗆ı\n┃ ✅ 𝖣𝗈𝗀̆𝗋𝗎 𝖥𝗈𝗋𝗆𝖺𝗍: /tcplus <kurbanın tc>\n╰──────────────────────╯"
-    
-    bot.send_message(message.chat.id, cevap)
-
-
-@bot.message_handler(commands=["sorgu"])
-def sorgu(message):
-    user_id = message.from_user.id
-    user_name = message.from_user.first_name
-
-    channel_id = -1002048770700
-    group_id = -1002088355655
-
-    if not is_user_member(user_id, channel_id) or not is_user_member(user_id, group_id):
-        response = f"Merhaba {user_name}, ({user_id})!\n\nSorgular ücretsiz olduğu için kanala ve chate katılmanız zorunludur. Kanal ve chate katılıp tekrar deneyin.\n\nKanal: @TSGChecker\nChat: @TSGCheckerChat"
-        
-        bot.send_message(message.chat.id, response)
-        return
-
-    
-    text = message.text
-    words = text.split()
-
-    isim = None
-    isim2 = None
-    soyisim = None
-    il = None
-
-    for i in range(len(words)):
-        if words[i] == "-isim" and i < len(words) - 1:
-            isim = words[i + 1]
-        elif words[i] == "-isim2" and i < len(words) - 1:
-            isim2 = words[i + 1]
-        elif words[i] == "-soyisim" and i < len(words) - 1:
-            soyisim = words[i + 1]
-        elif words[i] == "-il" and i < len(words) - 1:
-            il = words[i + 1]
-
-    if not isim or not soyisim:
-        bot.reply_to(message, "╭───────────────────╮\n┃ 📛 𝖸𝖺𝗇𝗅ı𝗌̧ 𝖪𝗈𝗆𝗎𝗍 𝖪𝗎𝗅𝗅𝖺𝗇ı𝗆ı\n┃✅ 𝖣𝗈𝗀̆𝗋𝗎 𝖥𝗈𝗋𝗆𝖺𝗍: /sorgu -isim ┃<kurbanın adı> -soyisim <kurbanın ┃soy adı>\n╰───────────────────╯")
-        return
-
-    
-    log_message = f"Yeni Ad Soyad Sorgu Atıldı!\n" \
-                  f"Sorgulanan Ad: {isim}\n" \
-                  f"Sorgulanan Soyad: {soyisim}\n" \
-                  f"Sorgulayan ID: {message.from_user.id}\n" \
-                  f"Sorgulayan Adı: {message.from_user.first_name}\n" \
-                  f"Sorgulayan K. Adı: @{message.from_user.username}"
-    bot.send_message(-1002017751874, log_message) 
-
-    if isim2:
-        isim_encoded = urllib.parse.quote(f"{isim} {isim2}")
-    else:
-        isim_encoded = urllib.parse.quote(isim)
-
-    api_url = f"http://172.208.52.218/api/legaliapi/adsoyad.php?ad={isim_encoded}&soyad={soyisim}"
-
-    if il:
-        api_url += f"&il={il}"
-
-    response = requests.get(api_url)
-    data = response.json()
-
-    if data["status"] == "success":
-        people = data["data"]
-
-        for person in people:
-            tc = person["TC"]
-            adi = person["ADI"]
-            soyadi = person["SOYADI"]
-            dogumtarihi = person["DOGUMTARIHI"]
-            anneadi = person["ANNEADI"]
-            annetc = person["ANNETC"]
-            babaadi = person["BABAADI"]
-            babatc = person["BABATC"]
-            nufusil = person["NUFUSIL"]
-            nufusilce = person["NUFUSILCE"]
-
-            info =( f"""
-╭━━━━━━━━━━━━━╮
-┃➥ @TSGChecker
-╰━━━━━━━━━━━━━╯
-
-╭━━━━━━━━━━━━━━
-┃➥TC: {tc}
-┃➥ ADI: {adi}
-┃➥ SOY ADI: {soyadi}
-┃➥ DOĞUM TARİHİ: {dogumtarihi}
-┃➥ ANNE ADI: {anneadi}
-┃➥ ANNE TC: {annetc}
-┃➥ BABA ADI: {babaadi}
-┃➥ BABA TC: {babatc}
-┃➥ İL: {nufusil}
-┃➥ İLÇE: {nufusilce}
-╰━━━━━━━━━━━━━━
-""")
-        
-
-        file_name = f"{user_id}_Bilgiler.txt"
-        with open(file_name, 'w', encoding='utf-8') as file:
-            file.write(info)
-
-        with open(file_name, 'rb') as file:
-            bot.send_document(message.chat.id, file, caption=f"*Bilgiler dosyanın içinde, {user_name}*", parse_mode="Markdown")
-
-        import os
-        os.remove(file_name)
-    else:
-        bot.reply_to(message, "Veri Bulunamadı Ah Ah.")
-
-
-
-import urllib.parse
-import requests
-@bot.message_handler(commands=["sorgu1"])
-def sorgu(message):
-    user_id = message.from_user.id
-    user_name = message.from_user.first_name
-
-    channel_id = -1002048770700
-    group_id = -1002088355655
-
-    if not is_user_member(user_id, channel_id) or not is_user_member(user_id, group_id):
-        response = f"Merhaba {user_name}, ({user_id})!\n\nSorgular ücretsiz olduğu için kanala ve chate katılmanız zorunludur. Kanal ve chate katılıp tekrar deneyin.\n\nKanal: @TSGChecker\nChat: @TSGCheckerChat"
-        
-        bot.send_message(message.chat.id, response)
-        return
-
-    text = message.text
-    words = text.split()
-
-    isim = None
-    isim2 = None
-    soyisim = None
-    il = None
-
-    for i in range(len(words)):
-        if words[i] == "-isim" and i < len(words) - 1:
-            isim = words[i + 1]
-        elif words[i] == "-isim2" and i < len(words) - 1:
-            isim2 = words[i + 1]
-        elif words[i] == "-soyisim" and i < len(words) - 1:
-            soyisim = words[i + 1]
-        elif words[i] == "-il" and i < len(words) - 1:
-            il = words[i + 1]
-
-    if not isim or not soyisim:
-        bot.reply_to(message,         
-        "╭───────────────────╮\n┃ 📛 𝖸𝖺𝗇𝗅ı𝗌̧ 𝖪𝗈𝗆𝗎𝗍 𝖪𝗎𝗅𝗅𝖺𝗇ı𝗆ı\n┃✅ 𝖣𝗈𝗀̆𝗋𝗎 𝖥𝗈𝗋𝗆𝖺𝗍: /sorgu1 -isim ┃<kurbanın adı> -soyisim <kurbanın ┃soy adı> -il <kurbanın il>\n╰───────────────────╯")
-        return
-
-    log_message = f"Yeni Ad Soyad Sorgu Atıldı!\n" \
-                  f"Sorgulanan Ad: {isim}\n" \
-                  f"Sorgulanan Soyad: {soyisim}\n" \
-                  f"Sorgulayan ID: {message.from_user.id}\n" \
-                  f"Sorgulayan Adı: {message.from_user.first_name}\n" \
-                  f"Sorgulayan K. Adı: @{message.from_user.username}"
-    bot.send_message(-1002017751874, log_message)
-
-    if isim2:
-        isim_encoded = urllib.parse.quote(f"{isim} {isim2}")
-    else:
-        isim_encoded = urllib.parse.quote(isim)
-
-    api_url = f"http://172.208.52.218/api/legaliapi/adsoyadil.php?ad={isim_encoded}&soyad={soyisim}"
-
-    if il:
-        api_url += f"&il={il}"
-
-    response = requests.get(api_url)
-    data = response.json()
-
-    if data["status"] == "success":
-        people = data["data"]
-
-        response_text = ""
-        for person in people:
-            tc = person["TC"]
-            adi = person["ADI"]
-            soyadi = person["SOYADI"]
-            dogumtarihi = person["DOGUMTARIHI"]
-            anneadi = person["ANNEADI"]
-            annetc = person["ANNETC"]
-            babaadi = person["BABAADI"]
-            babatc = person["BABATC"]
-            nufusil = person["NUFUSIL"]
-            nufusilce = person["NUFUSILCE"]
-
-            info = f"""
-╭━━━━━━━━━━━━━╮
-┃➥ @TSGChecker
-╰━━━━━━━━━━━━━╯
-
-╭━━━━━━━━━━━━━━╮
-┃➥TC: {tc}
-┃➥ ADI: {adi}
-┃➥ SOYADI: {soyadi}
-┃➥ DOĞUM TARİHİ: {dogumtarihi}
-┃➥ ANNE ADI: {anneadi}
-┃➥ ANNE TC: {annetc}
-┃➥ BABA ADI: {babaadi}
-┃➥ BABA TC: {babatc}
-┃➥ İL: {nufusil}
-┃➥ İLÇE: {nufusilce}
-╰━━━━━━━━━━━━━━╯
-"""
-            response_text += info
-
-        file_name = f"{user_id}_Bilgiler.txt"
-        with open(file_name, 'w', encoding='utf-8') as file:
-            file.write(response_text)
-
-        with open(file_name, 'rb') as file:
-            bot.send_document(message.chat.id, file, caption=f"*Bilgiler dosyanın içinde, {user_name}*", parse_mode="Markdown")
-
-        import os
-        os.remove(file_name)
-    else:
-        bot.reply_to(message, "Veri Bulunamadı Ah Ah.")
-
-
-
+        bot.send_message(message.chat.id, cevap)
 
 @bot.message_handler(commands=["aile"])
 def aile_sorgula(message):
@@ -515,6 +383,8 @@ def aile_sorgula(message):
         response = f"Merhaba {user_name}, ({user_id})!\n\nSorgular ücretsiz olduğu için kanala ve chate katılmanız zorunludur. Kanal ve chate katılıp tekrar deneyin.\n\nKanal: @TSGChecker\nChat: @TSGCheckerChat"
         bot.send_message(message.chat.id, response)
         return
+
+    start_message = bot.send_message(message.chat.id, "İşleminiz Gerçekleştiriliyor, Lütfen Bekleyin...")
 
     log_message = f"Yeni Aile Sorgu Atıldı!\n" \
                   f"Sorgulanan TC: {message.text.replace('/aile', '').strip()}\n" \
@@ -552,8 +422,7 @@ def aile_sorgula(message):
                         uyruk = person.get("UYRUK", "-")
                         yakinlik = person.get("Yakınlık", "-")
 
-                        info = f"""
-╭━━━━━━━━━━━━━━
+                        info = f"""╭━━━━━━━━━━━━━━
 ┃➥ TC: {tc}
 ┃➥ ADI: {adi}
 ┃➥ SOY ADI: {soyadi}
@@ -566,32 +435,155 @@ def aile_sorgula(message):
 ┃➥ BABA TC: {babatc}
 ┃➥ UYRUK: {uyruk}
 ┃➥ YAKINLIK: {yakinlik}
-╰━━━━━━━━━━━━━━
-"""
+╰━━━━━━━━━━━━━━"""
                         cevap += info
 
-                    file_name = f"{user_id}_Bilgiler.txt"
+                    file_name = f"Sonuçlar.txt"
                     with open(file_name, 'w', encoding='utf-8') as file:
                         file.write(cevap)
 
                     with open(file_name, 'rb') as file:
-                        bot.send_document(message.chat.id, file, caption=f"*Bilgiler dosyanın içinde, {user_name}*", parse_mode="Markdown")
-
-                    import os
-                    os.remove(file_name)
+                        bot.send_document(message.chat.id, file, caption=f"**", parse_mode="Markdown")
+                    
+                    bot.delete_message(message.chat.id, start_message.message_id)
                 else:
                     bot.reply_to(message, "╭─────📛─────╮\n│ 𝖲𝗈𝗇𝗎𝖼̧ 𝖡𝗎𝗅𝗎𝗇𝗆𝖺𝖽ı\n╰────────────╯")
             else:
                 bot.reply_to(message, f"hata ({response.status_code}).")
         else:
-            bot.reply_to(message, "╭──────────────────────╮\n┃ 📛 𝖸𝖺𝗇𝗅ı𝗌̧ 𝖪𝗈𝗆𝗎𝗍 𝖪𝗎𝗅𝗅𝖺𝗇ı𝗆ı\n│ ✅ Doğru Format: /aile <kurbanın tc>\n╰──────────────────────╯")
+            bot.reply_to(message, "╭──────────────────────╮\n┃ 📛 Yanlış Formatlı TC\n┃ Kodu düzeltip tekrar deneyin.")
+
+
+
+@bot.message_handler(commands=["sorgu"])
+def sorgu(message):
+    user_id = message.from_user.id
+    user_name = message.from_user.first_name
+
+    channel_id = -1002048770700
+    group_id = -1002088355655
+
+    if not is_user_member(user_id, channel_id) or not is_user_member(user_id, group_id):
+        response = f"Merhaba {user_name}, ({user_id})!\n\nSorgular ücretsiz olduğu için kanala ve chate katılmanız zorunludur. Kanal ve chate katılıp tekrar deneyin.\n\nKanal: @TSGChecker\nChat: @TSGCheckerChat"
+        
+        bot.send_message(message.chat.id, response)
+        return
+
+    if user_id in banned_user_ids:
+        bot.send_message(message.chat.id, "Tebrikler Banlisiniz!")
+        return
+    
+    text = message.text
+    words = text.split()
+
+    isim = None
+    isim2 = None
+    soyisim = None
+    il = None
+    ilce = None
+
+    for i in range(len(words)):
+        if words[i] == "-isim" and i < len(words) - 1:
+            isim = words[i + 1]
+        elif words[i] == "-isim2" and i < len(words) - 1:
+            isim2 = words[i + 1]
+        elif words[i] == "-soyisim" and i < len(words) - 1:
+            soyisim = words[i + 1]
+        elif words[i] == "-il" and i < len(words) - 1:
+            il = words[i + 1]
+        elif words[i] == "-ilce" and i < len(words) - 1:
+            ilce = words[i + 1]
+
+    if not isim or not soyisim:
+        bot.reply_to(message, "Yanlış Kullanım! Doğru format: /sorgu -isim <isim> -soyisim <soyisim> [-il <il>] [-ilce <ilce>]")
+        return
+
+    chat_id = message.chat.id
+
+    log_message = f"Yeni Sorgu Atıldı!\n" \
+                  f"Sorgulanan İsim: {isim}\n" \
+                  f"Sorgulanan Soyisim: {soyisim}\n" \
+                  f"Sorgulanan İl: {il}\n" \
+                  f"Sorgulanan İlçe: {ilce}\n" \
+                  f"Sorgulayan ID: {user_id}\n" \
+                  f"Sorgulayan Adı: {user_name}\n" \
+                  f"Kanal ID: {chat_id}"
+
+    bot.send_message(-1002017751874, log_message)
+
+    start_message = bot.send_message(chat_id, "İşleminiz Gerçekleştiriliyor, Lütfen Bekleyin...")
+
+    if isim2:
+        isim_birlestirmesi = urllib.parse.quote(f"{isim} {isim2}")
     else:
-        bot.reply_to(message, "╭──────────────────────╮\n┃ 📛 𝖸𝖺𝗇𝗅ı𝗌̧ 𝖪𝗈𝗆𝗎𝗍 𝖪𝗎𝗅𝗅𝖺𝗇ı𝗆ı\n│ ✅ Doğru Format: /aile <kurbanın tc>\n╰──────────────────────╯")
+        isim_birlestirmesi = urllib.parse.quote(isim)
+
+    if il and ilce:
+        api_url = f"http://181.214.223.74/Kurdistan/Api/adsoyad.php?ad={isim_birlestirmesi}&soyad={soyisim}&il={il}&ilce={ilce}"
+    elif il:
+        api_url = f"http://181.214.223.74/Kurdistan/Api/adsoyad.php?ad={isim_birlestirmesi}&soyad={soyisim}&il={il}"
+    else:
+        api_url = f"http://181.214.223.74/Kurdistan/Api/adsoyad.php?ad={isim_birlestirmesi}&soyad={soyisim}"
+
+    response = requests.get(api_url)
+    data = response.json()
+
+    if data["success"] == "true":
+        number = data["number"]
+        if number > 0:
+            people = data["data"]
+            info = ""
+            for person in people:
+                tc = person["TC"]
+                ad = person["ADI"]
+                soyad = person["SOYADI"]
+                dogumtarihi = person["DOGUMTARIHI"]
+                nufusil = person["NUFUSIL"]
+                nufusilce = person["NUFUSILCE"]
+                anneadi = person["ANNEADI"]
+                annetc = person["ANNETC"]
+                babaadi = person["BABAADI"]
+                babatc = person["BABATC"]
+                uyrugu = person["UYRUK"]
+
+                info += f"""╭━━━━━━━━━━━━━╮
+┃➥ @TSGChecker
+╰━━━━━━━━━━━━━╯
+╭━━━━━━━━━━━━━━╮
+┃➥TC: {tc}
+┃➥ ADI: {ad}
+┃➥ SOYADI: {soyad}
+┃➥ DOĞUM TARİHİ: {dogumtarihi}
+┃➥ ANNE ADI: {anneadi}
+┃➥ ANNE TC: {annetc}
+┃➥ BABA ADI: {babaadi}
+┃➥ BABA TC: {babatc}
+┃➥ İL: {nufusil}
+┃➥ İLÇE: {nufusilce}
+┃➥ UYRUK: {uyrugu}
+╰━━━━━━━━━━━━━━╯
+"""
 
 
+            file_name = f"Sonuçlar.txt"
+            with open(file_name, 'w', encoding='utf-8') as file:
+                file.write(info)
 
-import requests
+            with open(file_name, 'rb') as file:
+                bot.send_document(message.chat.id, file)
+                bot.delete_message(chat_id, start_message.message_id)
+        else:
+            bot.send_message(message.chat.id, "Veri Bulunamadı.")
+            bot.delete_message(chat_id, start_message.message_id)
+    else:
+        bot.send_message(message.chat.id, "Data bulunamadı.")
+        bot.delete_message(chat_id, start_message.message_id)
+
+
 import os
+import requests
+
+
 
 @bot.message_handler(commands=["tcgsm"])
 def tcgsm_sorgula(message):
@@ -809,6 +801,14 @@ def refresh_handler(message):
         bot.send_message(message.chat.id, bilgi)
     else:
         bot.send_message(message.chat.id, "Önce /start komutunu kullanarak başlamalısınız.")
+
+
+
+
+
+
+
+
 
 
 
