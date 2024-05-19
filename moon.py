@@ -722,8 +722,7 @@ def add_text_to_image(message):
 
 
     
-    bot.delete_message(chat_id, start_message.message_id)
-
+    
 
 while True:
     try:
