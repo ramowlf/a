@@ -6,3 +6,4 @@ mysql.connector
 urllib3
 fake_email
 rich
+pillow
