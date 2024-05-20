@@ -862,14 +862,18 @@ def add_text_to_image(message):
         bot.send_message(message.chat.id, f"Resim işleme sırasında bir hata oluştu. Hata: {e}")
 
 
-
 # /türk komutuna yanıt ver
 @bot.message_handler(commands=['türk'])
 def send_random_percent(message):
     user_id = message.from_user.id
+    user_name = message.from_user.first_name
 
-    if not is_user_member(user_id, CHANNEL_ID):
-        bot.reply_to(message, "Bu komutu kullanabilmek için kanala üye olmanız gerekiyor.")
+    channel_id = -1002048770700
+    group_id = -1002088355655
+
+    if not is_user_member(user_id, channel_id) or not is_user_member(user_id, group_id):
+        response = f"Merhaba {user_name}, ({user_id})!\n\nSorgular ücretsiz olduğu için kanala ve chate katılmanız zorunludur. Kanal ve chate katılıp tekrar deneyin.\n\nKanal: @TSGChecker\nChat: @TSGCheckerChat"
+        bot.send_message(message.chat.id, response)
         return
 
     # Rastgele bir oran üret
@@ -882,11 +886,16 @@ def send_random_percent(message):
 
 # /kürt komutuna yanıt ver
 @bot.message_handler(commands=['kürt'])
-def send_random_percent(message):
+def send_random_percent_kurt(message):
     user_id = message.from_user.id
+    user_name = message.from_user.first_name
 
-    if not is_user_member(user_id, CHANNEL_ID):
-        bot.reply_to(message, "Bu komutu kullanabilmek için kanala üye olmanız gerekiyor.")
+    channel_id = -1002048770700
+    group_id = -1002088355655
+
+    if not is_user_member(user_id, channel_id) or not is_user_member(user_id, group_id):
+        response = f"Merhaba {user_name}, ({user_id})!\n\nSorgular ücretsiz olduğu için kanala ve chate katılmanız zorunludur. Kanal ve chate katılıp tekrar deneyin.\n\nKanal: @TSGChecker\nChat: @TSGCheckerChat"
+        bot.send_message(message.chat.id, response)
         return
 
     # Rastgele bir oran üret
@@ -899,11 +908,16 @@ def send_random_percent(message):
 
 # /mülteci komutuna yanıt ver
 @bot.message_handler(commands=['mülteci'])
-def send_random_percent(message):
+def send_random_percent_multeci(message):
     user_id = message.from_user.id
+    user_name = message.from_user.first_name
 
-    if not is_user_member(user_id, CHANNEL_ID):
-        bot.reply_to(message, "Bu komutu kullanabilmek için kanala üye olmanız gerekiyor.")
+    channel_id = -1002048770700
+    group_id = -1002088355655
+
+    if not is_user_member(user_id, channel_id) or not is_user_member(user_id, group_id):
+        response = f"Merhaba {user_name}, ({user_id})!\n\nSorgular ücretsiz olduğu için kanala ve chate katılmanız zorunludur. Kanal ve chate katılıp tekrar deneyin.\n\nKanal: @TSGChecker\nChat: @TSGCheckerChat"
+        bot.send_message(message.chat.id, response)
         return
 
     # Rastgele bir oran üret
@@ -914,24 +928,17 @@ def send_random_percent(message):
         response = f'%{random_percent:.2f} Mülteci\'sin! Abi, Esat Bize bum bum!'
     bot.reply_to(message, response)
 
-
-    
-    
-    
-
+# /muzik komutuna yanıt ver
 @bot.message_handler(commands=['muzik'])
 def download_music(message):
     user_id = message.from_user.id
     user_name = message.from_user.first_name
 
-     if not is_user_member(user_id, channel_id) or not is_user_member(user_id, group_id):
-        response = (
-            f"Merhaba {user_name} ({user_id})!\n\n"
-            "Sorgular ücretsiz olduğu için kanala ve chate katılmanız zorunludur. "
-            "Kanal ve chate katılıp tekrar deneyin.\n\n"
-            "Kanal: @TSGChecker\n"
-            "Chat: @TSGCheckerChat"
-        )
+    channel_id = -1002048770700
+    group_id = -1002088355655
+
+    if not is_user_member(user_id, channel_id) or not is_user_member(user_id, group_id):
+        response = f"Merhaba {user_name}, ({user_id})!\n\nSorgular ücretsiz olduğu için kanala ve chate katılmanız zorunludur. Kanal ve chate katılıp tekrar deneyin.\n\nKanal: @TSGChecker\nChat: @TSGCheckerChat"
         bot.send_message(message.chat.id, response)
         return
 
@@ -968,19 +975,19 @@ def download_music(message):
     else:
         bot.reply_to(message, "Müzik bulunamadı.")
 
+# /video komutuna yanıt ver
 @bot.message_handler(commands=['video'])
+
+
 def download_video(message):
     user_id = message.from_user.id
     user_name = message.from_user.first_name
 
+    channel_id = -1002048770700
+    group_id = -1002088355655
+
     if not is_user_member(user_id, channel_id) or not is_user_member(user_id, group_id):
-        response = (
-            f"Merhaba {user_name} ({user_id})!\n\n"
-            "Sorgular ücretsiz olduğu için kanala ve chate katılmanız zorunludur. "
-            "Kanal ve chate katılıp tekrar deneyin.\n\n"
-            "Kanal: @TSGChecker\n"
-            "Chat: @TSGCheckerChat"
-        )
+        response = f"Merhaba {user_name}, ({user_id})!\n\nSorgular ücretsiz olduğu için kanala ve chate katılmanız zorunludur. Kanal ve chate katılıp tekrar deneyin.\n\nKanal: @TSGChecker\nChat: @TSGCheckerChat"
         bot.send_message(message.chat.id, response)
         return
 
@@ -1017,7 +1024,7 @@ def download_video(message):
     else:
         bot.reply_to(message, "Video bulunamadı.")
 
-
+#
 
     
 
