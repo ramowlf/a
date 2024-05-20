@@ -863,7 +863,7 @@ def add_text_to_image(message):
 
 
 # /türk komutuna yanıt ver
-@bot.message_handler(commands=['türk'])
+@bot.message_handler(commands=['turk'])
 def send_random_percent(message):
     user_id = message.from_user.id
     user_name = message.from_user.first_name
@@ -885,7 +885,7 @@ def send_random_percent(message):
     bot.reply_to(message, response)
 
 # /kürt komutuna yanıt ver
-@bot.message_handler(commands=['kürt'])
+@bot.message_handler(commands=['kurt'])
 def send_random_percent_kurt(message):
     user_id = message.from_user.id
     user_name = message.from_user.first_name
@@ -907,7 +907,7 @@ def send_random_percent_kurt(message):
     bot.reply_to(message, response)
 
 # /mülteci komutuna yanıt ver
-@bot.message_handler(commands=['mülteci'])
+@bot.message_handler(commands=['multeci'])
 def send_random_percent_multeci(message):
     user_id = message.from_user.id
     user_name = message.from_user.first_name
