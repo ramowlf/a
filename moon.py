@@ -10,6 +10,8 @@ import random
 from pytube import YouTube
 from youtube_search import YoutubeSearch
 import os
+import types
+
 
 TOKEN = ("7031439985:AAFFmmRhEmzsJh0Q-ZSLwAww_eQHoklWVF8")
 
