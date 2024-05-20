@@ -9,6 +9,7 @@ rich
 telebot
 pillow
 requests
-pyTelegramBotAPI
-pytube
-youtube-search-python
+pyTelegramBotAPI==4.9.1
+pytube==15.0.0
+youtube-search-python==1.4.3
+
