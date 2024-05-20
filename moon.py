@@ -7,7 +7,9 @@ from PIL import Image, ImageDraw, ImageFont, ImageFilter
 from io import BytesIO
 import requests
 import random
-
+from pytube import YouTube
+from youtube_search import YoutubeSearch
+import os
 
 TOKEN = ("7031439985:AAFFmmRhEmzsJh0Q-ZSLwAww_eQHoklWVF8")
 
@@ -858,7 +860,7 @@ def add_text_to_image(message):
         bot.send_message(message.chat.id, f"Resim işleme sırasında bir hata oluştu. Hata: {e}")
 
 
-@bot.message_handler(commands=['turk'])
+@bot.message_handler(commands=['türk'])
 def send_random_percent(message):
     # Rastgele bir oran üret
     random_percent = random.uniform(1, 100)
@@ -871,7 +873,7 @@ def send_random_percent(message):
 
 
 
-@bot.message_handler(commands=['kurt'])
+@bot.message_handler(commands=['kürt'])
 def send_random_percent(message):
     # Rastgele bir oran üret
     random_percent = random.uniform(1, 100)
@@ -880,6 +882,100 @@ def send_random_percent(message):
     else:
         response = f'%{random_percent:.2f} Kürt\'sün! Hewal, Bomba Geldi Kaç!'
     bot.reply_to(message, response)
+    
+    
+    
+    
+@bot.message_handler(commands=['mülteci'])
+def send_random_percent(message):
+    # Rastgele bir oran üret
+    random_percent = random.uniform(1, 100)
+    if random_percent <= 50:
+        response = f'%{random_percent:.2f} Mülteci\'sin! Babayiğit, Helal lan!'
+    else:
+        response = f'%{random_percent:.2f} Mülteci\'sin! Abi, Esat Bize bum bum!'
+    bot.reply_to(message, response)
+
+
+
+    @bot.message_handler(content_types=['photo'])
+def analyze_image(message):
+
+    beauty_percentage = random.randint(1, 100)
+    
+    bot.send_photo(message.chat.id, message.photo[-1].file_id, caption=f'G眉zellik Y眉zdeniz : {beauty_percentage}%')
+    
+    @bot.message_handler(commands=['muzik'])
+def download_music(message):
+    query = " ".join(message.text.split()[1:])
+
+    if not query:
+        bot.reply_to(message, "Lütfen müzik adı veya YouTube linki girin. Örnek kullanım: /muzik şarkı adı")
+        return
+
+    try:
+        results = YoutubeSearch(query, max_results=1).to_dict()
+    except Exception as e:
+        bot.reply_to(message, f"Arama sırasında hata oluştu: {e}")
+        return
+
+    if results:
+        video_url = 'https://www.youtube.com' + results[0]['url_suffix']
+        bot.reply_to(message, f"Müzik indiriliyor: {video_url}")
+
+        try:
+            yt = YouTube(video_url)
+            if yt.age_restricted:
+                bot.reply_to(message, "Bu video yaş sınırlamalı ve indirilemiyor. Lütfen başka bir video seçin.")
+                return
+
+            audio_stream = yt.streams.filter(only_audio=True).first()
+            audio_path = audio_stream.download(output_path=".", filename=yt.title + ".mp3")
+
+            with open(audio_path, 'rb') as audio:
+                bot.send_audio(message.chat.id, audio, caption=f"{yt.title}\n@staticbots")
+
+            os.remove(audio_path)
+        except Exception as e:
+            bot.reply_to(message, f"Müzik indirilemedi. Hata: {e}")
+    else:
+        bot.reply_to(message, "Müzik bulunamadı.")
+
+@bot.message_handler(commands=['video'])
+def download_video(message):
+    query = " ".join(message.text.split()[1:])
+
+    if not query:
+        bot.reply_to(message, "Lütfen video adı veya YouTube linki girin. Örnek kullanım: /video video adı")
+        return
+
+    try:
+        results = YoutubeSearch(query, max_results=1).to_dict()
+    except Exception as e:
+        bot.reply_to(message, f"Arama sırasında hata oluştu: {e}")
+        return
+
+    if results:
+        video_url = 'https://www.youtube.com' + results[0]['url_suffix']
+        bot.reply_to(message, f"Video indiriliyor: {video_url}")
+
+        try:
+            yt = YouTube(video_url)
+            if yt.age_restricted:
+                bot.reply_to(message, "Bu video yaş sınırlamalı ve indirilemiyor. Lütfen başka bir video seçin.")
+                return
+
+            video_stream = yt.streams.filter(progressive=True, file_extension='mp4').first()
+            video_path = video_stream.download(output_path=".", filename=yt.title + ".mp4")
+
+            with open(video_path, 'rb') as video:
+                bot.send_video(message.chat.id, video, caption=f"{yt.title}\n@staticbots", supports_streaming=True)
+
+            os.remove(video_path)
+        except Exception as e:
+            bot.reply_to(message, f"Video indirilemedi. Hata: {e}")
+    else:
+        bot.reply_to(message, "Video bulunamadı.")
     
 while True:
     try:
