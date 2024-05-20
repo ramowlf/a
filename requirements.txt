@@ -9,3 +9,6 @@ rich
 telebot
 pillow
 requests
+pyTelegramBotAPI
+pytube
+youtube-search-python
