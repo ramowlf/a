@@ -924,7 +924,7 @@ def download_music(message):
     user_id = message.from_user.id
     user_name = message.from_user.first_name
 
-    if not is_user_member(user_id, CHANNEL_ID) or not is_user_member(user_id, GROUP_ID):
+     if not is_user_member(user_id, channel_id) or not is_user_member(user_id, group_id):
         response = (
             f"Merhaba {user_name} ({user_id})!\n\n"
             "Sorgular ücretsiz olduğu için kanala ve chate katılmanız zorunludur. "
@@ -973,7 +973,7 @@ def download_video(message):
     user_id = message.from_user.id
     user_name = message.from_user.first_name
 
-    if not is_user_member(user_id, CHANNEL_ID) or not is_user_member(user_id, GROUP_ID):
+    if not is_user_member(user_id, channel_id) or not is_user_member(user_id, group_id):
         response = (
             f"Merhaba {user_name} ({user_id})!\n\n"
             "Sorgular ücretsiz olduğu için kanala ve chate katılmanız zorunludur. "
