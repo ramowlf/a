@@ -862,8 +862,16 @@ def add_text_to_image(message):
         bot.send_message(message.chat.id, f"Resim işleme sırasında bir hata oluştu. Hata: {e}")
 
 
+
+# /türk komutuna yanıt ver
 @bot.message_handler(commands=['türk'])
 def send_random_percent(message):
+    user_id = message.from_user.id
+
+    if not is_user_member(user_id, CHANNEL_ID):
+        bot.reply_to(message, "Bu komutu kullanabilmek için kanala üye olmanız gerekiyor.")
+        return
+
     # Rastgele bir oran üret
     random_percent = random.uniform(1, 100)
     if random_percent <= 50:
@@ -872,11 +880,15 @@ def send_random_percent(message):
         response = f'%{random_percent:.2f} Türk\'sün! Babayiğit, Gel PKK avına çıkalım!'
     bot.reply_to(message, response)
 
-
-
-
+# /kürt komutuna yanıt ver
 @bot.message_handler(commands=['kürt'])
 def send_random_percent(message):
+    user_id = message.from_user.id
+
+    if not is_user_member(user_id, CHANNEL_ID):
+        bot.reply_to(message, "Bu komutu kullanabilmek için kanala üye olmanız gerekiyor.")
+        return
+
     # Rastgele bir oran üret
     random_percent = random.uniform(1, 100)
     if random_percent <= 50:
@@ -884,12 +896,16 @@ def send_random_percent(message):
     else:
         response = f'%{random_percent:.2f} Kürt\'sün! Hewal, Bomba Geldi Kaç!'
     bot.reply_to(message, response)
-    
-    
-    
-    
+
+# /mülteci komutuna yanıt ver
 @bot.message_handler(commands=['mülteci'])
 def send_random_percent(message):
+    user_id = message.from_user.id
+
+    if not is_user_member(user_id, CHANNEL_ID):
+        bot.reply_to(message, "Bu komutu kullanabilmek için kanala üye olmanız gerekiyor.")
+        return
+
     # Rastgele bir oran üret
     random_percent = random.uniform(1, 100)
     if random_percent <= 50:
@@ -899,18 +915,27 @@ def send_random_percent(message):
     bot.reply_to(message, response)
 
 
-
-    @bot.message_handler(content_types=['photo'])
-def analyze_image(message):
-
-    beauty_percentage = random.randint(1, 100)
     
-    bot.send_photo(message.chat.id, message.photo[-1].file_id, caption=f'G眉zellik Y眉zdeniz : {beauty_percentage}%')
     
-    @bot.message_handler(commands=['muzik'])
+    
+
+@bot.message_handler(commands=['muzik'])
 def download_music(message):
-    query = " ".join(message.text.split()[1:])
+    user_id = message.from_user.id
+    user_name = message.from_user.first_name
 
+    if not is_user_member(user_id, CHANNEL_ID) or not is_user_member(user_id, GROUP_ID):
+        response = (
+            f"Merhaba {user_name} ({user_id})!\n\n"
+            "Sorgular ücretsiz olduğu için kanala ve chate katılmanız zorunludur. "
+            "Kanal ve chate katılıp tekrar deneyin.\n\n"
+            "Kanal: @TSGChecker\n"
+            "Chat: @TSGCheckerChat"
+        )
+        bot.send_message(message.chat.id, response)
+        return
+
+    query = " ".join(message.text.split()[1:])
     if not query:
         bot.reply_to(message, "Lütfen müzik adı veya YouTube linki girin. Örnek kullanım: /muzik şarkı adı")
         return
@@ -945,8 +970,21 @@ def download_music(message):
 
 @bot.message_handler(commands=['video'])
 def download_video(message):
-    query = " ".join(message.text.split()[1:])
+    user_id = message.from_user.id
+    user_name = message.from_user.first_name
 
+    if not is_user_member(user_id, CHANNEL_ID) or not is_user_member(user_id, GROUP_ID):
+        response = (
+            f"Merhaba {user_name} ({user_id})!\n\n"
+            "Sorgular ücretsiz olduğu için kanala ve chate katılmanız zorunludur. "
+            "Kanal ve chate katılıp tekrar deneyin.\n\n"
+            "Kanal: @TSGChecker\n"
+            "Chat: @TSGCheckerChat"
+        )
+        bot.send_message(message.chat.id, response)
+        return
+
+    query = " ".join(message.text.split()[1:])
     if not query:
         bot.reply_to(message, "Lütfen video adı veya YouTube linki girin. Örnek kullanım: /video video adı")
         return
@@ -978,7 +1016,11 @@ def download_video(message):
             bot.reply_to(message, f"Video indirilemedi. Hata: {e}")
     else:
         bot.reply_to(message, "Video bulunamadı.")
+
+
+
     
+
 while True:
     try:
         bot.polling(none_stop=True)
