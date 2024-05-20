@@ -967,7 +967,7 @@ def download_music(message):
             audio_path = audio_stream.download(output_path=".", filename=yt.title + ".mp3")
 
             with open(audio_path, 'rb') as audio:
-                bot.send_audio(message.chat.id, audio, caption=f"{yt.title}\n@staticbots")
+                bot.send_audio(message.chat.id, audio, caption=f"{yt.title}\n@TSGChecker")
 
             os.remove(audio_path)
         except Exception as e:
@@ -1016,7 +1016,7 @@ def download_video(message):
             video_path = video_stream.download(output_path=".", filename=yt.title + ".mp4")
 
             with open(video_path, 'rb') as video:
-                bot.send_video(message.chat.id, video, caption=f"{yt.title}\n@staticbots", supports_streaming=True)
+                bot.send_video(message.chat.id, video, caption=f"{yt.title}\n@TSGChecker", supports_streaming=True)
 
             os.remove(video_path)
         except Exception as e:
