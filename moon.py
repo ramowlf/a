@@ -1498,7 +1498,7 @@ def download_video(message):
 @bot.message_handler(commands=['cm'])
 def send_random_number(message):
     random_number = random.randint(1, 40)
-    bot.reply_to(message, f"ÇAVUŞUN BOYU: {random_number}")
+    bot.reply_to(message, f"ÇAVUŞUN BOYU: {random_number} cm")
 
 
 while True:
