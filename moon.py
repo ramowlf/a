@@ -1,71 +1,74 @@
 import telebot
 import requests
-import sqlite3
 from datetime import datetime, timedelta
 
-token = "7012512707:AAFc3gLNJdzxvmNfRv7cqAjqlCInSy_9qEE"
-bot = telebot.TeleBot(token)
+TOKEN = '7012512707:AAFc3gLNJdzxvmNfRv7cqAjqlCInSy_9qEE'
 
-print("BOT AKTİF EDİLDİ")
+bot = telebot.TeleBot(TOKEN)
 
-def create_connection():
-    return sqlite3.connect('user_data.db')
-
-def create_users_table():
-    conn = create_connection()
-    c = conn.cursor()
-    c.execute('''CREATE TABLE IF NOT EXISTS users
-                 (user_id INTEGER PRIMARY KEY, last_key_time TIMESTAMP)''')
-    conn.commit()
-    conn.close()
-
-def handle_key_command(message):
-    current_time = datetime.now()
+@bot.message_handler(commands=['start'])
+def start(message):
+    user_id = message.from_user.id
+    first_name = message.from_user.first_name
     
-    user_id = message.chat.id
+    welcome_message = f"*TSG Key Botuna Hoşgeldin {first_name} \n/key yazarak keyini alabilirsin.\n\n! Spam yaparsan bottan banlanırsın.*"
     
-    conn = create_connection()
-    c = conn.cursor()
-    c.execute("SELECT * FROM users WHERE user_id=?", (user_id,))
-    user_data = c.fetchone()
-    
-    if user_data:
-        last_key_time = datetime.strptime(user_data[1], "%Y-%m-%d %H:%M:%S.%f")  
-        time_passed = current_time - last_key_time
+    bot.reply_to(message, welcome_message, parse_mode="Markdown")
 
-        if time_passed < timedelta(days=1):
-            remaining_time = timedelta(days=1) - time_passed
-            bot.reply_to(message, f"24 saat içinde sadece bir kez key komutunu kullanabilirsiniz.")
-            conn.close()
-            return
-    
+def is_user_in_channel(chat_id, channel_username):
     try:
-        new_key = requests.get("https://tsgmods.com.tr/a.php").text
-        bot.reply_to(message, f"Keyiniz: {new_key}")
+        chat_member = bot.get_chat_member(channel_username, chat_id)
+        return chat_member.status != "left"
+    except telebot.apihelper.ApiException as e:
+        print(f"API Hatası: {e}")
+        return False
+
+last_key_time = {}
+
+def is_user_allowed_to_get_key(user_id):
+    if user_id in last_key_time:
+        last_retrieval_time = last_key_time[user_id]
+        time_since_last_retrieval = datetime.now() - last_retrieval_time
         
-        if user_data:
-            c.execute("UPDATE users SET last_key_time=? WHERE user_id=?", (current_time, user_id))
-        else:
-            c.execute("INSERT INTO users (user_id, last_key_time) VALUES (?, ?)", (user_id, current_time))
-        conn.commit()
-    except Exception as e:
-        print(f"Hata: {e}")
-        bot.reply_to(message, "Bir hata oluştu. Lütfen daha sonra tekrar deneyin.")
-    finally:
-        conn.close()  
+        if time_since_last_retrieval < timedelta(hours=24):
+            return False
+    return True
 
 @bot.message_handler(commands=['key'])
-def handle_key_command_wrapper(message):
-    handle_key_command(message)
-
-# Botu başlatmadan önce veritabanı ve tablo oluşturma
-create_users_table()
-
-while True:
+def send_key(message):
     try:
-        bot.polling(none_stop=True)
-    except Exception as e:
-        print(f"Hata: {e}")
+        user_id = message.from_user.id
+        
+        channel_username = '@TSGxMODS'
+        if not is_user_in_channel(user_id, channel_username):
+            bot.reply_to(message, "Anahtar alabilmek için önce @TSGxMODS kanalımıza katılmanız gerekmektedir.", parse_mode="Markdown")
+            return
+               
+        if not is_user_allowed_to_get_key(user_id):
+            bot.reply_to(message, "24 saat içinde bir kez anahtar alabilirsiniz.")
+            return
 
-print("BOT AKTİF EDİLDİ")
-            
+        response = requests.get("https://tsgmods.com.tr/2SyAmh0ND7ZMKjPZhi.php")
+        
+        if response.status_code == 200:
+            user_key = response.text.strip()
+        else:
+            bot.reply_to(message, f"Anahtar alınırken bir hata oluştu: HTTP {response.status_code}")
+            return
+
+        last_key_time[user_id] = datetime.now()
+
+        bot.reply_to(message, f"Anahtarınız: `{user_key}`", parse_mode="MarkdownV2")
+        
+        log_message = f"Yeni Anahtar Atıldı!\n" \
+                      f"Anahtar: {user_key}\n" \
+                      f"Atayan ID: {message.from_user.id}\n" \
+                      f"Atayan Adı: {message.from_user.first_name}\n" \
+                      f"Atayan K. Adı: @{message.from_user.username}\n" \
+                      f"Tarih ve Saat: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+        bot.send_message(-1002079991334, log_message)  
+
+    except Exception as e:
+        bot.reply_to(message, f"Hata oluştu: {e}")
+
+bot.polling()
