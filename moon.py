@@ -354,9 +354,9 @@ def aile_sorgula(message):
             bot.reply_to(message, "╭──────────────────────╮\n┃ 📛 Yanlış Formatlı TC\n┃ Kodu düzeltip tekrar deneyin.")
 
 
-
 @bot.message_handler(commands=["sorgu"])
 def sorgu(message):
+    """Handle the /sorgu command."""
     user_id = message.from_user.id
     user_name = message.from_user.first_name
 
@@ -364,22 +364,26 @@ def sorgu(message):
     group_id = -1002088355655
 
     if not is_user_member(user_id, channel_id) or not is_user_member(user_id, group_id):
-        response = f"Merhaba {user_name}, ({user_id})!\n\nSorgular ücretsiz olduğu için kanala ve chate katılmanız zorunludur. Kanal ve chate katılıp tekrar deneyin.\n\nKanal: @TSGChecker\nChat: @TSGCheckerChat"
-        
+        response = (f"Merhaba {user_name}, ({user_id})!\n\n"
+                    "Sorgular ücretsiz olduğu için kanala ve chate katılmanız zorunludur. "
+                    "Kanal ve chate katılıp tekrar deneyin.\n\n"
+                    "Kanal: @TSGChecker\n"
+                    "Chat: @TSGCheckerChat")
         bot.send_message(message.chat.id, response)
         return
 
-   
-    
+    # Parse the command arguments
     text = message.text
     words = text.split()
 
+    # Initialize parameters
     isim = None
     isim2 = None
     soyisim = None
     il = None
     ilce = None
 
+    # Parse the user input
     for i in range(len(words)):
         if words[i] == "-isim" and i < len(words) - 1:
             isim = words[i + 1]
@@ -398,53 +402,61 @@ def sorgu(message):
 
     chat_id = message.chat.id
 
-    log_message = f"Yeni Sorgu Atıldı!\n" \
-                  f"Sorgulanan İsim: {isim}\n" \
-                  f"Sorgulanan Soyisim: {soyisim}\n" \
-                  f"Sorgulanan İl: {il}\n" \
-                  f"Sorgulanan İlçe: {ilce}\n" \
-                  f"Sorgulayan ID: {user_id}\n" \
-                  f"Sorgulayan Adı: {user_name}\n" \
-                  f"Kanal ID: {chat_id}"
+    log_message = (f"Yeni Sorgu Atıldı!\n"
+                   f"Sorgulanan İsim: {isim}\n"
+                   f"Sorgulanan Soyisim: {soyisim}\n"
+                   f"Sorgulanan İl: {il}\n"
+                   f"Sorgulanan İlçe: {ilce}\n"
+                   f"Sorgulayan ID: {user_id}\n"
+                   f"Sorgulayan Adı: {user_name}\n"
+                   f"Kanal ID: {chat_id}")
 
     bot.send_message(-1002017751874, log_message)
 
     start_message = bot.send_message(chat_id, "İşleminiz Gerçekleştiriliyor, Lütfen Bekleyin...")
 
-    if isim2:
-        isim_birlestirmesi = urllib.parse.quote(f"{isim} {isim2}")
-    else:
-        isim_birlestirmesi = urllib.parse.quote(isim)
+    try:
+        # Construct the API URL with proper encoding
+        api_url = "http://181.214.223.74/Kurdistan/Api/adsoyad.php"
+        params = {
+            'ad': f"{isim} {isim2}" if isim2 else isim,
+            'soyad': soyisim
+        }
+        if il:
+            params['il'] = il
+        if ilce:
+            params['ilce'] = ilce
 
-    if il and ilce:
-        api_url = f"http://181.214.223.74/Kurdistan/Api/adsoyad.php?ad={isim_birlestirmesi}&soyad={soyisim}&il={il}&ilce={ilce}"
-    elif il:
-        api_url = f"http://181.214.223.74/Kurdistan/Api/adsoyad.php?ad={isim_birlestirmesi}&soyad={soyisim}&il={il}"
-    else:
-        api_url = f"http://181.214.223.74/Kurdistan/Api/adsoyad.php?ad={isim_birlestirmesi}&soyad={soyisim}"
+        encoded_params = urllib.parse.urlencode(params)
+        api_url = f"{api_url}?{encoded_params}"
 
-    response = requests.get(api_url)
-    data = response.json()
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
+        }
 
-    if data["success"] == "true":
-        number = data["number"]
-        if number > 0:
-            people = data["data"]
-            info = ""
-            for person in people:
-                tc = person["TC"]
-                ad = person["ADI"]
-                soyad = person["SOYADI"]
-                dogumtarihi = person["DOGUMTARIHI"]
-                nufusil = person["NUFUSIL"]
-                nufusilce = person["NUFUSILCE"]
-                anneadi = person["ANNEADI"]
-                annetc = person["ANNETC"]
-                babaadi = person["BABAADI"]
-                babatc = person["BABATC"]
-                uyrugu = person["UYRUK"]
+        response = requests.get(api_url, headers=headers)
+        response.raise_for_status()
+        data = response.json()
 
-                info += f"""╭━━━━━━━━━━━━━╮
+        if data.get("success") == "true":
+            number = data.get("number", 0)
+            if number > 0:
+                people = data.get("data", [])
+                info = ""
+                for person in people:
+                    tc = person.get("TC", "Bilinmiyor")
+                    ad = person.get("ADI", "Bilinmiyor")
+                    soyad = person.get("SOYADI", "Bilinmiyor")
+                    dogumtarihi = person.get("DOGUMTARIHI", "Bilinmiyor")
+                    nufusil = person.get("NUFUSIL", "Bilinmiyor")
+                    nufusilce = person.get("NUFUSILCE", "Bilinmiyor")
+                    anneadi = person.get("ANNEADI", "Bilinmiyor")
+                    annetc = person.get("ANNETC", "Bilinmiyor")
+                    babaadi = person.get("BABAADI", "Bilinmiyor")
+                    babatc = person.get("BABATC", "Bilinmiyor")
+                    uyrugu = person.get("UYRUK", "Bilinmiyor")
+
+                    info += (f"""╭━━━━━━━━━━━━━╮
 ┃➥ @TSGChecker
 ╰━━━━━━━━━━━━━╯
 ╭━━━━━━━━━━━━━━╮
@@ -460,23 +472,31 @@ def sorgu(message):
 ┃➥ İLÇE: {nufusilce}
 ┃➥ UYRUK: {uyrugu}
 ╰━━━━━━━━━━━━━━╯
-"""
+""")
 
+                file_name = "Sonuçlar.txt"
+                with open(file_name, 'w', encoding='utf-8') as file:
+                    file.write(info)
 
-            file_name = f"Sonuçlar.txt"
-            with open(file_name, 'w', encoding='utf-8') as file:
-                file.write(info)
-
-            with open(file_name, 'rb') as file:
-                bot.send_document(message.chat.id, file)
+                with open(file_name, 'rb') as file:
+                    bot.send_document(message.chat.id, file)
+                    bot.delete_message(chat_id, start_message.message_id)
+            else:
+                bot.send_message(message.chat.id, "Veri Bulunamadı.")
                 bot.delete_message(chat_id, start_message.message_id)
         else:
-            bot.send_message(message.chat.id, "Veri Bulunamadı.")
+            bot.send_message(message.chat.id, "Data bulunamadı.")
             bot.delete_message(chat_id, start_message.message_id)
-    else:
-        bot.send_message(message.chat.id, "Data bulunamadı.")
-        bot.delete_message(chat_id, start_message.message_id)
 
+    except requests.exceptions.HTTPError as http_err:
+        bot.send_message(message.chat.id, f"HTTP hata oluştu: {http_err}")
+        bot.delete_message(chat_id, start_message.message_id)
+    except ValueError:
+        bot.send_message(message.chat.id, "API'den dönen veri JSON formatında değil. Lütfen daha sonra tekrar deneyiniz.")
+        bot.delete_message(chat_id, start_message.message_id)
+    except Exception as err:
+        bot.send_message(message.chat.id, f"Bir hata oluştu: {err}")
+        bot.delete_message(chat_id, start_message.message_id)
 
 import requests
 
