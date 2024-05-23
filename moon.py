@@ -48,12 +48,12 @@ def send_key(message):
             bot.reply_to(message, "24 saat içinde bir kez anahtar alabilirsiniz.")
             return
 
-      
         response = requests.get("https://tsgmods.com.tr/2SyAmh0ND7ZMKjPZhi.php")
+        
         if response.status_code == 200:
             user_key = response.text.strip()
         else:
-            bot.reply_to(message, "Anahtar alınırken bir hata oluştu.")
+            bot.reply_to(message, f"Anahtar alınırken bir hata oluştu: HTTP {response.status_code}")
             return
 
         last_key_time[user_id] = datetime.now()
@@ -72,4 +72,3 @@ def send_key(message):
         bot.reply_to(message, f"Hata oluştu: {e}")
 
 bot.polling()
-        
