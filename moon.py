@@ -74,5 +74,6 @@ def send_key(message):
     except Exception as e:
         bot.reply_to(message, f"Hata oluştu: {e}")
 
-bot.polling()
-            
+if __name__ == "__main__":
+    bot.polling()
+    
