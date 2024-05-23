@@ -48,7 +48,10 @@ def send_key(message):
             bot.reply_to(message, "24 saat içinde bir kez anahtar alabilirsiniz.")
             return
 
-        response = requests.get("https://tsgmods.com.tr/2SyAmh0ND7ZMKjPZhi.php")
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
+        }
+        response = requests.get("https://tsgmods.com.tr/2SyAmh0ND7ZMKjPZhi.php", headers=headers)
         
         if response.status_code == 200:
             user_key = response.text.strip()
@@ -72,3 +75,4 @@ def send_key(message):
         bot.reply_to(message, f"Hata oluştu: {e}")
 
 bot.polling()
+            
