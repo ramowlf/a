@@ -4,7 +4,6 @@ requests
 telebot
 mysql.connector
 urllib3
-hashlib
 fake_email
 rich
 telebot
