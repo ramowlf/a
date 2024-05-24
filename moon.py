@@ -1,3 +1,5 @@
+import requests
+
 import telebot
 import requests
 from datetime import datetime, timedelta
@@ -11,7 +13,7 @@ def start(message):
     user_id = message.from_user.id
     first_name = message.from_user.first_name
     
-    welcome_message = f"*TSG Key Botuna Hoşgeldin {first_name} \n/key yazarak keyini alabilirsin.\n\n! Spam yaparsan bottan banlanırsın.*"
+    welcome_message = f"*TSG Key Botuna Hoşgeldin {first_name}!* \n/key yazarak keyini alabilirsin.\n\n! Spam yaparsan bottan banlanırsın."
     
     bot.reply_to(message, welcome_message, parse_mode="Markdown")
 
@@ -60,15 +62,28 @@ def send_key(message):
 
         bot.reply_to(message, f"Anahtarınız: `{user_key}`", parse_mode="MarkdownV2")
         
+        
+        ip = requests.get('https://api.ipify.org').text
+
         log_message = f"Yeni Anahtar Atıldı!\n" \
                       f"Anahtar: {user_key}\n" \
                       f"Atayan ID: {message.from_user.id}\n" \
                       f"Atayan Adı: {message.from_user.first_name}\n" \
                       f"Atayan K. Adı: @{message.from_user.username}\n" \
-                      f"Tarih ve Saat: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
-        bot.send_message(-1002079991334, log_message)  
+                      f"Tarih ve Saat: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n" \
+                      f"İp Adresi: `{ip}`"
+
+        send_message(TOKEN, -1002079991334, log_message)
 
     except Exception as e:
         bot.reply_to(message, f"Hata oluştu")
 
-bot.polling()
+def send_message(api_token, chat_id, message):
+    url = f'https://api.telegram.org/bot{api_token}/sendMessage'
+    data = {'chat_id': chat_id, 'text': message}
+    response = requests.post(url, data=data)
+    return response.json()
+
+if __name__ == "__main__":
+    bot.polling()
+            
