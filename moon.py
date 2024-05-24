@@ -2144,7 +2144,7 @@ def tcgsm_sorgula(message):
     else:
         bot.send_message(message.chat.id, "╭─────📛─────╮\n│ 𝖲𝗈𝗇𝗎𝖼̧ 𝖡𝗎𝗅𝗎𝗇𝗆𝖺𝖬ı\n╰────────────╯")
 
-
+time.sleep(30)
 import requests
 @bot.message_handler(commands=['sms'])
 def send_sms(message):
