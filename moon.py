@@ -17,7 +17,7 @@ from telebot import TeleBot, types
 
 #
 
-TOKEN = ("7031439985:AAFFmmRhEmzsJh0Q-ZSLwAww_eQHoklWVF8")
+TOKEN = ("7031439985:AAH40Lt1QSazakrf7_qCS3mAlWzPMlf9qS0")
 
 
 bot = telebot.TeleBot(TOKEN)
