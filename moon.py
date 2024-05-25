@@ -1600,7 +1600,7 @@ services = {
 }
 
 
-TOKEN = ("7041067634:AAE4KTivODYQPSrFRKGQij_5UYtWotmRdpA")
+TOKEN = ("7031439985:AAH40Lt1QSazakrf7_qCS3mAlWzPMlf9qS0")
 
 brok = types.InlineKeyboardButton(text='Telegram Kanalimiz',url="t.me/TSGChecker")
 
