@@ -13,7 +13,7 @@ import os
 import types
 import requests
 import urllib3
-import time
+
 import hashlib
 from telethon import Button, TelegramClient, events
 import urllib.parse
@@ -1857,19 +1857,6 @@ def tcplus_sorgula(message):
         cevap = "╭──────────────────────╮\n┃ 📛 𝖸𝖺𝗇𝗅ı𝗌̧ 𝖪𝗈𝗆𝗎𝗍 𝖪𝗎𝗅𝗅𝖺𝗇ı𝗆ı\n┃ ✅ 𝖣𝗈𝗀̆𝗋𝗎 𝖥𝗈𝗋𝗆𝖺𝗍: /tcplus <kurbanın tc>\n╰──────────────────────╯"
         bot.send_message(message.chat.id, cevap)
 
-@bot.message_handler(commands=['guzellik'])
-def start(message):
-    b = types.InlineKeyboardMarkup()
-    b.add(brok)
-    bot.reply_to(message, 'Selam Bana Fotograf Gonder Sana Ne Kadar Guzel Oldugunu Soyleyeyim .', reply_markup=b)
-
-@bot.message_handler(content_types=['photo'])
-def analyze_image(message):
-
-    beauty_percentage = random.randint(1, 100)
-    
-    bot.send_photo(message.chat.id, message.photo[-1].file_id, caption=f'Güzellik Yuzdesi : {beauty_percentage}%')
-
 
 @bot.message_handler(commands=["aile"])
 def aile_sorgula(message):
@@ -2168,7 +2155,7 @@ def send_sms(message):
     
     args = message.text.split()[1:]
     if len(args) != 1:
-        bot.reply_to(message, "𝐺𝑆𝑀 𝑣𝑒 𝐴𝑑𝑒𝑡 𝐺𝑖𝑟𝑖𝑛 𝑂̈𝑟𝑛: /sms 5515432263")
+        bot.reply_to(message, "𝐺𝑆𝑀  𝐺𝑖𝑟𝑖𝑛 𝑂̈𝑟𝑛: /sms 5515432263")
         return
     telefon_no = args[0]
     sms_sayisi = random.randint(5, 20)
