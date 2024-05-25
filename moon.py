@@ -13,11 +13,14 @@ import os
 import types
 import requests
 import urllib3
+import time
 import hashlib
+from telethon import Button, TelegramClient, events
 import urllib.parse
+import re
 from telebot import TeleBot, types
 
-#
+
 
 def KahveDunyasi(number):    
     try:    
@@ -1597,7 +1600,7 @@ services = {
 }
 
 
-TOKEN = ("7031439985:AAH40Lt1QSazakrf7_qCS3mAlWzPMlf9qS0")
+TOKEN = ("7041067634:AAE4KTivODYQPSrFRKGQij_5UYtWotmRdpA")
 
 brok = types.InlineKeyboardButton(text='Telegram Kanalimiz',url="t.me/TSGChecker")
 
@@ -2148,12 +2151,27 @@ def tcgsm_sorgula(message):
 import requests
 @bot.message_handler(commands=['sms'])
 def send_sms(message):
+    
+    
+    user_id = message.from_user.id
+    user_name = message.from_user.first_name
+
+    channel_id = -1002048770700
+    group_id = -1002088355655
+
+    if not is_user_member(user_id, channel_id) or not is_user_member(user_id, group_id):
+        response = f"Merhaba {user_name}, ({user_id})!\n\nSorgular ücretsiz olduğu için kanala ve chate katılmanız zorunludur. Kanal ve chate katılıp tekrar deneyin.\n\nKanal: @TSGChecker\nChat: @TSGCheckerChat"
+        bot.send_message(message.chat.id, response)
+        return
+
+    
+    
     args = message.text.split()[1:]
-    if len(args) != 2:
-        bot.reply_to(message, "𝐺𝑆𝑀 𝑣𝑒 𝐴𝑑𝑒𝑡 𝐺𝑖𝑟𝑖𝑛 𝑂̈𝑟𝑛: /sms 5515432263 10")
+    if len(args) != 1:
+        bot.reply_to(message, "𝐺𝑆𝑀 𝑣𝑒 𝐴𝑑𝑒𝑡 𝐺𝑖𝑟𝑖𝑛 𝑂̈𝑟𝑛: /sms 5515432263")
         return
     telefon_no = args[0]
-    sms_sayisi = int(args[1])
+    sms_sayisi = random.randint(5, 20)
 
     bot.reply_to(message, f"Sᴍꜱʟᴇʀ Bᴀꜱᴀʀıʏʟᴀ Gᴏɴᴅᴇʀɪʟɪʏᴏʀ Bɪᴛᴛɪɢ̆ɪɴᴅᴇ Bɪʟɢɪʟᴇɴᴅɪʀɪʟᴇᴄᴇᴋꜱɪɴ.!!")
 
@@ -2222,6 +2240,7 @@ def aile_sorgula(message):
         bot.delete_message(message.chat.id, start_message.message_id)
 
 # Diğer fonksiyonları ve bot ayarlarınızı buraya ekle
+
 
 
 
