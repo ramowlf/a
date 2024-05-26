@@ -444,7 +444,7 @@ def sorgu(message):
 
     try:
         # Construct the API URL with proper encoding
-        api_url = "http://172.208.52.218/api/legaliapi/adsoyadilvip.php"
+        api_url = "https://sowixapi.online/api/sowixapi/adsoyad.php"
         params = {
             'ad': f"{isim} {isim2}" if isim2 else isim,
             'soyad': soyisim
