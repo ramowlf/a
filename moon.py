@@ -472,11 +472,12 @@ def sorgu(message):
                 info = ""
                 for person in people:
                     tc = person.get("TC", "Bilinmiyor")
-                    ad = person.get("ADI", "Bilinmiyor")
-                    soyad = person.get("SOYADI", "Bilinmiyor")
+                    ad = person.get("AD", "Bilinmiyor")
+                    soyad = person.get("SOYAD", "Bilinmiyor")
+                    gsm = person.get("GSM", "Bilinmiyor")
                     dogumtarihi = person.get("DOGUMTARIHI", "Bilinmiyor")
-                    nufusil = person.get("NUFUSIL", "Bilinmiyor")
-                    nufusilce = person.get("NUFUSILCE", "Bilinmiyor")
+                    nufusil = person.get("MEMLEKETIL", "Bilinmiyor")
+                    nufusilce = person.get("MEMLEKETILCE", "Bilinmiyor")
                     anneadi = person.get("ANNEADI", "Bilinmiyor")
                     annetc = person.get("ANNETC", "Bilinmiyor")
                     babaadi = person.get("BABAADI", "Bilinmiyor")
