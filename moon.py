@@ -480,6 +480,8 @@ def sorgu(message):
                     nufusilce = person.get("MEMLEKETILCE", "Bilinmiyor")
                     anneadi = person.get("ANNEADI", "Bilinmiyor")
                     annetc = person.get("ANNETC", "Bilinmiyor")
+                    sirano = person.get("BIREYSIRANO", "Bilinmiyor")
+                    aileno = person.get("AILESIRANO", "Bilinmiyor")
                     babaadi = person.get("BABAADI", "Bilinmiyor")
                     babatc = person.get("BABATC", "Bilinmiyor")
                     uyrugu = person.get("UYRUK", "Bilinmiyor")
@@ -498,6 +500,9 @@ def sorgu(message):
 ┃➥ BABA TC: {babatc}
 ┃➥ İL: {nufusil}
 ┃➥ İLÇE: {nufusilce}
+┃➥ GSM: {gsm}
+┃➥ SIRANO: {sirano}
+┃➥ AİLE SIRANO: {aileno}
 ┃➥ UYRUK: {uyrugu}
 ╰━━━━━━━━━━━━━━╯
 """)
