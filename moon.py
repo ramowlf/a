@@ -1219,6 +1219,76 @@ def add_text_to_image(message):
         bot.send_message(message.chat.id, f"Resim işleme sırasında bir hata oluştu. Hata: ")
         
 
+@bot.message_handler(commands=['meme2'])
+def add_text_to_image(message):
+    user_id = message.from_user.id
+    user_name = message.from_user.first_name
+
+    channel_id = -1002048770700
+    group_id = -1002088355655
+
+    if not is_user_member(user_id, channel_id) or not is_user_member(user_id, group_id):
+        response = f"Merhaba {user_name}, ({user_id})!\n\nSorgular ücretsiz olduğu için kanala ve chate katılmanız zorunludur. Kanal ve chate katılıp tekrar deneyin.\n\nKanal: @TSGChecker\nChat: @TSGCheckerChat"
+        bot.send_message(message.chat.id, response)
+        return
+
+    text = message.text.replace('/meme3 ', '')
+
+    try:
+        image = Image.open("p.png").convert('RGBA')
+
+        # Load the font
+        font_url = "https://fonts.gstatic.com/s/indieflower/v21/m8JVjfNVeKWVnh3QMuKkFcZlbg.ttf"
+        font_response = requests.get(font_url)
+        font_response.raise_for_status()
+        font = ImageFont.truetype(BytesIO(font_response.content), size=46)
+
+        # Create a new image for the text
+        text_image = Image.new('RGBA', (image.width, image.height), (255, 255, 255, 0))
+        draw = ImageDraw.Draw(text_image)
+
+        # Define the text and shadow position
+        position = (340, 820)
+        shadow_position = (position[0] + 1, position[1] + 1)
+
+        # Draw the shadow
+        draw.text(shadow_position, text, (0, 0, 0), font=font, spacing=100, align="center")
+
+        # Draw the main text with the new color
+        draw.text(position, text, (50, 50, 50), font=font, spacing=100, align="center")
+
+        # Rotate the text image by 10 degrees to the left
+        rotated_text_image = text_image.rotate(-7,resample=Image.BICUBIC, expand=1)
+
+        # Create a new image to hold the combined result
+        combined_image = Image.new('RGBA', image.size, (160, 100, 50))
+        combined_image.paste(image, (0, 0))
+
+        # Calculate the position to paste the rotated text image to center it correctly
+        paste_position = (
+            (image.width - rotated_text_image.width) // 2,
+            (image.height - rotated_text_image.height) // 2
+        )
+
+        # Paste the rotated text image onto the combined image
+        combined_image.paste(rotated_text_image, paste_position, rotated_text_image)
+
+        # Apply Gaussian blur
+        blurred_image = combined_image.filter(ImageFilter.GaussianBlur(radius=1.1))
+
+        # Convert to RGB and save to buffer
+        buffered = BytesIO()
+        blurred_image.convert('RGB').save(buffered, format="JPEG")
+        buffered.seek(0)
+        bot.send_photo(message.chat.id, photo=buffered)
+
+    except requests.exceptions.HTTPError as err:
+        bot.send_message(message.chat.id, f"Resim işleme sırasında bir HTTP hatası oluştu. Hata: ")
+
+    except Exception as e:
+        bot.send_message(message.chat.id, f"Resim işleme sırasında bir hata oluştu. Hata: ")
+
+
 
 
 @bot.message_handler(commands=['meme2'])
