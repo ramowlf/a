@@ -1248,7 +1248,7 @@ def add_text_to_image(message):
         draw = ImageDraw.Draw(text_image)
 
         # Define the text and shadow position
-        position = (340, 820)
+        position = (670, 150)
         shadow_position = (position[0] + 1, position[1] + 1)
 
         # Draw the shadow
