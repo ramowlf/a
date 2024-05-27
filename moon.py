@@ -1248,7 +1248,7 @@ def add_text_to_image(message):
         draw = ImageDraw.Draw(text_image)
 
         # Define the text and shadow position
-        position = (670, 150)
+        position = (570, 150)
         shadow_position = (position[0] + 1, position[1] + 1)
 
         # Draw the shadow
@@ -1258,7 +1258,7 @@ def add_text_to_image(message):
         draw.text(position, text, (50, 50, 50), font=font, spacing=100, align="center")
 
         # Rotate the text image by 10 degrees to the left
-        rotated_text_image = text_image.rotate(-7,resample=Image.BICUBIC, expand=1)
+        rotated_text_image = text_image.rotate(-20,resample=Image.BICUBIC, expand=1)
 
         # Create a new image to hold the combined result
         combined_image = Image.new('RGBA', image.size, (160, 100, 50))
