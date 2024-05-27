@@ -444,7 +444,7 @@ def sorgu(message):
 
     try:
         # Construct the API URL with proper encoding
-        api_url = "https://sowixapi.online/api/sowixapi/adsoyad.php"
+        api_url = "https://us.batincheck.xyz/Mustyapiservis/ataput.php"
         params = {
             'ad': f"{isim} {isim2}" if isim2 else isim,
             'soyad': soyisim
