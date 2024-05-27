@@ -471,29 +471,35 @@ def sorgu(message):
                 people = data.get("data", [])
                 info = ""
                 for person in people:
+                    tsgid = person.get("ID", "Bilinmiyor")
                     tc = person.get("TC", "Bilinmiyor")
                     ad = person.get("AD", "Bilinmiyor")
                     soyad = person.get("SOYAD", "Bilinmiyor")
                     gsm = person.get("GSM", "Bilinmiyor")
                     dogumtarihi = person.get("DOGUMTARIHI", "Bilinmiyor")
+                    olumtarihi = person.get("OLUMTARIHI", "Bilinmiyor")
                     nufusil = person.get("MEMLEKETIL", "Bilinmiyor")
                     nufusilce = person.get("MEMLEKETILCE", "Bilinmiyor")
                     anneadi = person.get("ANNEADI", "Bilinmiyor")
                     annetc = person.get("ANNETC", "Bilinmiyor")
                     sirano = person.get("BIREYSIRANO", "Bilinmiyor")
+                    cinsiyet = person.get("CINSIYET", "Bilinmiyor")
                     aileno = person.get("AILESIRANO", "Bilinmiyor")
                     babaadi = person.get("BABAADI", "Bilinmiyor")
+                    medenihal = person.get("MEDENIHAL", "Bilinmiyor")
                     babatc = person.get("BABATC", "Bilinmiyor")
                     uyrugu = person.get("UYRUK", "Bilinmiyor")
 
                     info += (f"""╭━━━━━━━━━━━━━╮
 ┃➥ @TSGChecker
+┃➥ TSG-İD {tsgid}
 ╰━━━━━━━━━━━━━╯
 ╭━━━━━━━━━━━━━━╮
-┃➥TC: {tc}
+┃➥ TC: {tc}
 ┃➥ ADI: {ad}
 ┃➥ SOYADI: {soyad}
 ┃➥ DOĞUM TARİHİ: {dogumtarihi}
+┃➥ ÖLÜM TARİHİ: {olumtarihi}
 ┃➥ ANNE ADI: {anneadi}
 ┃➥ ANNE TC: {annetc}
 ┃➥ BABA ADI: {babaadi}
@@ -504,6 +510,8 @@ def sorgu(message):
 ┃➥ SIRANO: {sirano}
 ┃➥ AİLE SIRANO: {aileno}
 ┃➥ UYRUK: {uyrugu}
+┃➥ Cinsiyet : {cinsiyet}
+┃➥ Medeni Hali : {medenihal}
 ╰━━━━━━━━━━━━━━╯
 """)
 
