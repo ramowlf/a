@@ -1219,7 +1219,7 @@ def add_text_to_image(message):
         bot.send_message(message.chat.id, f"Resim işleme sırasında bir hata oluştu. Hata: ")
         
 
-@bot.message_handler(commands=['meme2'])
+@bot.message_handler(commands=['meme3'])
 def add_text_to_image(message):
     user_id = message.from_user.id
     user_name = message.from_user.first_name
