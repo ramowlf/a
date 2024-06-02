@@ -41,7 +41,7 @@ def send_key(message):
         
         channel_username = '@tsgkey'
         if not is_user_in_channel(user_id, channel_username):
-            bot.reply_to(message, "Anahtar alabilmek için önce @TSGxMODS kanalımıza katılmanız gerekmektedir.", parse_mode="Markdown")
+            bot.reply_to(message, "Anahtar alabilmek için önce @tsgkey kanalımıza katılmanız gerekmektedir.", parse_mode="Markdown")
             return
                
         if not is_user_allowed_to_get_key(user_id):
