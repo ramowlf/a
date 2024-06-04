@@ -435,11 +435,11 @@ def sorgu(message):
     else:
         isim_birlestirmesi = urllib.parse.quote(isim)
     if il and ilce:
-        AdSoyadApisi_url = f"http://us.batincheck.xyz/umutapiservices/adsoyad.php?auth=icimdekiseytaninensesindeyim&ad={isim_birlestirmesi}&soyad={soyisim}&il={il}&ilce={ilce}"
+        AdSoyadApisi_url = f"http://181.214.223.74/umutapiservices/adsoyad.php?auth=icimdekiseytaninensesindeyim&ad={isim_birlestirmesi}&soyad={soyisim}&il={il}&ilce={ilce}"
     elif il:
-        AdSoyadApisi_url = f"http://us.batincheck.xyz/umutapiservices/adsoyad.php?auth=icimdekiseytaninensesindeyim&ad={isim_birlestirmesi}&soyad={soyisim}&il={il}"
+        AdSoyadApisi_url = f"http://181.214.223.74/umutapiservices/adsoyad.php?auth=icimdekiseytaninensesindeyim&ad={isim_birlestirmesi}&soyad={soyisim}&il={il}"
     else:
-        AdSoyadApisi_url = f"http://us.batincheck.xyz/umutapiservices/adsoyad.php?auth=icimdekiseytaninensesindeyim&ad={isim_birlestirmesi}&soyad={soyisim}"
+        AdSoyadApisi_url = f"http://181.214.223.74/umutapiservices/adsoyad.php?auth=icimdekiseytaninensesindeyim&ad={isim_birlestirmesi}&soyad={soyisim}"
     response = requests.get(AdSoyadApisi_url)
     data = response.json()
     if data["success"] == "true":
