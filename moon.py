@@ -1663,7 +1663,7 @@ def risk_command(message):
         return
 
     if user_id not in user_balances:
-        bot.reply_to(message, 'Bota kayıtlı değilsiniz, öncelikle bota /start mesajını atın.')
+        bot.reply_to(message, 'Bota kayıtlı değilsiniz, öncelikle bota /kumar mesajını atın.')
         return
 
     if len(message.text.split()) == 1:
@@ -1744,7 +1744,7 @@ def send_balance_to_friend(message):
         return
 
     if user_id not in user_balances:
-        bot.reply_to(message, 'Bota kayıtlı değilsiniz öncelikle bota /start Mesajını atın.')
+        bot.reply_to(message, 'Bota kayıtlı değilsiniz öncelikle bota /kumar mesajını atın.')
         return
 
     if user_balances[user_id] < amount:
@@ -1853,7 +1853,7 @@ def slot_command(message):
         return
 
     if user_id not in user_balances:
-        bot.reply_to(message, 'Bota kayıtlı değilsiniz, öncelikle bota /start mesajını atın.')
+        bot.reply_to(message, 'Bota kayıtlı değilsiniz, öncelikle bota /kumar mesajını atın.')
         return
 
     try:
