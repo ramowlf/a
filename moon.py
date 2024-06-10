@@ -207,52 +207,7 @@ def is_user_member(user_id, chat_id):
         return False
         
         
-@bot.message_handler(commands=['tiktok'])
-def start(message):
-	bot.reply_to(message,' ⚡️Hoşgeldin İndirmek İstediğin Tiktok Videosunun Bağlantısını Gönder ⚡️')
 
-@bot.message_handler(func=lambda m:True)
-def download(message):
-
-
-
-	link = message.text
-        
-    
-	headers = {
-  	'authority': 'api.tikmate.app',
-    'accept': '*/*',
-    'accept-language': 'ar,en;q=0.9,en-GB;q=0.8,en-US;q=0.7',
-    'cache-control': 'no-cache',
-    'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
-    'origin': 'https://tikmate.app',
-    'pragma': 'no-cache',
-    'referer': 'https://tikmate.app/',
-    'sec-ch-ua': '"Microsoft Edge";v="105", " Not;A Brand";v="99", "Chromium";v="105"',
-    'sec-ch-ua-mobile': '?0',
-    'sec-ch-ua-platform': '"Windows"',
-    'sec-fetch-dest': 'empty',
-    'sec-fetch-mode': 'cors',
-    'sec-fetch-site': 'same-site',
-    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.33',
-}
-
-	data = {
-		'url': f'{link}',
-}
-
-	req = requests.post('https://api.tikmate.app/api/lookup', headers=headers, data=data,verify=False).json()
-	ok = req['success']
-      
-      
-	
-	if ok == False:
-		bot.reply_to(message,' ')
-	else:
-		id = req['id']
-		tok = req['token']
-		url = f'https://tikmate.app/download/{tok}/{id}.mp4?hd=1'
-		bot.send_video(message.chat.id,url,reply_to_message_id=message.message_id)
 @bot.message_handler(commands=['kedi'])
 def send_random_cat(message):
     
