@@ -207,10 +207,81 @@ def is_user_member(user_id, chat_id):
         return False
         
         
+@bot.message_handler(commands=['tiktok'])
+def start(message):
+	bot.reply_to(message,' ⚡️Hoşgeldin İndirmek İstediğin Tiktok Videosunun Bağlantısını Gönder ⚡️')
+
+@bot.message_handler(func=lambda m:True)
+def download(message):
+
+
+
+	link = message.text
         
-        
+    
+	headers = {
+  	'authority': 'api.tikmate.app',
+    'accept': '*/*',
+    'accept-language': 'ar,en;q=0.9,en-GB;q=0.8,en-US;q=0.7',
+    'cache-control': 'no-cache',
+    'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+    'origin': 'https://tikmate.app',
+    'pragma': 'no-cache',
+    'referer': 'https://tikmate.app/',
+    'sec-ch-ua': '"Microsoft Edge";v="105", " Not;A Brand";v="99", "Chromium";v="105"',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"Windows"',
+    'sec-fetch-dest': 'empty',
+    'sec-fetch-mode': 'cors',
+    'sec-fetch-site': 'same-site',
+    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.33',
+}
+
+	data = {
+		'url': f'{link}',
+}
+
+	req = requests.post('https://api.tikmate.app/api/lookup', headers=headers, data=data,verify=False).json()
+	ok = req['success']
       
+      
+	
+	if ok == False:
+		bot.reply_to(message,' ')
+	else:
+		id = req['id']
+		tok = req['token']
+		url = f'https://tikmate.app/download/{tok}/{id}.mp4?hd=1'
+		bot.send_video(message.chat.id,url,reply_to_message_id=message.message_id)
+@bot.message_handler(commands=['kedi'])
+def send_random_cat(message):
+    
+    cat_url = get_random_cat()
+    owner = '@TSGChecker'
+    
+   
+    bot.send_photo(chat_id=message.chat.id, photo=cat_url,caption=f'{owner}')
+
+def get_random_cat():
+    
+    api_url = 'https://api.thecatapi.com/v1/images/search'
+    
+    try:
+     
+        response = requests.get(api_url)
+       
+        cat_url = response.json()[0]['url']
         
+        return cat_url
+        
+    except:
+        return None
+
+        
+@bot.message_handler(commands=['info'])
+def start(message):
+	bot.send_message(message.chat.id,f'*Kullanıcı Adı :* @{message.from_user.username}\n*Kullanıcı İsmi :* {message.from_user.first_name}\n*Kullanıcı İd :* `{message.from_user.id}`\n*Hesap Dili :* {message.from_user.language_code}',parse_mode="Markdown")
+bot.polling()
         
         
 @bot.message_handler(commands=["tc"])
@@ -456,127 +527,43 @@ def aile_sorgula(message):
         else:
             bot.reply_to(message, "╭──────────────────────╮\n┃ 📛 Yanlış Formatlı TC\n┃ Kodu düzeltip tekrar deneyin.")
 
+@bot.message_handler(commands=['sorgu'])
+def kimlik_sorgu(message):
+    try:
+        chat_id = message.chat.id
+        parameters = ' '.join(message.text.split()[1:]).split('-')[1:]
+        query = {}
+        for param in parameters:
+            key_value = param.split()
+            if len(key_value) == 2:
+                key, value = key_value
+                key = key.strip().lower()
+                query[key] = value.strip()
+        
+        if query:
+            url = f"https://sowixapi.online/api/sowixapi/adsoyadilce.php?{'&'.join([f'{key}={value}' for key, value in query.items()])}"
+            response = requests.get(url)
+            data = response.json()
 
-@bot.message_handler(commands=["sorgu"])
-def sorgu(message):
-    """Handle the /sorgu command."""
-    user_id = message.from_user.id
-    user_name = message.from_user.first_name
-
-    channel_id = -1002048770700
-    group_id = -1002088355655
-
-    if not is_user_member(user_id, channel_id) or not is_user_member(user_id, group_id):
-        response = (f"Merhaba {user_name}, ({user_id})!\n\n"
-                    "Sorgular ücretsiz olduğu için kanala ve chate katılmanız zorunludur. "
-                    "Kanal ve chate katılıp tekrar deneyin.\n\n"
-                    "Kanal: @TSGChecker\n"
-                    "Chat: @TSGCheckerChat")
-        bot.send_message(message.chat.id, response)
-        return
-
-    # Parse the command arguments
-    text = message.text
-    
-    words = text.split()
-    isim = None
-    isim2 = None
-    soyisim = None
-    il = None
-    ilce = None
-    for i in range(len(words)):
-        if words[i] == "-isim" and i < len(words) - 1:
-            isim = words[i + 1]
-        elif words[i] == "-isim2" and i < len(words) - 1:
-            isim2 = words[i + 1]
-        elif words[i] == "-soyisim" and i < len(words) - 1:
-            soyisim = words[i + 1]
-        elif words[i] == "-il" and i < len(words) - 1:
-            il = words[i + 1]
-        elif words[i] == "-ilce" and i < len(words) - 1:
-            ilce = words[i + 1]
-    if not isim or not soyisim:
-        text = "Yanlış Kullanım Yapıldı!\n -> /sorgu -isim abdulselam -soyisim deniz -il istanbul"
-        bot.send_message(message.chat.id, text)
-        return
-    user_id = message.from_user.id
-    user_name = message.from_user.first_name
- 
-    chat_id = message.chat.id
- 
-    start_message = bot.send_message(chat_id, "İşleminiz Gerçekleştiriliyor, Lütfen Bekleyin...")
-   
-    if isim2:
-        isim_birlestirmesi = urllib.parse.quote(f"{isim} {isim2}")
-    else:
-        isim_birlestirmesi = urllib.parse.quote(isim)
-    if il and ilce:
-        AdSoyadApisi_url = f"http://us.batincheck.xyz/umutapiservices/adsoyad.php?auth=icimdekiseytaninensesindeyim&ad={isim_birlestirmesi}&soyad={soyisim}&il={il}&ilce={ilce}"
-    elif il:
-        AdSoyadApisi_url = f"http://us.batincheck.xyz/umutapiservices/adsoyad.php?auth=icimdekiseytaninensesindeyim&ad={isim_birlestirmesi}&soyad={soyisim}&il={il}"
-    else:
-        AdSoyadApisi_url = f"http://us.batincheck.xyz/umutapiservices/adsoyad.php?auth=icimdekiseytaninensesindeyim&ad={isim_birlestirmesi}&soyad={soyisim}"
-    response = requests.get(AdSoyadApisi_url)
-    data = response.json()
-    if data["success"] == "true":
-        number = data["number"]
-        if number > 0:
-            people = data["data"]
-            with open('sonuclar.txt', 'w', encoding='utf-8') as file:
-                for person in people:
-                    tsgid = person.get("ID", "Bilinmiyor")
-                    tc = person.get("TC", "Bilinmiyor")
-                    ad = person.get("AD", "Bilinmiyor")
-                    soyad = person.get("SOYAD", "Bilinmiyor")
-                    gsm = person.get("GSM", "Bilinmiyor")
-                    dogumtarihi = person.get("DOGUMTARIHI", "Bilinmiyor")
-                    olumtarihi = person.get("OLUMTARIHI", "Bilinmiyor")
-                    nufusil = person.get("MEMLEKETIL", "Bilinmiyor")
-                    nufusilce = person.get("MEMLEKETILCE", "Bilinmiyor")
-                    anneadi = person.get("ANNEADI", "Bilinmiyor")
-                    annetc = person.get("ANNETC", "Bilinmiyor")
-                    sirano = person.get("BIREYSIRANO", "Bilinmiyor")
-                    cinsiyet = person.get("CINSIYET", "Bilinmiyor")
-                    aileno = person.get("AILESIRANO", "Bilinmiyor")
-                    babaadi = person.get("BABAADI", "Bilinmiyor")
-                    medenihal = person.get("MEDENIHAL", "Bilinmiyor")
-                    babatc = person.get("BABATC", "Bilinmiyor")
-                    uyrugu = person.get("UYRUK", "Bilinmiyor")
-                    info = f"""
-╭━━━━━━━━━━━━━╮
-┃➥ @TSGChecker
-┃➥ TSG-İD {tsgid}
-┃➥ Owner @TSGxYUNUS
-╰━━━━━━━━━━━━━╯
-╭━━━━━━━━━━━━━━╮
-┃➥ TC: {tc}
-┃➥ ADI: {ad}
-┃➥ SOYADI: {soyad}
-┃➥ DOĞUM TARİHİ: {dogumtarihi}
-┃➥ ÖLÜM TARİHİ: {olumtarihi}
-┃➥ ANNE ADI: {anneadi}
-┃➥ ANNE TC: {annetc}
-┃➥ BABA ADI: {babaadi}
-┃➥ BABA TC: {babatc}
-┃➥ İL: {nufusil}
-┃➥ İLÇE: {nufusilce}
-┃➥ GSM: {gsm}
-┃➥ SIRANO: {sirano}
-┃➥ AİLE SIRANO: {aileno}
-┃➥ UYRUK: {uyrugu}
-┃➥ Cinsiyet : {cinsiyet}
-┃➥ Medeni Hali : {medenihal}
-╰━━━━━━━━━━━━━━╯"""
-                    file.write(info + "\n\n")
-            with open('sonuclar.txt', 'rb') as file:
-                bot.send_document(message.chat.id, file)
-                bot.delete_message(chat_id, start_message.message_id)
+            if "status" in data and data["status"] == "success":
+                person_info = ""
+                for person_data in data["data"]:
+                    for key, value in person_data.items():
+                        person_info += f"{key.capitalize()}: {value}\n"
+                    person_info += "\n\n"
+                
+                bot.reply_to(message, person_info)
+            else:
+                bot.reply_to(message, "Böyle bir kişi bilgisi bulunamadı.")
         else:
-                bot.send_message(message.chat.id, "Veri Bulunamadı.")
-                bot.delete_message(chat_id, start_message.message_id)
-    else:
-                bot.send_message(message.chat.id, "Data bulunamadı.")
-                bot.delete_message(chat_id, start_message.message_id)
+            bot.reply_to(message, "Geçersiz komut. kullanım: /sorgu -ad Adnan -soyad Oktar -il Karabük -ilce Merkez")
+    except IndexError:
+        bot.reply_to(message, "Geçersiz komut kullanım. /sorgu -ad Adnan -soyad Oktar -il Karabük -ilce Merkez")
+
+
+
+
+
 
 import requests
 
@@ -1663,7 +1650,7 @@ def risk_command(message):
         return
 
     if user_id not in user_balances:
-        bot.reply_to(message, 'Bota kayıtlı değilsiniz, öncelikle bota /kumar mesajını atın.')
+        bot.reply_to(message, 'Bota kayıtlı değilsiniz, öncelikle bota /start mesajını atın.')
         return
 
     if len(message.text.split()) == 1:
@@ -1714,7 +1701,7 @@ def start(message):
     button2 = types.InlineKeyboardButton("Kanal 😍", url="https://t.me/TSGChecker")
     button3 = types.InlineKeyboardButton("Beni Gruba Ekle💫", url="https://t.me/Tsgoyun_Bot?startgroup=new")
     markup.add(button1, button2, button3)
-    bot.reply_to(message, "👋 Merhaba botumuza hoşgeldin ilk defa başlattıyorsan 25000 TL bakiye başlangıç hediyesi olarak verilir İyi oyunlar.", reply_markup=markup)
+    bot.reply_to(message, "👋 Merhaba botumuza hoşgeldin ilk defa başlattıyorsan 25000 TL bakiye başlangıç hediyesi olarak verilir İyi oyunlar. Komutlar İcin /yardim", reply_markup=markup)
 
 @bot.message_handler(commands=['borc'])
 def send_balance_to_friend(message):
@@ -1744,7 +1731,7 @@ def send_balance_to_friend(message):
         return
 
     if user_id not in user_balances:
-        bot.reply_to(message, 'Bota kayıtlı değilsiniz öncelikle bota /kumar mesajını atın.')
+        bot.reply_to(message, 'Bota kayıtlı değilsiniz öncelikle bota /start Mesajını atın.')
         return
 
     if user_balances[user_id] < amount:
@@ -1789,12 +1776,12 @@ def show_leaderboard(message):
         return
 
     sorted_balances = sorted(user_balances.items(), key=lambda x: x[1], reverse=True)
-    leaderboard_message = "🏆 En İyi 10 Zengin:\n\n"
+    leaderboard_message = "👑 En İyi 10 Zengin:\n\n"
     for i, (user_id, balance) in enumerate(sorted_balances[:10], start=1):
         try:
           user = bot.get_chat(user_id)
           user_name = user.first_name if user.first_name else "Bilinmiyor"
-          leaderboard_message += f"🎖️ {i-1}. {user_name} ⇒ {balance} TL\n"
+          leaderboard_message += f"{i-1}. {user_name} ⇒ {balance} TL\n"
         except:
           no_have_a = "problem"
 
@@ -1831,8 +1818,32 @@ def send_help_message(message):
 
 /yardim: ℹ️ Bu yardım mesajını görüntüleyin.
     """
-    bot.reply_to(message, help_message)
+def ip_sorgula(ip_adresi):
+    try:
+        response = requests.get(f'http://ip-api.com/json/{ip_adresi}')
+        data = response.json()
+        country = data['country']
+        city = data['city']
+        region = data['regionName']
+        isp = data['isp']
+        latitude = data['lat']
+        longitude = data['lon']
+        timezone = data['timezone']
+        zip_code = data['zip']
+        return f"IP adresi: {ip_adresi}\nÜlke: {country}\nBölge: {region}\nŞehir: {city}\nZIP Kodu: {zip_code}\nISP: {isp}\nEnlem: {latitude}\nBoylam: {longitude}\nZaman Dilimi: {timezone}"
+    except Exception as e:
+        return f"ip Adresi Hatalı."
 
+@bot.message_handler(commands=['ip'])
+def handle_ipadres(message):
+    try:
+        ip_adresi = message.text.split()[1]
+        ip_bilgi = ip_sorgula(ip_adresi)
+        bot.reply_to(message, ip_bilgi)
+    except Exception as e:
+        bot.reply_to(message, f"bir ip Adresi Girmelisin.")
+
+        
 @bot.message_handler(commands=['slot'])
 def slot_command(message):
     save_user(message.from_user.id)
@@ -1853,7 +1864,7 @@ def slot_command(message):
         return
 
     if user_id not in user_balances:
-        bot.reply_to(message, 'Bota kayıtlı değilsiniz, öncelikle bota /kumar mesajını atın.')
+        bot.reply_to(message, 'Bota kayıtlı değilsiniz, öncelikle bota /start mesajını atın.')
         return
 
     try:
@@ -1993,6 +2004,9 @@ def handle_word_guess(message):
     else:
         bot.reply_to(message, 'Yanlış tahmin! 👎')  
 while True:
+    
+    
+    
     try:
         bot.polling(none_stop=True)
     except Exception as e:
