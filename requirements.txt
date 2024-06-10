@@ -2,7 +2,6 @@ Pyrogram==2.0.106
 TgCrypto
 requests
 telebot
-PIL
 mysql.connector
 urllib3
 fake_email
