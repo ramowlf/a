@@ -14,7 +14,7 @@ def start(message):
 		bot.send_message(message.chat.id,'''
 🚸| Üzgünüm canım
 🔰| Kullanabilmek için bot kanalına abone olmanız gerekmektedir.
-
+@TSGxCHAT
 
 
 ️| Abone ol ve gönder /start'''.format(my_ch))
