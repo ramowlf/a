@@ -18,7 +18,6 @@ from telebot import TeleBot, types
 from collections import defaultdict
 from threading import Thread
 
-#
 
 TOKEN = ("7031439985:AAH40Lt1QSazakrf7_qCS3mAlWzPMlf9qS0")
 
@@ -33,11 +32,11 @@ user_last_message_time = defaultdict(float)
 
 BALANCE_FILE = 'balances.json'
 
-SUDO_USERS = ['7125292299', '6744131380', '5801085100', '6782067807', ""]  
+SUDO_USERS = ['7125292299', '6744131380', '5801085100',  '6782067807', ""]  
 
 user_balances = {}
 
-kelimeler = ['yatak', 'meyve', 'elma', 'araba', 'kertenkele', 'hayvan', 'aslan', 'köpek', 'spor', 'pizza', 'et', 'yumurta', 'yat', 'kalk', 'portakal', 'öğretmen', 'tembel', 'doksan', 'havuç', 'yardım', 'telefon', 'tablet', 'hava', 'güneş', 'yağmur', 'sandalye', 'kaplan', 'kapı']
+kelimeler = ['yunis', 'balık', 'essek', 'araba', 'TSG', 'uçak', 'klavye', 'fare', 'tava', 'pizza', 'et', 'yumurta', 'yat', 'kalk', 'portakal', 'öğretmen', 'tembel', 'doksan', 'havuç', 'yardım', 'telefon', 'tablet', 'hava', 'güneş', 'yağmur', 'sandalye', 'kaplan', 'kapı']
 
 last_message_times = {}
 
@@ -52,6 +51,9 @@ user_last_message_time = {}
 bekleyen_kullanıcılar = {}
 
 enc_url = 'https://google.com/broadcast-free'
+
+
+
 
 
 
@@ -99,104 +101,56 @@ def log_message(user_id):
     last_message_times[user_id].append(current_time)
 
 
+CHANNEL_ID = -1002048770700
+CHANNEL_LINK = "https://t.me/TSGChecker"
+GROUP_ID = -1002088355655
+GROUP_LINK = "https://t.me/TsgCheckerChat"
+chat_id_destek = -1002017751874
 
-
-@bot.message_handler(commands=['start'])
+@bot.message_handler(commands=["start"])
 def start(message):
     user_id = message.from_user.id
     user_name = message.from_user.first_name
+    if bot.get_chat_member(CHANNEL_ID and GROUP_ID, user_id).status in ["left", "kicked"]:
+        bot.send_message(user_id, f"{user_name} Veritabanına Eklendi.")
+        markup = types.InlineKeyboardMarkup()
+        button = types.InlineKeyboardButton("Kanala Katıl", url=CHANNEL_LINK)
+        markup.add(button)
+        button2 = types.InlineKeyboardButton("Chate Katıl", url=GROUP_LINK)
+        markup.add(button2)
+        bot.send_message(user_id, "Merhaba Dostum,\n\nBeni Kullanabilmek için Güncelleme Kanalına Ve Chate Katılmanız Gerekiyor. Kanala Ve Chate Katılıp Tekrar Deneyin", reply_markup=markup)
+    else:
+        bot.send_message(user_id, f"Herhangi Bir Yardım İçin Destek Grubumuz Olan @TSGxYUNUS'a Yazabilirsiniz.")
+        markup = types.InlineKeyboardMarkup()
+        button1 = types.InlineKeyboardButton("TSG Community", url=CHANNEL_LINK)
+        button2 = types.InlineKeyboardButton("TSG Checker Chat", url="https://t.me/TSGCheckerChat")
+        button3 = types.InlineKeyboardButton("İletişim", url="https://t.me/TSGxYUNUSi")
+        button4 = types.InlineKeyboardButton("Komutlar", callback_data="commands")
+        markup.row(button1, button2, button3)
+        markup.add(button4)
+        bot.send_message(user_id, "🍀 Merhaba, Hoş Geldin!\n\n📚 TSG Oyun Ve Eglence Botuna Hosgeldin ! Ucretsiz Ooldugu İçin Kanala @TSGChecker Ve Chate @TSGCheckerChat Katilim Zorunludur!r.", reply_markup=markup)
 
-    channel_id = -1002048770700
-    group_id = -1002088355655
-
-    if not is_user_member(user_id, channel_id) or not is_user_member(user_id, group_id):
-        response = f"Merhaba {user_name}, ({user_id})!\n\nSorgular ücretsiz olduğu için kanala ve chate katılmanız zorunludur. Kanal ve chate katılıp tekrar deneyin.\n\nKanal: @TSGChecker\nChat: @TSGCheckerChat"
-        bot.send_message(message.chat.id, response)
-        return
-        
-
-    muzik = open('hosgeldiniz.mp3', 'rb')
-    bot.send_audio(message.chat.id, muzik)
-    muzik.close()
-
-    response = f"🍀 Merhaba {user_name}, ({user_id})!\n\n📚 Tsg Oyun Botuna Hoş Geldin. Bu bot, Oyun İndirme Botudur Tamamen ücretsizdir\n\n📮 Sorgular Ücretsiz Olduğu İçin @TSGChecker Katılmak Zorunludur."
-
-    
-    markup = telebot.types.InlineKeyboardMarkup()
-    markup.add(
-        telebot.types.InlineKeyboardButton("📢 Tsg Kanal", url="https://t.me/TSGChecker"),
-        telebot.types.InlineKeyboardButton("💭 Tsg Sohbet", url="https://t.me/TSGCheckerChat"),
-        telebot.types.InlineKeyboardButton("👨🏼‍💻 İletişim", url="tg://user?id=6782067807"),
-        telebot.types.InlineKeyboardButton("🔍 Komutlar", callback_data="commands")
-    )
-
-    bot.send_message(message.chat.id, response, reply_markup=markup)
-
-@bot.callback_query_handler(func=lambda call: call.data == "commands")
-def commands(call):
-    response = "👨🏼‍💻 Komutlar Menüsü :"
-
-    markup = telebot.types.InlineKeyboardMarkup()
-    markup.add(
-        telebot.types.InlineKeyboardButton("Ad Soyad", callback_data="sorgu"),
-        telebot.types.InlineKeyboardButton("Tc", callback_data="tc"),
-        telebot.types.InlineKeyboardButton("Tc Plus", callback_data="tcplus"),
-        telebot.types.InlineKeyboardButton("Tc Gsm", callback_data="tcgsm"),        
-        telebot.types.InlineKeyboardButton("Aile", callback_data="aile"),
-        telebot.types.InlineKeyboardButton("Aile Pro", callback_data="ailepro"),
-       
-        telebot.types.InlineKeyboardButton("Adres", callback_data="adres"),
-                telebot.types.InlineKeyboardButton("İban", callback_data="iban"), 
-        
-        telebot.types.InlineKeyboardButton("okul no", callback_data="okulno"), 
-        
-        
-        
-        telebot.types.InlineKeyboardButton("sicil", callback_data="sicil"), 
-        
-        telebot.types.InlineKeyboardButton("burc", callback_data="burc"), 
-        telebot.types.InlineKeyboardButton("⬅️ Geri", callback_data="back")
-    )
-
-    bot.edit_message_text(response, call.message.chat.id, call.message.message_id, reply_markup=markup)
-
-@bot.callback_query_handler(func=lambda call: call.data == "back")
-def back(call):
-    start(call.message)
-@bot.callback_query_handler(func=lambda call: call.data in ["sorgu", "tc", "tcplus", "tcgsm","aile","ailepro","adres","iban","okulno","sicil","burc"])
-def other_commands(call):
-    if call.data == "sorgu":
-        response = "Ad Soyad Sorgu Yardım:\nörnek: /sorgu -isim Ahmet -soyisim Kaya -il Diyarbakır"
-    elif call.data == "tc":
-        response = "TC Sorgu Yardım:\nörnek: /tc 11111111110"
-    elif call.data == "tcplus":
-        response = "TC Plus Sorgu Yardım:\nörnek: /tcplus 11111111110"
-    elif call.data == "tcgsm":
-        response = "TC Gsm Sorgu Yardım:\nörnek: /tcgsm 11111111110" 
-    elif call.data == "aile":
-        response = "Aile Sorgu Yardım:\nörnek: /aile 11111111110"
-    elif call.data == "ailepro":
-        response = "Aile Pro Sorgu Yardım:\nörnek: /ailepro 11111111110"
-    elif call.data == "adres":
-        response = "Adres Sorgu Yardım:\nörnek: /adres 11111111110"              
-    elif call.data == "iban":
-        response = "İban Sorgu Yardım:\nörnek: /iban TR317377373722"
-    elif call.data == "okulno":
-        response = "Okul No Sorgu Yardım:\nörnek: /okulno 11111111110"    
-    elif call.data == "sicil":
-        response = "Sicil Sorgu Yardım:\nörnek: /sicil 11111111110"
-    elif call.data == "burc":
-        response = "Burc Sorgu Yardım:\nörnek: /burc 11111111110"
-
-
-            
-
-    markup = telebot.types.InlineKeyboardMarkup()
-    markup.add(
-        telebot.types.InlineKeyboardButton("⬅️ Geri", callback_data="commands")
-    )
-
-    bot.edit_message_text(response, call.message.chat.id, call.message.message_id, reply_markup=markup)
+@bot.callback_query_handler(func=lambda call: True)
+def callback(call):
+    user_id = call.from_user.id
+    user_name = call.from_user.first_name
+    if call.data == "commands":
+        bot.edit_message_text(chat_id=user_id, message_id=call.message.message_id, text=f"Merhaba {user_name}, ({user_id})!👋\n\nTSG Oyun Botu Komutları:\n\n🚀 TC Bölümü:\n\n/tc - TC Sorgu İşlemi\n\n/tcplus - Detaylı TC Sorgu\n\n🔮 Telefon Bölümü:\n\n/tcgsm - TC Den GSM İşlemi\n\n/🔫 Aile Bölümü: \n\n/aile - Aile Sorgu İşlemi \n\n/ailepro - Aile Sorgu İşlemi Pro\n\n💎 Ad Soyad Bölümü:\n\n/sorgu -isim *  -soyisim * \n-Ad Soyad Sorgu \n\n/sorgu -isim * -soyisim * -il * \n- Ad Soyad İl Sorgu \n\n📨 Vb:\n\n/mail - Fake Mail Verir\n\n/refresh - Maile Gelen Kodu Söyler\n\n/muzik - Yazdıgınız Muzigi İndirir\n\n/video - Yazdıgınız Videoyu İndirir\n\n/kurt - Kurtluk Olcer\n\n/turk -Turkluk Olcer\n\n/multeci - multecilik olcer\n\n/iban - İban Sorgu İşlemi Yapar\n\n/cm - Y*rrak Santim Sorgu\n\n/kumar - Kumar Oyunu 1\n\n/kumar2 - Kumar Oyunu 2\n\n 🍀 Ekstra:\n\n/yaz - Yazılan Metini Deftere Yazar\n\n/meme - Memeye Yazi Yazar\n\n/meme1 - memeye yazi Yazar\n\n/meme2 - memeye yazi yazar\n\nTSG CHECKER © Tüm Hakları Saklıdır. Gizlilik, Kullanım ve Telif Hakları bildiriminde belirtilen kurallar çerçevesinde hizmet sunulmaktadır.\n\nDestek Ve Yardım İçin Grubumuza Gelebilirsiniz: @TSGCheckerChat")
+        markup = types.InlineKeyboardMarkup()
+        button = types.InlineKeyboardButton("Geri", callback_data="back")
+        markup.add(button)
+        bot.edit_message_reply_markup(chat_id=user_id, message_id=call.message.message_id, reply_markup=markup)
+    elif call.data == "back":
+        bot.edit_message_text(chat_id=user_id, message_id=call.message.message_id, text=f"🍀 Merhaba {user_name}, ({user_id})!\n\n📚 Yunus Balığı Veri Ve Analiz Botuna Hoş Geldin. Bu bot, Sistemde bulunan verileri analiz etmene yardımcı olur ve tamamen ücretsizdir\n\n📮 Sorgular Ücretsiz Olduğu İçin: @yunusbaligicommunity Katılmak Zorunludur.")
+        markup = types.InlineKeyboardMarkup()
+        button1 = types.InlineKeyboardButton("Yunus Balığı Community", url=CHANNEL_LINK)
+        button2 = types.InlineKeyboardButton("Batın Chat", url="https://t.me/batinchat")
+        button3 = types.InlineKeyboardButton("İletişim", url="https://t.me/Kagitkesikleri")
+        button4 = types.InlineKeyboardButton("Komutlar", callback_data="commands")
+        markup.row(button1, button2, button3)
+        markup.add(button4)
+        bot.edit_message_reply_markup(chat_id=user_id, message_id=call.message.message_id, reply_markup=markup)
+ 
 
 def is_user_member(user_id, chat_id):
     try:
@@ -207,12 +161,11 @@ def is_user_member(user_id, chat_id):
         return False
         
         
+
+
         
         
-      
-        
-        
-        
+
 @bot.message_handler(commands=["tc"])
 def tc_sorgula(message):
     user_id = message.from_user.id
@@ -283,7 +236,203 @@ def tc_sorgula(message):
         cevap = "╭──────────────────────╮\n┃ 📛 𝖸𝖺𝗇𝗅ı𝗌̧ 𝖪𝗈𝗆𝗎𝗍 𝖪𝗎𝗅𝗅𝖺𝗇ı𝗆ı\n│ ✅ 𝖣𝗈𝗀̆𝗋𝗎 𝖥𝗈𝗋𝗆𝖺𝗍: /tc <kurbanın tc>\n╰──────────────────────╯"
         bot.send_message(message.chat.id, cevap)
 
+user_coins = {}
+user_game_data = {}
 
+boxes = {
+    'Bronz': {'cost': 20, 'rewards': [10, 15, 20]},
+    'Gümüş': {'cost': 50, 'rewards': [25, 30, 35, 40, 45, 50]},
+    'Elmas': {'cost': 100, 'rewards': [50, 60, 70, 80, 90, 100]}
+}
+
+horses = {
+    'Yeşil': 3,
+    'Mavi': 2,
+    'Kırmızı': 4
+}
+
+maintenance_mode = False
+
+def load_user_coins():
+    try:
+        with open("user_coins.json", "r") as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
+
+def save_user_coins():
+    with open("user_coins.json", "w") as f:
+        json.dump(user_coins, f)
+
+def load_user_game_data():
+    try:
+        with open("user_game_data.json", "r") as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
+
+def save_user_game_data():
+    with open("user_game_data.json", "w") as f:
+        json.dump(user_game_data, f)
+
+user_coins = load_user_coins()
+user_game_data = load_user_game_data()
+
+admin_ids = [5801085100, 987654321]
+
+@bot.message_handler(commands=['kumar2'])
+def start(message):
+    user_id = message.from_user.id
+    user_name = message.from_user.first_name
+    if user_id not in user_coins:
+        user_coins[user_id] = 200
+        save_user_coins()
+    bot.reply_to(message, f"👋 **Hoş geldiniz, {user_name} ({user_id})!**\n\n"
+                          f"**200 coin ile başladınız.**\n\n"
+                          f"Kullanılabilir komutlar:\n"
+                          f"🪨 /tkm - **Taş, Kağıt, Makas oyna**\n"
+                          f"🐎 /at - **At yarışına katıl**\n"
+                          f"💰 /coins - **Toplam coin miktarını göster**\n"
+                          f"🎁 /zenginler2 - **Siralama Gosterir**\n"
+                          f"👨‍💻 /code - **Hediye Kodu Kullanın**\n"
+                          f"📤 /send - **Arkadaşınıza coin gönder**", parse_mode="Markdown")
+
+@bot.message_handler(commands=['tkm'])
+def tkm(message):
+    if maintenance_mode:
+        bot.reply_to(message, "⚠️ **Bakım modu etkin. Lütfen daha sonra tekrar deneyin.**")
+        return
+
+    user_id = message.from_user.id
+
+    choices = ['Taş', 'Kağıt', 'Makas']
+    user_choice = message.text.split()[-1].capitalize()
+    if user_choice not in choices:
+        bot.reply_to(message, "❌ Geçersiz seçim. Lütfen 'Taş', 'Kağıt' veya 'Makas' seçin.")
+        return
+
+    bot_choice = random.choice(choices)
+    result = determine_winner(user_choice, bot_choice)
+    bot.reply_to(message, f"🪨 Sizin seçiminiz: {user_choice}, 🤖 Benim seçimim: {bot_choice}. {result}")
+
+    if result == "🎉 Kazandınız!":
+        user_coins.setdefault(user_id, 0)
+        user_coins[user_id] += 200
+        save_user_coins()
+        bot.send_message(message.chat.id, f"🎉 Kazandığınız bakiye: 200 coins\n💰 Mevcut bakiyeniz: {user_coins[user_id]} coins")
+    else:
+        bot.send_message(message.chat.id, f"💰 Mevcut bakiyeniz: {user_coins.get(user_id, 0)} coins")
+
+def determine_winner(user_choice, bot_choice):
+    if user_choice == bot_choice:
+        return "🤝 Berabere!"
+    elif (user_choice == "Taş" and bot_choice == "Makas") or \
+         (user_choice == "Kağıt" and bot_choice == "Taş") or \
+         (user_choice == "Makas" and bot_choice == "Kağıt"):
+        return "🎉 Kazandınız!"
+    else:
+        return "😢 Kaybettiniz!"
+
+@bot.message_handler(commands=['coins'])
+def coins(message):
+    if message.from_user.id in user_coins:
+        bot.reply_to(message, f"💰 Toplam paralarınız: {user_coins[message.from_user.id]} coins")
+    else:
+        bot.reply_to(message, "Henüz hiç paranız yok.")
+
+
+@bot.message_handler(commands=['at'])
+def horse_race(message):
+    user_id = message.from_user.id
+    try:
+        _, horse_choice, bet_amount = message.text.split()
+        bet_amount = int(bet_amount)
+    except ValueError:
+        bot.send_message(message.chat.id, "Lütfen şu formatta yazın: /at [atın rengi] [bahis miktarı]. Örnek: /at Mavi 100")
+        return
+
+    if user_id not in user_coins or user_coins[user_id] < bet_amount:
+        bot.send_message(message.chat.id, "❌ Yeterli paranız yok.")
+        return
+
+    winning_horse = random.choices(list(horses.keys()), weights=horses.values(), k=1)[0]
+    bot.send_message(message.chat.id, f"At yarışını başlatıyorum! 🏇🏁\n\n🎉 Kazanan at: {winning_horse}")
+
+    if winning_horse.lower() == horse_choice.lower():
+        winnings = bet_amount * horses[winning_horse]
+        user_coins[user_id] += winnings
+        bot.send_message(message.chat.id, f"🎉 {winning_horse} atı kazandı! Kazandığınız bakiye: {winnings} coins\n💰 Mevcut bakiyeniz: {user_coins[user_id]} coins")
+    else:
+        user_coins[user_id] -= bet_amount
+        bot.send_message(message.chat.id, f"😢 {winning_horse} atı kazandı! Tüm bahis miktarınızı kaybettiniz.\n💰 Mevcut bakiyeniz: {user_coins[user_id]} coins")
+    save_user_coins()
+
+@bot.message_handler(commands=['send'])
+def send_coins(message):
+    user_id = message.from_user.id
+    try:
+        _, target_id, amount = message.text.split()
+        target_id = int(target_id)
+        amount = int(amount)
+    except ValueError:
+        bot.send_message(message.chat.id, "Lütfen şu formatta yazın: /send [kullanıcı id] [miktar]. Örnek: /send 123456789 50")
+        return
+
+    if user_id not in user_coins or user_coins[user_id] < amount:
+        bot.send_message(message.chat.id, "❌ Yeterli paranız yok.")
+        return
+
+    if target_id not in user_coins:
+        bot.send_message(message.chat.id, "❌ Hedef kullanıcı bulunamadı.")
+        return
+
+    user_coins[user_id] -= amount
+    user_coins[target_id] += amount
+    save_user_coins()
+
+    bot.send_message(message.chat.id, f"✅ Başarılı! {amount} coins gönderildi. 💰 Mevcut bakiyeniz: {user_coins[user_id]} coins")
+    bot.send_message(target_id, f"📥 {user_id} size {amount} coins gönderdi! 💰 Mevcut bakiyeniz: {user_coins[target_id]} coins")
+
+@bot.message_handler(commands=['hediyekodubelirle'])
+def set_gift_code(message):
+    user_id = message.from_user.id
+    if user_id in admin_ids:
+        try:
+            _, code, amount = message.text.split()
+            amount = int(amount)
+            gift_codes[code] = amount
+            bot.send_message(message.chat.id, f"Hediye kodu '{code}' başarıyla {amount} coins olarak ayarlandı.")
+        except ValueError:
+            bot.send_message(message.chat.id, "Lütfen şu formatta yazın: /hediyekodubelirle [kod] [miktar]. Örnek: /hediyekodubelirle YUNİS 200")
+    else:
+        bot.send_message(message.chat.id, "Bu işlemi gerçekleştirmek için yetkiniz yok.")
+
+gift_codes = {}
+
+@bot.message_handler(commands=['code'])
+def use_gift_code(message):
+    user_id = message.from_user.id
+    try:
+        _, code = message.text.split()
+    except ValueError:
+        bot.reply_to(message, "Lütfen geçerli bir hediye kodu girin.")
+        return
+
+    if code in gift_codes:
+        if user_id not in user_coins:
+            user_coins[user_id] = 0
+
+        user_coins[user_id] += gift_codes[code]
+        save_user_coins()
+
+        bot.reply_to(message, f"Başarıyla {gift_codes[code]} coins aldınız. Güncel bakiyeniz: {user_coins[user_id]} coins")
+    else:
+        bot.reply_to(message, "Geçersiz hediye kodu.")
+
+gift_codes = {}
+
+
+        
 
 @bot.message_handler(commands=["tcplus"])
 def tcplus_sorgula(message):
@@ -1606,7 +1755,25 @@ def risk_command(message):
 
         save_balances()
 
+@bot.message_handler(commands=['zenginler2'])
+def show_leaderboard(message):
+    save_user(message.from_user.id)
+    user_id = str(message.from_user.id)
+    if check_flood(user_id):
+        bot.reply_to(message, "5 saniye bekle tekrar dene.")
+        return
 
+    sorted_balances = sorted(user_coins.items(), key=lambda x: x[1], reverse=True)
+    leaderboard_message = "🏆 En İyi 10 Zengin 2 :\n\n"
+    for i, (user_id, balance) in enumerate(sorted_balances[:10], start=2):
+        try:
+          user = bot.get_chat(user_id)
+          user_name = user.first_name if user.first_name else "Bilinmiyor"
+          leaderboard_message += f"🎖️ {i-1}. {user_name} ⇒ {balance} TL\n"
+        except:
+          no_have_a = "problem"
+
+    bot.reply_to(message, leaderboard_message)
 
 @bot.message_handler(commands=['kumar'])
 def start(message):
@@ -1920,18 +2087,18 @@ def handle_word_guess(message):
     if len(guess) != 1 and len(guess) != len(target_word):
         bot.reply_to(message, '')
     elif guess == target_word:
-        user_balances[user_id] += 1500  # Doğru tahminde 500 TL kazandır
+        user_balances[user_id] += 250000  # Doğru tahminde 500 TL kazandır
         user_name = message.from_user.first_name
-        bot.reply_to(message, f'Tebrikler {user_name}! Doğru kelimeyi buldunuz ve 1500 TL kazandınız.')
+        bot.reply_to(message, f'Tebrikler {user_name}! Doğru kelimeyi buldunuz ve 250000 TL kazandınız.')
         del word_game_sessions[chat_id]
     elif guess in target_word:
         for i, letter in enumerate(target_word):
             if letter == guess:
                 revealed_letters[i] = guess
         if '_' not in revealed_letters:
-            user_balances[user_id] += 1500
+            user_balances[user_id] += 250000
             user_name = message.from_user.first_name
-            bot.reply_to(message, f'Tebrikler {user_name}! Doğru kelimeyi buldunuz ve 1500 TL kazandınız.')
+            bot.reply_to(message, f'Tebrikler {user_name}! Doğru kelimeyi buldunuz ve 250000 TL kazandınız.')
             del word_game_sessions[chat_id]
         else:
             bot.reply_to(message, 'Doğru tahmin! Harf ekledim: ' + ' '.join(revealed_letters))
