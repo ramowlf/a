@@ -202,17 +202,9 @@ def start(message):
         bot.reply_to(message, 'Flood yapma 5 saniye bekle.')
         return
     log_message(user_id)
-
-@bot.message_handler(commands=['id'])
-def get_user_id(message):
-    if message.reply_to_message:
-        user = message.reply_to_message.from_user
-        user_id = user.id
-        user_name = user.username
-        user_full_name = user.first_name + " " + (user.last_name or "")
-        bot.reply_to(message, f"Kullanıcı Adı: {user_name}\nAd Soyad: {user_full_name}\nID: {user_id}")
-    else:
-        bot.reply_to(message, "Bu komutu bir kullanıcıya yanıt vererek kullanın.")
+    
+    
+    
 
     if user_id not in user_balances:
         user_balances[user_id] = 50000 
@@ -289,7 +281,7 @@ def check_flood(user_id):
         user_last_message_time[user_id] = current_time
         return False
 
-@bot.message_handler(commands=['Sıralama'])
+@bot.message_handler(commands=['Siralama'])
 def show_leaderboard(message):
     save_user(message.from_user.id)
     user_id = str(message.from_user.id)
@@ -440,6 +432,18 @@ def free(message):
     except Exception as e:
         bot.reply_to(message, f"Bir hata oluştu: {str(e)}")
     
+    
+    
+@bot.message_handler(commands=['id'])
+def get_user_id(message):
+    if message.reply_to_message:
+        user = message.reply_to_message.from_user
+        user_id = user.id
+        user_name = user.username
+        user_full_name = user.first_name + " " + (user.last_name or "")
+        bot.reply_to(message, f"Kullanıcı Adı: {user_name}\nAd Soyad: {user_full_name}\nID: {user_id}")
+    else:
+        bot.reply_to(message, "Bu komutu bir kullanıcıya yanıt vererek kullanın.")
 @bot.message_handler(commands=['kelime'])
 def start_word_game(message):
     user_id = str(message.from_user.id)
@@ -473,18 +477,18 @@ def handle_word_guess(message):
     if len(guess) != 1 and len(guess) != len(target_word):
         bot.reply_to(message, '')
     elif guess == target_word:
-        user_balances[user_id] += 25000  # Doğru tahminde 500 TL kazandır
+        user_balances[user_id] += 1500  # Doğru tahminde 500 TL kazandır
         user_name = message.from_user.first_name
-        bot.reply_to(message, f'Tebrikler {user_name}! Doğru kelimeyi buldunuz ve 25000 TL kazandınız.')
+        bot.reply_to(message, f'Tebrikler {user_name}! Doğru kelimeyi buldunuz ve 1500 TL kazandınız.')
         del word_game_sessions[chat_id]
     elif guess in target_word:
         for i, letter in enumerate(target_word):
             if letter == guess:
                 revealed_letters[i] = guess
         if '_' not in revealed_letters:
-            user_balances[user_id] += 25000
+            user_balances[user_id] += 1500
             user_name = message.from_user.first_name
-            bot.reply_to(message, f'Tebrikler {user_name}! Doğru kelimeyi buldunuz ve 25000 TL kazandınız.')
+            bot.reply_to(message, f'Tebrikler {user_name}! Doğru kelimeyi buldunuz ve 1500 TL kazandınız.')
             del word_game_sessions[chat_id]
         else:
             bot.reply_to(message, 'Doğru tahmin! Harf ekledim: ' + ' '.join(revealed_letters))
