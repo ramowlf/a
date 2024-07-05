@@ -133,9 +133,6 @@ user_last_message_time = defaultdict(float)
 BOT_OWNER_ID = '6958129929'   
 
 
-JSON_FILE = 'premiumuser.json'
-
-
 
 
 
