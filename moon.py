@@ -8,7 +8,7 @@ asik_oldun = os.environ.get('TELEGRAM_API_ID')
 sik_kafali = os.environ.get('TELEGRAM_API_HASH')
 phone = os.environ.get('TELEGRAM_PHONE_NUMBER')
 
-telethon_client = TelegramClient("telethon.session", int(asik_oldun), sik_kafali)
+telethon_client = TelegramClient("ramazan.session", int(asik_oldun), sik_kafali)
 
 BotAltyapi = """**Merhaba first.**
 **👩🏻‍💻Ben Sahibim'in Sekreteriyim.**
