@@ -15,7 +15,6 @@ pytube
 youtube-search
 youtube-search-python
 asyncio
-re
 BeautifulSoup
 bs4
 telethon
