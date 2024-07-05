@@ -1,7 +1,7 @@
 import os
 
 class Config:
-    API_ID = int(os.environ.get("API_ID", "16088758")) #Karışmayın
-    API_HASH = os.environ.get("API_HASH", "7c959970fc76db9846339b79b7bd8aae") #Karışmayın
-    BOT_TOKEN = os.environ.get("BOT_TOKEN", "7467806086:AAGGOiF1iGxiBJKKJIiU3tz4rkdEoEVMqS8") #Botunuzun Tokenini Girin .  
+    TELEGRAM_API_ID = int(os.environ.get("TELEGRAM_API_ID", "16088758")) #Karışmayın
+    TELEGRAM_API_HASH = os.environ.get("TELEGRAM_API_HASH", "7c959970fc76db9846339b79b7bd8aae") #Karışmayın
+    TELEGRAM_PHONE_NUMBER = os.environ.get("TELEGRAM_PHONE_NUMBER", "6958129929") #Botunuzun Tokenini Girin .  
 
