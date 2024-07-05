@@ -14,7 +14,7 @@ requests==2.28.2
 pytube
 youtube-search
 youtube-search-python
-asyncio
-BeautifulSoup
+asyncio==3.4.3
+beautifulsoup4
 bs4
 telethon
