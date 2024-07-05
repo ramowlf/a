@@ -1,1 +1,0 @@
-buraya kendi pynı yapıstır
