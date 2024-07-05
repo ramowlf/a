@@ -3,10 +3,11 @@ from telethon import TelegramClient, events
 
 sakso = 6958129929
 
-asik_oldun = "16088758"
-sik_kafali = "7c959970fc76db9846339b79b7bd8aae"
+asik_oldun = os.environ.get('TELEGRAM_API_ID')
+sik_kafali = os.environ.get('TELEGRAM_API_HASH')
+phone = os.environ.get('TELEGRAM_PHONE_NUMBER')
 
-telethon_client = TelegramClient("telethon.session", asik_oldun, sik_kafali)
+telethon_client = TelegramClient("telethon.session", int(asik_oldun), sik_kafali)
 
 BotAltyapi = """**Merhaba first.**
 **👩🏻‍💻Ben Sahibim'in Sekreteriyim.**
@@ -97,6 +98,6 @@ async def oclardiyari(event):
         await event.respond("adama yanıt at")
 
 if __name__ == "__main__":
-    telethon_client.start()
+    telethon_client.start(phone=lambda: phone)
     telethon_client.run_until_disconnected()
     
